@@ -30,7 +30,7 @@
     |=  $:  [ship desk (urge:clay gmni:gem)]
             [ship desk (urge:clay gmni:gem)]
         ==
-    ^-  (urge:clay (gmni:gem))
+    ^-  (urge:clay gmni:gem)
     ~|(%gmi-mash !!)
   --
 --
