@@ -1,4 +1,4 @@
-/+  *gemtext
+/-  *gemtext
 |_  dif=(urge:clay gmni)
 ++  grab
   |%

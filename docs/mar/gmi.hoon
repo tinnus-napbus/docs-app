@@ -1,9 +1,10 @@
+/-  *gemtext
 /+  *gemtext
 |_  gmi=(list gmni)
 ++  grab
   |%
   ++  mime  |=((pair mite octs) (decode q.q))
-  ++  noun  |=(non=* ((list gmni) non))
+  ++  noun  (list gmni)
   --
 ++  grow
   |%
