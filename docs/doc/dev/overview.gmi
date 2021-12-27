@@ -32,3 +32,26 @@ Apart from the hierarchy described above, there are no particular restrictions o
 
 
 ## Dev desk
+
+To include docs in your own desk, there are a few files you'll need (mark files, etc). These are included in the docs-dev dev desk in the github repo. Here's what it contains:
+
+```
+docs-dev
+├── lib
+│   └── gemtext.hoon
+├── mar
+│   ├── gmi-diff.hoon
+│   ├── gmi.hoon
+│   └── index.hoon
+└── sur
+    ├── docs.hoon
+    └── gemtext.hoon
+```
+
+These files are all symlinked, so you'll need to clone the whole repo, then copy them across with something like:
+
+```
+cp -rL git/docs-app/docs-dev/* /path/to/your/development/desk
+```
+
+=> https://github.com/tinnus-napbus/docs-app The Docs app repo can be found here.
