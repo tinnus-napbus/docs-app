@@ -1,0 +1,34 @@
+The %docs app allows you to include documentation with the desks you distribute, making them available for easy browsing by users and developers.
+
+The %docs app will automatically detect and publish any docs included with any installed desks. As long as they're in the correct place, of the correct filetype and include a doc.index file, they'll be picked up.
+
+A doc.index file must be included in the root of the desk, specifying the files to be included, and their titles.
+
+=> /~/scry/docs/dev/docs//index-file.html See the Index File section for details.
+
+The files themselves will be in a /doc directory in the root of the desk. In /doc, there'll be two subdirectories - /usr and /dev. The former will contain docs for users, and the latter will contain docs for developers. The /dev directory may have one further level - directories named for agents on the desk, and containing docs specifically for those agents.
+
+The directory hierarchy may therefore look something like this:
+
+```
+doc
+├── dev
+│   ├── overview.gmi
+│   └── foo-store
+│       ├── api-ref.gmi
+│       └── data-types.gmi
+└── usr
+    ├── changelog.gmi
+    └── overview.gmi
+```
+
+The filetype of the docs themselves is "gemtext" and must end in the .gmi file extension. Gemtext is a ultra-minimalist markup format developed for a software project called Gemini.
+
+=> /~/scry/docs/dev/docs//file-format.html See the File Format section for details of the gemtext format.
+
+Apart from the hierarchy described above, there are no particular restrictions on how you organise your docs, or what docs you include. There are, however, some general suggestions:
+
+=> /~/scry/docs/dev/docs//structure.html See the Suggested Structure section for details.
+
+
+## Dev desk

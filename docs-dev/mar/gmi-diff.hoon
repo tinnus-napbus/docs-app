@@ -1,0 +1,1 @@
+../../docs/mar/gmi-diff.hoon

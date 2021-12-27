@@ -1,0 +1,89 @@
+Each desk with docs must include a doc.index file in its root. The file must contain an index structure as defined in /sur/docs.hoon:
+
+```hoon
+|%
++$  doc  [file=term title=@t]
++$  dev  [agent=term docs=(list doc)]
++$  index
+  $:  [%usr (list doc)]
+      [%dev (list dev)]
+  ==
+--
+```
+
+The %usr cell specifies user docs, and the %dev cell specifies developer docs.
+
+## User
+
+User docs only have one level: docs for the whole app. The %usr cell's tail will contain a list of pairs of filenames and document titles. The filenames must correspond to .gmi files in the /doc/usr/ directory of the desk. The files will be displayed in the order they're listed, with the title specified. The title will also be displayed at the top of each doc's page when it's opened.
+
+> Note: User docs are only displayed for installed %docket apps. If your desk isn't a %docket app with a tile, any user docs included will not be displayed.
+
+Here's how %usr docs might look:
+
+```hoon
+:-  %usr
+:~  foo+'foo docs'
+    bar+'bar docs'
+    baz+'baz docs'
+==
+```
+
+## Developer
+
+The %dev cell's tail will contain a list of pairs of agents and docs. Developer docs may have two levels - docs for the whole desk, and docs for specific agents included in the desk. The root docs (docs for the whole desk rather than a specific agent) must have the agent set as %$. These will be displayed at the top of the list. The remaining agents specified must correspond to an agent included in /app/[agent].hoon - they'll be excluded if the agent cannot be found.
+
+The filenames for the root docs must correspond to .gmi files in the /doc/dev/ directory of the desk. The filenames for the agent-specific docs must correspond to .gmi files in the /doc/dev/[agent]/ directory of the desk.
+
+> Note: Developer docs will be displayed for %docket and non-%docket desks alike, but the desk must be installed.
+
+Here's how %dev docs might look:
+
+```hoon
+:-  %dev
+:~  :-  %$
+    :~  foo+'Some whole-desk docs'
+        bar+'More whole-desk docs'
+    ==
+    :-  %my-agent
+    :~  blah+'blah blah'
+        etc+'another doc'
+    ==
+    :-  %another-agent
+    :~  foo+'Foo title'
+        bar+'Bar title'
+        baz+'Baz title'
+    ==
+==
+```
+
+## Example
+
+With the %usr and %dev docs together, the doc.index file will look like:
+
+```hoon
+:-
+:-  %usr
+:~  foo+'foo docs'
+    bar+'bar docs'
+    baz+'baz docs'
+==
+::
+:-  %dev
+:~  :-  %$
+    :~  foo+'Some whole-desk docs'
+        bar+'More whole-desk docs'
+    ==
+    :-  %my-agent
+    :~  blah+'blah blah'
+        etc+'another doc'
+    ==
+    :-  %another-agent
+    :~  foo+'Foo title'
+        bar+'Bar title'
+        baz+'Baz title'
+    ==
+==
+```
+
+> Note: If you don't need either %usr or %dev docs, the list can just be null (~).
