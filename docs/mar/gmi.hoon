@@ -26,7 +26,12 @@
     |=  [ali=(urge:clay gmni:gem) bob=(urge:clay gmni:gem)]
     ^-  (unit (urge:clay gmni:gem))
     (gmi-join:libgem ali bob)
-  ++  mash  ~|(%gmi-mash !!)
+  ++  mash
+    |=  $:  [ship desk (urge:clay gmni:gem)]
+            [ship desk (urge:clay gmni:gem)]
+        ==
+    ^-  (urge:clay (gmni:gem))
+    ~|(%gmi-mash !!)
   --
 --
 
