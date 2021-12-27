@@ -1,10 +1,10 @@
-/-  *gemtext
+/-  gem=gemtext
 |%
 ++  encode
-  |=  in=(list gmni)
+  |=  in=(list gmni:gem)
   ^-  @t
   %+  roll  in
-  |=  [=gmni out=@t]
+  |=  [=gmni:gem out=@t]
   ?-    -.gmni
       %text  ;:((cury cat 3) out text.gmni '\0a')
       %quot  ;:((cury cat 3) out '> ' text.gmni '\0a')
@@ -26,7 +26,7 @@
   ==
 ++  decode
   |=  in=cord
-  |^  ^-  (list gmni)
+  |^  ^-  (list gmni:gem)
   %+  rash  in
   (star ;~(pose quote bullet link codeblock header plain))
   ::
@@ -120,7 +120,7 @@
     ==
   --
 ++  gmi-to-manx-list
-  |=  in=(list gmni)
+  |=  in=(list gmni:gem)
   |^  ^-  [(list tape) (list manx)]
   =|  refs=(list tape)
   =|  out=(list manx)
@@ -139,7 +139,7 @@
   $(in -<, refs ->-, out ->+)
   ::
   +$  args
-    $:  in=(list gmni)
+    $:  in=(list gmni:gem)
         refs=(list tape)
         out=(list manx)
     ==
@@ -258,12 +258,12 @@
   --
 ::
 ++  gmi-join
-  |=  [ali=(urge:clay gmni) bob=(urge:clay gmni)]
-  ^-  (unit (urge:clay gmni))
+  |=  [ali=(urge:clay gmni:gem) bob=(urge:clay gmni:gem)]
+  ^-  (unit (urge:clay gmni:gem))
   |^
   =.  ali  (clean ali)
   =.  bob  (clean bob)
-  |-  ^-  (unit (urge:clay gmni))
+  |-  ^-  (unit (urge:clay gmni:gem))
   ?~  ali  `bob
   ?~  bob  `ali
   ?-    -.i.ali
@@ -272,20 +272,20 @@
         %&
       ?:  =(p.i.ali p.i.bob)
         %+  bind  $(ali t.ali, bob t.bob)
-        |=(cud=(urge:clay gmni) [i.ali cud])
+        |=(cud=(urge:clay gmni:gem) [i.ali cud])
       ?:  (gth p.i.ali p.i.bob)
         %+  bind  $(p.i.ali (sub p.i.ali p.i.bob), bob t.bob)
-        |=(cud=(urge:clay gmni) [i.bob cud])
+        |=(cud=(urge:clay gmni:gem) [i.bob cud])
       %+  bind  $(ali t.ali, p.i.bob (sub p.i.bob p.i.ali))
-      |=(cud=(urge:clay gmni) [i.ali cud])
+      |=(cud=(urge:clay gmni:gem) [i.ali cud])
     ::
         %|
       ?:  =(p.i.ali (lent p.i.bob))
         %+  bind  $(ali t.ali, bob t.bob)
-        |=(cud=(urge:clay gmni) [i.bob cud])
+        |=(cud=(urge:clay gmni:gem) [i.bob cud])
       ?:  (gth p.i.ali (lent p.i.bob))
         %+  bind  $(p.i.ali (sub p.i.ali (lent p.i.bob)), bob t.bob)
-        |=(cud=(urge:clay gmni) [i.bob cud])
+        |=(cud=(urge:clay gmni:gem) [i.bob cud])
       ~
     ==
   ::
@@ -295,21 +295,21 @@
       ?.  =(i.ali i.bob)
         ~
       %+  bind  $(ali t.ali, bob t.bob)
-      |=(cud=(urge:clay gmni) [i.ali cud])
+      |=(cud=(urge:clay gmni:gem) [i.ali cud])
     ::
         %&
       ?:  =(p.i.bob (lent p.i.ali))
         %+  bind  $(ali t.ali, bob t.bob)
-        |=(cud=(urge:clay gmni) [i.ali cud])
+        |=(cud=(urge:clay gmni:gem) [i.ali cud])
       ?:  (gth p.i.bob (lent p.i.ali))
         %+  bind  $(ali t.ali, p.i.bob (sub p.i.bob (lent p.i.ali)))
-        |=(cud=(urge:clay gmni) [i.ali cud])
+        |=(cud=(urge:clay gmni:gem) [i.ali cud])
       ~
     ==
   ==
   ++  clean
-    |=  wig=(urge:clay gmni)
-    ^-  (urge:clay gmni)
+    |=  wig=(urge:clay gmni:gem)
+    ^-  (urge:clay gmni:gem)
     ?~  wig  ~
     ?~  t.wig  wig
     ?:  ?=(%& -.i.wig)
