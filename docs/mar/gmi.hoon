@@ -25,7 +25,7 @@
   ++  join
     |=  [ali=(urge:clay gmni:gem) bob=(urge:clay gmni:gem)]
     ^-  (unit (urge:clay gmni:gem))
-    (gmi-join ali bob)
+    (gmi-join:libgem ali bob)
   ++  mash  ~|(%gmi-mash !!)
   --
 --
