@@ -13,8 +13,6 @@
     (wain non)
   ++  txt
     |=  tex=wain
-    ^-  wain
-    =+  !<(index:docs (slap !>(~) (ream (of-wain:format tex))))
     tex
   --
 ++  grow
