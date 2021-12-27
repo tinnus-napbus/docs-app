@@ -9,11 +9,13 @@
     (to-wain:format tex)
   ++  noun
     |=  non=*
+    ^-  wain
     =+  wan=(wain non)
     =+  !<(index:docs (slap !>(~) (ream (of-wain:format wan))))
     wan
   ++  txt
     |=  tex=wain
+    ^-  wain
     =+  !<(index:docs (slap !>(~) (ream (of-wain:format tex))))
     tex
   --
