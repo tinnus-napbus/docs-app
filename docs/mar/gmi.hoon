@@ -3,7 +3,7 @@
 ++  grab
   |%
   ++  mime  |=((pair mite octs) (decode q.q))
-  ++  noun  (list gmni)
+  ++  noun  |=(non=* ((list gmni) non))
   --
 ++  grow
   |%
