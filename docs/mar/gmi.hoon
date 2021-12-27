@@ -1,15 +1,15 @@
 /-  gem=gemtext
 /+  libgem=gemtext
 |_  gmi=(list gmni:gem)
-++  grab
-  |%
-  ++  mime  |=((pair mite octs) (decode:libgem q.q))
-  ++  noun  (list gmni:gem)
-  --
 ++  grow
   |%
   ++  mime  [/text/gemini (as-octs:mimes:html (encode:libgem gmi))]
   ++  noun  gmi
+  --
+++  grab
+  |%
+  ++  mime  |=((pair mite octs) (decode:libgem q.q))
+  ++  noun  (list gmni:gem)
   --
 ++  grad
   |%
