@@ -314,8 +314,12 @@
           =+  id-suf=(weld id suf)
           ?.  (~(has in refs) id-suf)
             :_  (~(put in refs) id-suf)
-            ?-  lvl.i.gmi
-              %1  ;h1(id id-suf): {name}
+            ?-    lvl.i.gmi
+                %1
+              ;div
+                ;hr;
+                ;h1(id id-suf): {name}
+              ==
               %2  ;h2(id id-suf): {name}
               %3  ;h3(id id-suf): {name}
             ==
