@@ -255,7 +255,7 @@
   ++  content
     |=  gmi=(list gmni)
     |^  ^-  (unit manx)
-    =/  content  (process gmi)
+    =/  content  (process (collapse gmi))
     ?~  content  ~
     :-  ~
     ;main
@@ -574,6 +574,24 @@
         |=  =tape
         ;/  tape
       (plus ;~(less (ifix [tic tic] (plus ;~(less tic next))) next))
+    ==
+  ::  collapse more than one empty line to only one
+  ::
+  ++  collapse
+    |=  in=(list gmni)
+    =|  out=(list gmni)
+    =|  prev=_|
+    |-
+    ?~  in
+      (flop out)
+    =/  current=?
+      ?.  ?=(%text -.i.in)
+        %.n
+      ?~(text.i.in %.y %.n)
+    %=  $
+      in    t.in
+      prev  current
+      out   ?:(&(prev current) out [i.in out])
     ==
   ++  style-index
     '''
