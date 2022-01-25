@@ -100,6 +100,7 @@
     %+  ifix
       :-  ;~(plug (jest '```') (star white))
       ;~  pose
+        ;~(plug (jest '```') star-line le-or-end)
         ;~(plug le (jest '```') star-line le-or-end)
         ;~(less next (easy ~))
       ==
@@ -108,14 +109,17 @@
         (cold ~ le-or-end)
         (stag ~ ;~(sfix (cook crip plus-line) le-or-end))
       ==
-      %+  cook  crip
-      %-  star
-      ;~  less
-        ;~  pose
-          ;~(plug le (jest '```') star-line le-or-end)
-          ;~(less next (easy ~))
+      ;~  pose
+        ;~(simu ;~(plug (jest '```') star-line le-or-end) (easy ''))
+        %+  cook  crip
+        %-  star
+        ;~  less
+          ;~  pose
+            ;~(plug le (jest '```') star-line le-or-end)
+            ;~(less next (easy ~))
+          ==
+          ;~(pose (cold '\0a' crlf) next)
         ==
-        ;~(pose (cold '\0a' crlf) next)
       ==
     ==
   --
