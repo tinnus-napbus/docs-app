@@ -18,42 +18,34 @@
   %-  en-xml:html
   ^-  manx
   ?+    path  (on-peek:def path)
-      [%x %usr ~]
-    =/  usr=(list manx)  usr-index
+      [%x ?(%usr %dev) ~]
+    =/  kind  i.t.path
+    =/  manxes=(list manx)
+      ?:  ?=(%usr kind)
+        usr-index
+      dev-index
     ;html
       ;head
-        ;title: User Docs
-        ;meta(charset "utf-8");
-        ;style:"{(trip style-index)}"
-      ==
-      ;body
-        ;nav
-          ;+  (menu %usr)
-          ;*  ?~  usr
-                :~
-                  ;p.err: No user docs found.
-                ==
-              usr
+        ;title
+          ;+  ?:  ?=(%usr kind)
+                ;/("User Docs")
+              ;/("Developer Docs")
         ==
-      ==
-    ==
-  ::
-      [%x %dev ~]
-    =/  dev=(list manx)  dev-index
-    ;html
-      ;head
-        ;title: Developer Docs
         ;meta(charset "utf-8");
         ;style:"{(trip style-index)}"
       ==
       ;body
         ;nav
-          ;+  (menu %dev)
-          ;*  ?~  dev
+          ;+  (menu kind)
+          ;*  ?~  manxes
                 :~
-                  ;p.err: No developer docs found.
+                  ;p.err
+                    ;+  ?:  ?=(%usr kind)
+                          ;/("No user docs found.")
+                        ;/("No developer docs found.")
+                  ==
                 ==
-              dev
+              manxes
         ==
       ==
     ==
@@ -99,14 +91,14 @@
         ;title
           ;+  ?~  err
                 ?:  ?=(%usr kind)
-                  ;/  "User docs > {(trip app)} > {(trip title)}"
+                  ;/("User docs > {(trip app)} > {(trip title)}")
                 ;/  %+  weld
                       "Developer docs > {<desk>} > "
                     ?:  =(%$ agent)  "{(trip title)}"
                     "{<agent>} > {(trip title)}"
               ?:  ?=(%usr kind)
-                ;/  "User docs > Error"
-              ;/  "Developer docs > Error"
+                ;/("User docs > Error")
+              ;/("Developer docs > Error")
         ==
         ;meta(charset "utf-8");
         ;style:"{(trip style-doc)}"
@@ -129,10 +121,10 @@
                 ;p
                   ;+  ?:  ?=(%usr kind)
                         ;a/"/~/scry/docs/usr.html#{(trip desk)}"
-                          ;+  ;/  "Go back"
+                          ;+  ;/("Go back")
                         ==
                       ;a/"/~/scry/docs/dev.html#{(trip desk)}"
-                        ;+  ;/  "Go back"
+                        ;+  ;/("Go back")
                       ==
                 ==
               ==
@@ -560,6 +552,8 @@
         ;*  manxes
       ==
     ==
+  ::  process inline codeblocks
+  ::
   ++  inline
     |=  text=@t
     ^-  (list manx)
