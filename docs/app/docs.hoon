@@ -1051,7 +1051,7 @@
     font-family: var(--mono-font);
     border-radius: 0.3em;
     padding: 1em;
-    overflow-x: scroll;
+    overflow-x: auto;
     overflow-y: auto;
     flex: 1 1 auto;
     max-width: 100%;
@@ -1173,7 +1173,7 @@
       max-width: 16rem;
       padding: 0 1em;
       overflow-x: hidden;
-      overflow-y: scroll;
+      overflow-y: auto;
       box-sizing: border-box;
     }
     nav hr {display: none}
