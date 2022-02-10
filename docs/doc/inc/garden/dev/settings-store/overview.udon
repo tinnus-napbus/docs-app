@@ -1,0 +1,69 @@
+;>
+
+`%settings-store`, as the name suggests, is for storing settings. It can be used
+by front-ends to record things like "display in currency x", "dark mode is
+enabled", etc. It can also be used by other agents.
+
+The basic settings unit is an entry, which is a key-value pair. The values are
+similar to JSON types but without objects or null values. They can be booleans,
+strings, and numbers, as well as arrays of the other three types.
+
+Entries are collected in named buckets, and buckets are organized by desk. It's
+technically not necessary for desks in %settings-store to correspond to
+installed desks, but that is the intention of the structure. How buckets are
+named and how many buckets you use is up to you.
+
+The overall state of %settings-store is a +$settings structure, which is a:
+
+```
+(mip desk key bucket)
+```
+
+A ++mip is just a map of maps, and is defined in the `/lib/mip.hoon` library in
+the %garden desk. A +$bucket is a:
+
+```
+(map key val)
+```
+
+The overall structure is, therefore, three levels of maps which look like:
+
+```
+(map desk (map key (map key val)))
+```
+
+See the [Data Types](/~/scry/docs/dev/garden/settings-store/types.html) section
+for more details of these types.
+
+Each level of the +$settings structure can be accessed through
+`%settings-store`'s scry interface. You can request the whole state, a desk, a
+bucket, or an individual entry. They can be requested as nouns within Arvo, or
+as JSON via Eyre's scry system. See the [Scry
+Endpoints](/~/scry/docs/dev/garden/settings-store/scry.html) section for more
+details.
+
+You can also subscribe to each level of the +$settings structure with
+`%settings-store`'s %watch paths. Once subscribed, you'll be notified of any
+changes within the overall state, desk, bucket or entry to which you've
+subscribed. Each %watch path returns nouns with a %settings-event mark, which
+will be converted to JSON if you've subscribed through Eyre's channel system.
+See the [Subscription Paths](/~/scry/docs/dev/garden/settings-store/paths.html)
+section for more details.
+
+The typical pattern would be to scry for the initial state of the desk, bucket,
+or entry that's relevant to you. After obtaining the state, you can then
+subscribe to be notified of changes.
+
+In addition to accessing existing data, you can perform one of four actions via
+pokes:
+
+- Add a new bucket with a %put-bucket event.
+- Delete a bucket with a %del-bucket event.
+- Add a new entry with a %put-entry event.
+- Delete an entry with a %del-entry event.
+
+Adding new buckets or entries will override existing ones of the same name, so
+those events can also be used to modify existing settings. Like scries and
+subscriptions, pokes can be done as JSON through Eyre's channel system. See the
+[Pokes](/~/scry/docs/dev/garden/settings-store/pokes.html) section for more
+details.

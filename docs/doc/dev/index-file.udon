@@ -1,0 +1,123 @@
+;>
+Each desk with docs must include a `doc.clue` file in its root. The file must
+contain a +$clue as defined in `/sur/docs.hoon`:
+
+```
++$  clue  [=usr =dev]
++$  usr  (list doc)
++$  dev  (list [agent=@tas docs=(list doc)])
++$  doc    [=file title=@t]
++$  file   [name=@ta =mark ~]
+```
+
+The `.usr` part specifies user docs, and the `.dev` part specifies developer
+docs.
+
+## User
+
+```
++$  usr  (list doc)
+```
+
+User docs only have one level: docs for the whole app. The `.usr` field will
+contain a list of pairs of `+$file`s and `@t` document titles. The order the
+`+$doc`s are listed will be the ordered they're displayed on the index page.
+
+A +$file is typically specified as a +$path with two fields. The first is the
+filename, and the second is the mark. For example, `/foo/udon` would be a file
+called `foo.udon`.
+
+The `.title` specified will become the title of the document and displayed at
+the top when it's viewed. It'll also be the name of the document listed on the
+index page.
+
+User docs must be in the `/doc/usr` directory of the desk.
+
+> Note: User docs are only displayed for installed %docket apps. If your desk
+  isn't a %docket app with a tile, any user docs included will not be
+  displayed.
+
+Here's how `.usr` docs might look:
+
+```
+:~  [/foo/udon 'foo docs']
+    [/bar/udon 'bar docs']
+    [/baz/udon 'baz docs']
+==
+```
+
+## Developer
+
+```
++$  dev  (list [agent=@tas docs=(list doc)])
+```
+
+The tail of the +$clue is called `.dev` and contains developer docs. Developer
+docs may have two levels: docs for the whole desk, and docs for specific agents
+included in the desk. Rather than just a list of `+$doc`s like in the `.usr`
+field, the `.dev` field has a list of pairs of `@tas` agents and lists of
+`+$doc`s for each of those agents.
+
+The root docs (docs for the whole desk rather than a specific agent) must have
+the `.agent` set as `%$`. These will be displayed at the top of the list. The
+remaining agents specified must correspond to an agent included in the desk's
+`/app` directory - they'll be excluded if the agent cannot be found.
+
+The `.file` path for each +$doc (e.g. `/foo/udon`) must correspond to a file in
+the `/doc/dev/[agent]/` directory of the desk, except for the `%$` root docs
+which must be in `/doc/dev` directly.
+
+> Note: Developer docs will be displayed for %docket and non-%docket desks
+  alike, but the desk must be installed.
+
+Here's how `.dev` docs might look:
+
+```
+:~  :-  %$
+    :~  [/foo/udon 'Some whole-desk docs']
+        [/bar/udon 'More whole-desk docs']
+    ==
+    :-  %my-agent
+    :~  [/blah/udon 'blah blah']
+        [/etc/udon 'another doc']
+    ==
+    :-  %another-agent
+    :~  [/foo/udon 'Foo title']
+        [/bar/udon 'Bar title']
+        [/baz/udon 'Baz title']
+    ==
+==
+```
+
+## Example
+
+With the `.usr` and `.dev` docs together, the `doc.clue` file will look like:
+
+```
+:-
+:: User docs
+::
+:~  [/foo/udon 'foo docs']
+    [/bar/udon 'bar docs']
+    [/baz/udon 'baz docs']
+==
+:: Developer docs
+::
+:~  :-  %$
+    :~  [/foo/udon 'Some whole-desk docs']
+        [/bar/udon 'More whole-desk docs']
+    ==
+    :-  %my-agent
+    :~  [/blah/udon 'blah blah']
+        [/etc/udon 'another doc']
+    ==
+    :-  %another-agent
+    :~  [/foo/udon 'Foo title']
+        [/bar/udon 'Bar title']
+        [/baz/udon 'Baz title']
+    ==
+==
+```
+
+> Note: If you don't need either `.usr` or `.dev` docs, the list can just be null
+  (`~`).

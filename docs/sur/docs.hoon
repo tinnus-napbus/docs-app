@@ -1,8 +1,9 @@
 |%
-+$  doc  [file=term title=@t]
-+$  dev  [agent=term docs=(list doc)]
-+$  index
-  $:  [%usr (list doc)]
-      [%dev (list dev)]
-  ==
++$  scroll  [toc=(unit manx) content=manx]
++$  kind  ?(%usr %dev)
++$  doc    [=file title=@t]
++$  file   [name=@ta =mark ~]
++$  usr  (list doc)
++$  dev  (list [agent=@tas docs=(list doc)])
++$  clue  [=usr =dev]
 --

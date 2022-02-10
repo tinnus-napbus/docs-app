@@ -1,0 +1,73 @@
+;>
+
+All subscription paths for the %settings-store agent are documented below. Note
+that %settings-store will only accept subscriptions from the local ship.
+
+# All
+
+```
+/all
+```
+
+Subscribers to `/all` will receive all +$events that occur for any desks, buckets
+or entries.
+
+#### Type produced
+
+An [+$event](/~/scry/docs/dev/garden/settings-store/types.html#event-) structure
+with any tag.
+
+---
+
+# Desk
+
+```
+/desk/[desk]
+```
+
+Subscribers to `/desk/[desk]`, where `[desk]` is a desk entry in the +$settings
+state, will receive all +$events that occur for any buckets and their contents
+in the specified desk.
+
+#### Type produced
+
+An [+$event](/~/scry/docs/dev/garden/settings-store/types.html#event-) structure
+with any tag.
+
+---
+
+# Bucket
+
+```
+/bucket/[desk]/[bucket]
+```
+
+Subscribers to `/bucket/[desk]/[bucket]`, where `[bucket]` is a bucket in the
+specified `[desk]`, will receive all +$events that occur for the specified
+bucket or entries therein.
+
+#### Type produced
+
+An [+$event](/~/scry/docs/dev/garden/settings-store/types.html#event-) structure
+with any tag.
+
+---
+
+# Entry
+
+```
+/entry/[desk]/[bucket]/[entry]
+```
+
+Subscribers to `/entry/[desk]/[bucket]/[entry]`, where `[entry]` is an entry
++$key in the specified `[bucket]` for the specified `[desk]`, will receive all
++$events that occur for the specified entry.
+
+Note that bucket-level +$events that affect the entry in question will not
+produce updates on this path - only +$events which directly alter the entry will
+be sent.
+
+#### Type produced
+
+An [+$event](/~/scry/docs/dev/garden/settings-store/types.html#event-) structure
+with either a %put-entry or %del-entry tag.

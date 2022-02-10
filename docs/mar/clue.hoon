@@ -1,11 +1,11 @@
 /-  docs
-|_  ind=wain
+|_  clu=wain
 ++  grab
   |%
   ++  mime
     |=  [=mite len=@ud tex=@]
     ^-  wain
-    =+  !<(index:docs (slap !>(~) (ream tex)))
+    =+  !<(clue:docs (slap !>(~) (ream tex)))
     (to-wain:format tex)
   ++  noun
     |=  non=*
@@ -13,14 +13,16 @@
     (wain non)
   ++  txt
     |=  tex=wain
+    ^-  wain
     tex
   --
 ++  grow
   |%
-  ++  mime  [/text/x-doc-index (as-octs:mimes:html (of-wain:format ind))]
-  ++  noun  ind
-  ++  txt   ind
+  ++  mime  [/text/x-clue (as-octs:mimes:html (of-wain:format clu))]
+  ++  noun  clu
+  ++  txt   clu
   --
 ++  grad  %txt
 --
+
 

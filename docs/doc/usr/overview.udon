@@ -1,0 +1,14 @@
+;>
+- Developer: ~tinnus-napbus
+- License: MIT
+- App link: [~pocwet/docs](web+urbitgraph://~pocwet/docs)
+- Source repo: [https://github.com/tinnus-napbus/docs-app](https://github.com/tinnus-napbus/docs-app)
+- Bug reports: [https://github.com/tinnus-napbus/docs-app/issues](https://github.com/tinnus-napbus/docs-app/issues)
+
+The Docs app displays documentation for other installed apps. All apps are
+automatically checked for docs, so if a particular app is not listed, it doesn't
+have docs.
+
+App publishers can include documentation for ordinary users, as well as
+documentation for developers. You can switch between user and developer docs
+with the button at the top of the main page.

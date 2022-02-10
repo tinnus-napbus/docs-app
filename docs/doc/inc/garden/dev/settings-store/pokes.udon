@@ -1,0 +1,143 @@
+;>
+
+All pokes for %settings-store are documented below.
+
+# %put-bucket
+
+```
+[%put-bucket =desk =key =bucket]
+```
+
+- Mark: %settings-event
+- Type: +$event
+
+Add the given +$bucket to the specified +$desk with the given +$key identifier.
+If the bucket already exists, it will be overwritten. If there's no existing
+entry for the specified +$desk, it will be added.
+
+#### Noun example
+
+```
+[ %put-bucket
+  desk=%some-desk
+  key=%some-key
+  bucket={[p=%bar q=[%n p=42]] [p=%foo q=[%s p='foo']]}
+]
+```
+
+#### JSON example
+
+```
+{
+  "put-bucket": {
+    "bucket-key": "some-key",
+    "desk": "some-desk",
+    "bucket": {
+      "foo": "foo",
+      "bar": 42
+    }
+  }
+}
+```
+
+---
+
+# %del-bucket
+
+```
+[%del-bucket =desk =key]
+```
+
+- Mark: %settings-event
+- Type: +$event
+
+Delete the bucket with the specified +$key from the specified +$desk. If the
+desk entry will be empty after deletion, it will also be removed.
+
+#### Noun example
+
+```
+[%del-bucket desk=%some-desk key=%some-key]
+```
+
+#### JSON example
+
+```
+{
+  "del-bucket": {
+    "bucket-key": "some-key",
+    "desk": "some-desk"
+  }
+}
+```
+
+---
+
+# %put-entry
+
+```
+[%put-entry =desk buc=key =key =val]
+```
+
+- Mark: %settings-event
+- Type: +$event
+
+Add the given `+$key`-`+$val` pair to the bucket with +$key buc in the specified
++$desk. If an entry with the same key already exists, it will be overwritten. If
+the specified bucket or desk entry do not already exist, they will be created.
+
+#### Noun example
+
+```
+[ %put-entry
+  desk=%some-desk
+  buc=%some-buc
+  key=%some-key
+  val=[%s p='some value']
+]
+```
+
+#### JSON example
+
+```
+{
+  "put-entry": {
+    "bucket-key": "some-buc",
+    "desk": "some-desk",
+    "entry-key": "some-key",
+    "value": "some value"
+  }
+}
+```
+
+---
+
+# %del-entry
+
+```
+[%del-entry =desk buc=key =key]
+```
+
+- Mark: %settings-event
+- Type: +$event
+
+Delete the entry with the given +$key from bucket buc in the specified $desk
+container.
+
+#### Noun example
+
+```
+[%del-entry desk=%some-desk buc=%some-buc key=%some-key]
+```
+
+#### JSON example
+
+```
+{
+  "del-entry": {
+    "bucket-key": "some-buc",
+    "desk": "some-desk",
+    "entry-key": "some-key"
+  }
+}
+```

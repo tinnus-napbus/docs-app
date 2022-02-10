@@ -1,1 +1,0 @@
-../../docs/mar/index.hoon

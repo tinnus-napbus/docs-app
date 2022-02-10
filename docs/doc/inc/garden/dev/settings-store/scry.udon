@@ -1,0 +1,285 @@
+;>
+
+All scry endpoints for %settings-store are documented below. The %x care at the
+beginning of the path will be omitted when scrying through the web interface.
+Both hoon and JSON example are provided.
+
+# All
+
+```
+/x/all
+```
+
+A scry with an %x care and a path of `/all` will produce all settings for all desks.
+
+#### Type produced
+
+A [+$data](/~/scry/docs/dev/garden/settings-store/types.html#data-) structure
+with an [%all](/~/scry/docs/dev/garden/settings-store/types.html#-all-) tag.
+
+#### Noun example
+
+Query:
+
+```
+.^(data:settings %gx /=settings-store=/all/noun)
+```
+
+Result:
+
+```
+[ %all
+    settings
+  { [ p=%bitcoin
+        q
+      { [ p=%btc-wallet
+            q
+          { [p=%warning q=[%b p=%.y]]
+            [p=%currency q=[%s p='USD']]
+          }
+        ]
+      }
+    ]
+  }
+]
+```
+
+#### JSON example
+
+Query:
+
+```
+http://localhost:8080/~/scry/settings-store/all.json
+```
+
+Result:
+
+```
+{
+  "all": {
+    "bitcoin": {
+      "btc-wallet": {
+        "currency": "USD",
+        "warning": true
+      }
+    }
+  }
+}
+```
+
+---
+
+# Desk
+
+```
+/x/desk/[desk]
+```
+
+A scry with an %x care and a path of `/desk/[desk]` will produce all keys and
+buckets for the desk specified in the `[desk]` field.
+
+#### Type produced
+
+A [$data](/~/scry/docs/dev/garden/settings-store/types.html#data-) structure
+with a [%desk](/~/scry/docs/dev/garden/settings-store/types.html#-desk-) tag.
+
+#### Noun example
+
+Query:
+
+```
+.^(data:settings %gx /=settings-store=/desk/bitcoin/noun)
+```
+
+Result:
+
+```
+[ %desk
+    desk
+  { [ p=%btc-wallet
+        q
+      { [p=%warning q=[%b p=%.y]]
+        [p=%currency q=[%s p='USD']]
+      }
+    ]
+  }
+]
+```
+
+#### JSON example
+
+Query:
+
+```
+http://localhost:8080/~/scry/settings-store/desk/bitcoin.json
+```
+
+Result:
+
+```
+{
+  "desk": {
+    "btc-wallet": {
+      "currency": "USD",
+      "warning": true
+    }
+  }
+}
+```
+
+---
+
+# Bucket
+
+```
+/x/bucket/[desk]/[bucket]
+```
+
+A scry with an %x care and a path of `/bucket/[desk]/[bucket]` will produce the
+specified bucket for the specified desk.
+
+#### Type produced
+
+A [+$data](/~/scry/docs/dev/garden/settings-store/types.html#data-) structure
+with a [%bucket](/~/scry/docs/dev/garden/settings-store/types.html#-bucket-)
+tag.
+
+#### Noun example
+
+Query:
+
+```
+.^(data:settings %gx /=settings-store=/bucket/bitcoin/btc-wallet/noun)
+```
+
+Result:
+
+```
+[ %bucket
+    bucket
+  {[p=%warning q=[%b p=%.y]] [p=%currency q=[%s p='USD']]}
+]
+```
+
+#### JSON example
+
+Query:
+
+```
+http://localhost:8080/~/scry/settings-store/bucket/bitcoin/btc-wallet.json
+```
+
+Result:
+
+```
+{
+  "bucket": {
+    "currency": "USD",
+    "warning": true
+  }
+}
+```
+
+---
+
+# Entry
+
+```
+/x/entry/[desk]/[bucket]/[entry]
+```
+
+A scry with an %x care and a path of `/entry/[desk]/[bucket]/[entry]` will
+produce the value of the specified entry, in the specified bucket, for the
+specified desk.
+
+#### Type produced
+
+A [$data](/~/scry/docs/dev/garden/settings-store/types.html#data-) structure
+with an [%entry](/~/scry/docs/dev/garden/settings-store/types.html#-entry-) tag.
+
+#### Noun example
+
+Query:
+
+```
+.^(data:settings %gx /=settings-store=/entry/bitcoin/btc-wallet/currency/noun)
+```
+
+Result:
+
+```
+[%entry val=[%s p='USD']]
+```
+
+#### JSON example
+
+Query:
+
+```
+http://localhost:8080/~/scry/settings-store/entry/bitcoin/btc-wallet/currency.json
+```
+
+Result:
+
+```
+{"entry":"USD"}
+```
+
+---
+
+# Has bucket?
+
+```
+/x/has-bucket/[desk]/[bucket]
+```
+
+A scry with an %x care and a path of `/has-bucket/[desk]/[bucket]` will say
+whether the specified bucket exists for the specified desk.
+
+#### Type produced
+
+A flag.
+
+#### Noun example
+
+Query:
+
+```
+.^(? %gx /=settings-store=/has-bucket/bitcoin/btc-wallet/noun)
+```
+
+Result:
+
+```
+%.y
+```
+
+---
+
+# Has entry?
+
+```
+/x/has-entry/[desk]/[bucket]/[entry]
+```
+
+A scry with an %x care and a path of `/has-entry/[desk]/[bucket]/[entry]` will
+say whether the specified entry exists in the specified bucket for the specified
+desk.
+
+#### Type produced
+
+A flag.
+
+#### Noun example
+
+Query:
+
+```
+.^(? %gx /=settings-store=/has-entry/bitcoin/btc-wallet/currency/noun)
+```
+
+Result:
+
+```
+%.y
+```

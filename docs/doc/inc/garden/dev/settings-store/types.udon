@@ -1,0 +1,416 @@
+;>
+
+The data structures for %settings-store are documented below. Both noun and JSON
+examples are included.
+
+---
+
+# bucket
+
+```
++$  bucket    (map key val)
+```
+
+A +$bucket contains settings as `+$key`-`+$val` pairs. A +$desk may have multiple
+buckets, each identified with a unique `+$key`.
+
+---
+
+# key
+
+```
++$  key       term
+```
+
+A +$key is an identifier for a $bucket or individual +$val entry. It's just a
+standard `@tas`.
+
+#### Noun example
+
+```
+%currency
+```
+
+#### JSON example
+
+The key is "currency" in this example - the key in a JSON object:
+
+```
+{"currency": "USD"}
+```
+
+---
+
+# val
+
+```
++$  val
+  $~  [%n 0]
+  $%  [%s p=@t]
+      [%b p=?]
+      [%n p=@]
+      [%a p=(list val)]
+  ==
+```
+
+A +$val is an individual entry indexed by a +$key in a particular +$bucket for a
+particular +$desk.
+
+It may be a string, boolean, number or array, with a head tag of `%s`, `%b`,
+`%n`, or %a respectively. This structure is basically the same as a +$json
+structure except without objects or null values, and with an atom rather than
+`@ta` for the number.
+
+#### Noun example
+
+- Number: `[%n p=42]`
+- String: `[%s p='foo bar']`
+- Boolean: `[%b p=%.y]`
+- Array: `[%a p=~[[%n p=42] [%b p=%.y] [%s p='foobar']]]`
+
+#### JSON example
+
+- Number: `42`
+- String: `"foo bar"`
+- Boolean: `true`
+- Array: `[42,true,"foobar"]`
+
+---
+
+# settings
+
+```
++$  settings  (mip desk key bucket)
+```
+
+This structure is used for the overall state. It's a ++mip, which is just a ++map of ++maps. The first map is organized by +$desk. Each desk has a map from +$keys to +$buckets, and each bucket contains individual entries as `+$key`-`+$val` pairs.
+
+#### Noun example
+
+```
+{ [ p=%bitcoin
+      q
+    { [ p=%btc-wallet
+          q
+        { [p=%warning q=[%b p=%.y]]
+          [p=%currency q=[%s p='USD']]
+        }
+      ]
+    }
+  ]
+}
+```
+
+#### JSON example
+
+```
+{
+  "bitcoin": {
+    "btc-wallet": {
+      "currency": "USD",
+      "warning": true
+    }
+  }
+}
+```
+
+---
+
+# event
+
+```
++$  event
+  $%  [%put-bucket =desk =key =bucket]
+      [%del-bucket =desk =key]
+      [%put-entry =desk buc=key =key =val]
+      [%del-entry =desk buc=key =key]
+  ==
+```
+
+An +$event is an action which modifies +$settings. Either a bucket or individual
+entry may be added or removed. This structure is used in pokes, and is also sent
+out as updates to subscribers.
+
+---
+
+## %put-bucket
+
+```
+[%put-bucket =desk =key =bucket]
+```
+
+Add the given +$bucket to the specified +$desk with the given +$key identifier.
+If the bucket already exists, it will be overwritten. If there's no existing
+entry for the specified +$desk, it will be added.
+
+#### Noun example
+
+```
+[ %put-bucket
+  desk=%some-desk
+  key=%some-key
+  bucket={[p=%bar q=[%n p=42]] [p=%foo q=[%s p='foo']]}
+]
+```
+
+#### JSON example
+
+```
+{
+  "put-bucket": {
+    "bucket-key": "some-key",
+    "desk": "some-desk",
+    "bucket": {
+      "foo": "foo",
+      "bar": 42
+    }
+  }
+}
+```
+
+---
+
+## %del-bucket
+
+```
+[%del-bucket =desk =key]
+```
+
+Delete the bucket with the specified +$key from the specified +$desk. If the
+desk entry will be empty after deletion, it will also be removed.
+
+#### Noun example
+
+```
+[%del-bucket desk=%some-desk key=%some-key]
+```
+
+#### JSON example
+
+```
+{
+  "del-bucket": {
+    "bucket-key": "some-key",
+    "desk": "some-desk"
+  }
+}
+```
+
+---
+
+## %put-entry
+
+```
+[%put-entry =desk buc=key =key =val]
+```
+
+Add the given `+$key`-`+$val` pair to the bucket with $key buc in the specified
++$desk. If an entry with the same key already exists, it will be overwritten. If
+the specified bucket or desk entry do not already exist, they will be created.
+
+#### Noun example
+
+```
+[ %put-entry
+  desk=%some-desk
+  buc=%some-buc
+  key=%some-key
+  val=[%s p='some value']
+]
+```
+
+#### JSON example
+
+```
+{
+  "put-entry": {
+    "bucket-key": "some-buc",
+    "desk": "some-desk",
+    "entry-key": "some-key",
+    "value": "some value"
+  }
+}
+```
+
+---
+
+## %del-entry
+
+```
+[%del-entry =desk buc=key =key]
+```
+
+Delete the entry with the given +$key from bucket `.buc` in the specified +$desk
+container.
+
+#### Noun example
+
+```
+[%del-entry desk=%some-desk buc=%some-buc key=%some-key]
+```
+
+#### JSON example
+
+```
+{
+  "del-entry": {
+    "bucket-key": "some-buc",
+    "desk": "some-desk",
+    "entry-key": "some-key"
+  }
+}
+```
+
+---
+
+# data
+
+```
++$  data
+  $%  [%all =settings]
+      [%bucket =bucket]
+      [%desk desk=(map key bucket)]
+      [%entry =val]
+  ==
+--
+```
+
+This is used for data returned by scries. Each kind is for a different level,
+from the whole settings state down to individual entries.
+
+---
+
+## %all
+
+```
+[%all =settings]
+```
+
+All settings. The +$settings structure contains all buckets for all desks.
+
+#### Noun example
+
+```
+[ %all
+    settings
+  { [ p=%bitcoin
+        q
+      { [ p=%btc-wallet
+            q
+          { [p=%warning q=[%b p=%.y]]
+            [p=%currency q=[%s p='USD']]
+          }
+        ]
+      }
+    ]
+  }
+]
+```
+
+#### JSON example
+
+```
+{
+  "all": {
+    "bitcoin": {
+      "btc-wallet": {
+        "currency": "USD",
+        "warning": true
+      }
+    }
+  }
+}
+```
+
+---
+
+## %bucket
+
+```
+[%bucket =bucket]
+```
+
+A single bucket. The +$bucket structure contains all of the `+$key`-`+$val`
+entries for the bucket in question.
+
+#### Noun example
+
+```
+[ %bucket
+    bucket
+  {[p=%warning q=[%b p=%.y]] [p=%currency q=[%s p='USD']]}
+]
+```
+
+#### JSON example
+
+```
+{
+  "bucket": {
+    "currency": "USD",
+    "warning": true
+  }
+}
+```
+
+---
+
+## %desk
+
+```
+[%desk desk=(map key bucket)]
+```
+
+All buckets for a desk. The desk field contains the map from bucket $keys to
++$buckets.
+
+#### Noun example
+
+```
+[ %desk
+    desk
+  { [ p=%btc-wallet
+        q
+      { [p=%warning q=[%b p=%.y]]
+        [p=%currency q=[%s p='USD']]
+      }
+    ]
+  }
+]
+```
+
+#### JSON example
+
+```
+{
+  "desk": {
+    "btc-wallet": {
+      "currency": "USD",
+      "warning": true
+    }
+  }
+}
+```
+
+---
+
+## %entry
+
+```
+[%entry =val]
+```
+
+A single entry. The val field contains the +$val for a single entry, in a single
+bucket, for a single desk.
+
+#### Noun example
+
+```
+[%entry val=[%s p='USD']]
+```
+
+#### JSON example
+
+```
+{"entry":"USD"}
+```
