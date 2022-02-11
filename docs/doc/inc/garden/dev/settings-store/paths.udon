@@ -14,7 +14,7 @@ or entries.
 
 #### Type produced
 
-An [+$event](/~/scry/docs/dev/garden/settings-store/types.html#event-) structure
+An [`+$event`](/~/scry/docs/dev/garden/settings-store/types.html#event-) structure
 with any tag.
 
 ---
@@ -26,12 +26,12 @@ with any tag.
 ```
 
 Subscribers to `/desk/[desk]`, where `[desk]` is a desk entry in the +$settings
-state, will receive all +$events that occur for any buckets and their contents
+state, will receive all `+$event`s that occur for any buckets and their contents
 in the specified desk.
 
 #### Type produced
 
-An [+$event](/~/scry/docs/dev/garden/settings-store/types.html#event-) structure
+An [`+$event`](/~/scry/docs/dev/garden/settings-store/types.html#event-) structure
 with any tag.
 
 ---
@@ -48,7 +48,7 @@ bucket or entries therein.
 
 #### Type produced
 
-An [+$event](/~/scry/docs/dev/garden/settings-store/types.html#event-) structure
+An [`+$event`](/~/scry/docs/dev/garden/settings-store/types.html#event-) structure
 with any tag.
 
 ---
@@ -69,5 +69,5 @@ be sent.
 
 #### Type produced
 
-An [+$event](/~/scry/docs/dev/garden/settings-store/types.html#event-) structure
+An [`+$event`](/~/scry/docs/dev/garden/settings-store/types.html#event-) structure
 with either a %put-entry or %del-entry tag.

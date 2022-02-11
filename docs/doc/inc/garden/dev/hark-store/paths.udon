@@ -1,0 +1,45 @@
+;>
+
+Hark-store only has a couple of subscription paths: One for new notifications,
+and one for all updates.
+
+Only the local ship or its moons can subscribe to these paths.
+
+# `/notes`
+
+New notifications are sent out on this path.
+
+These updates will have a `%hark-update` mark and contain an
+[`+$update`](/~/scry/docs/dev/garden/hark-store/types.html#update-) structure
+with an [`%add-note`](/~/scry/docs/dev/garden/hark-store/types.html#-add-note-)
+tag.
+
+---
+
+# `/updates`
+
+All updates of any kind are sent out on this path.
+
+These updates will have a %hark-update mark and contain an
+[`+$update`](/~/scry/docs/dev/garden/hark-store/types.html#update-) structure of
+any kind.
+
+Upon first subscribing to this path, `%hark-store` will give you an initial
+state. It will contain a
+[`%more`](/~/scry/docs/dev/garden/hark-store/types.html#-more-)
+[`+$update`](/~/scry/docs/dev/garden/hark-store/types.html#update-) containing:
+
+- A [`%timebox`](/~/scry/docs/dev/garden/hark-store/types.html#-timebox-)
+  [`+$update`](/~/scry/docs/dev/garden/hark-store/types.html#update-) with an
+  %unseen [`+$lid`](/~/scry/docs/dev/garden/hark-store/types.html#lid-),
+  containing all unseen notifications.
+
+- A [`%timebox`](/~/scry/docs/dev/garden/hark-store/types.html#-timebox-)
+  [`+$update`](/~/scry/docs/dev/garden/hark-store/types.html#update-) with a
+  %seen [`+$lid`](/~/scry/docs/dev/garden/hark-store/types.html#lid-),
+  containing all seen notifications.
+
+- An [`%all-stats`](/~/scry/docs/dev/garden/hark-store/types.html#-all-stats-)
+  [`+$update`](/~/scry/docs/dev/garden/hark-store/types.html#update-) containing
+  statistics for all
+  [`+$place`](/~/scry/docs/dev/garden/hark-store/types.html#place-)s.

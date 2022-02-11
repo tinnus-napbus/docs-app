@@ -1,0 +1,159 @@
+;>
+
+Hark-store only has a single scry endpoint.
+
+# Get archived timeboxes
+
+```
+/x/recent/inbox/[date]/[count]
+```
+
+A scry with a `%x` `care` and a path of `/recent/inbox/[date]/[count]` will
+produce the most recent archived
+[`+$timebox`](/~/scry/docs/dev/garden/hark-store/types.html#timebox-)es (groups
+of notifications). The `[date]` field is a `@da` date-time value as a `@ud`, and
+specifies "older than this date". The `[count]` field is a `@ud`, and specifies
+the maximum number of items to retrieve.
+
+> Note the "older than" part is exclusive, so if `[date]` is exactly equal to
+  the timestamp of an item in the archive, the result will not include that
+  item.
+
+## Type produced
+
+An [`+$update`](/~/scry/docs/dev/garden/hark-store/types.html#update-) structure
+with a [`%more`](/~/scry/docs/dev/garden/hark-store/types.html#-more-) tag.
+
+## Noun example
+
+Query:
+
+```
+.^(update:store %gx /=hark-store=/recent/inbox/(scot %ud now.bowl)/2/noun)
+```
+
+Result:
+
+```
+[ %more
+    more
+  ~[
+    [ %timebox
+      lid=[%archive time=~2021.11.21..13.57.19..bd7b]
+        list
+      ~[
+        [ date=~2021.11.5..10.49.29..e834
+          bin=[path=/update place=[desk=%garden path=/desk/bitcoin]]
+            body
+          ~[
+            [ title=~[[%text cord='App: "Bitcoin" has been updated to version: 0.0.1']]
+              content=~
+              time=~2021.11.5..10.49.29..e834
+              binned=/
+              link=/desk/bitcoin
+            ]
+          ]
+        ]
+      ]
+    ]
+    [ %timebox
+      lid=[%archive time=~2021.11.21..13.55.02..6954]
+        list
+      ~[
+        [ date=~2021.11.5..10.46.57..86c9
+          bin=[path=/update place=[desk=%garden path=/desk/landscape]]
+            body
+          ~[
+            [ title=~[[%text cord='App: "Groups" has been updated to version: 1.0.2']]
+              content=~
+              time=~2021.11.5..10.46.57..86c9
+              binned=/
+              link=/desk/landscape
+            ]
+          ]
+        ]
+      ]
+    ]
+  ]
+]
+```
+
+## JSON example
+
+Query:
+
+```
+http://localhost:8080/~/scry/hark-store/recent/inbox/170.141.184.505.358.796.177.417.718.298.199.457.792/2.json
+```
+
+Result:
+
+```
+{
+  "more": [
+    {
+      "timebox": {
+        "lid": {
+          "archive": "170.141.184.505.358.767.451.511.206.615.361.519.616"
+        },
+        "notifications": [
+          {
+            "body": [
+              {
+                "link": "/desk/bitcoin",
+                "title": [
+                  {
+                    "text": "App: \"Bitcoin\" has been updated to version: 0.0.1"
+                  }
+                ],
+                "time": 1636109369907,
+                "content": []
+              }
+            ],
+            "bin": {
+              "place": {
+                "desk": "garden",
+                "path": "/desk/bitcoin"
+              },
+              "path": "/update"
+            },
+            "time": 1636109369907
+          }
+        ]
+      }
+    },
+    {
+      "timebox": {
+        "lid": {
+          "archive": "170.141.184.505.358.764.918.243.453.093.875.286.016"
+        },
+        "notifications": [
+          {
+            "body": [
+              {
+                "link": "/desk/landscape",
+                "title": [
+                  {
+                    "text": "App: \"Groups\" has been updated to version: 1.0.2"
+                  }
+                ],
+                "time": 1636109217527,
+                "content": []
+              }
+            ],
+            "bin": {
+              "place": {
+                "desk": "garden",
+                "path": "/desk/landscape"
+              },
+              "path": "/update"
+            },
+            "time": 1636109217527
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+

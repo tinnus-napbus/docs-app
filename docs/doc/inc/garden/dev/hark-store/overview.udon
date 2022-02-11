@@ -1,0 +1,70 @@
+;>
+
+%hark-store has two related sub-systems:
+
+- Notifications
+- Unread tracking
+
+# Notifications
+
+%hark-store maintains three buckets of notifications in its state: `.unseen`,
+`.seen`, and `.archive`. Notifications are grouped together in `+$bin`s, which
+are app-defined identifiers/locations.
+
+Here are some +$bin examples:
+
+- *A mention in a chat:*
+
+  `[/mention %landscape /~dopzod/urbit-help]`
+
+- *New messages in a chat:*
+
+  `[/message %landscape /~dopzod/urbit-help]`
+
+- *A new comment in a notebook:*
+
+  `[/comment %landscape /~darrux-landes/feature-requests/12374893234232/2]`
+
+New notifications added with an %add-note +$action accumulate in `.unseen`. A
+few different actions can then mark them read, moving them to `.seen`:
+
+- *`%read-count`:* Set unreads to zero for a particular `+$place`.
+
+- *`%read-each`:* Mark read any notifications for a particular +$place and with a
+  particular `.binned` path in its `+$body`.
+
+- *`%read-note`:* Mark read all notifications in a particular `+$bin`.
+
+- *`%opened`:* Mark everything read.
+
+Notifications can also be moved to the `.archive`, either from `.unseen` or
+`.seen`. There are two `+$action`s for this:
+
+- *`%archive`:* Moves the specified +$bin in the specified +$lid (either `seen+~`
+  or `unseen+~`) to the `.archive`.
+- *`%archive-all`:* Move everything in `.seen` and `.unseen` to the `.archive`.
+
+Finally, notifications can be deleted entirely with the `%del-place` `+$action`,
+which will remove all notifications for the specified `+$place`.
+
+---
+
+# Unread tracking
+
+Hark-store maintains a `map` in its state called `.places`, which maps
+`+$place`s to `+$stats`.
+
+Unread tracking has two 'modes' which may be used concurrently, if necessary.
+Both of these fields are part of the +$stats structure:
+
+- *`.count`:* This stores the unreads as a simple atom, describing the number of
+  unread items. It may be increased with an `%unread-count` `+$action` and set
+  to zero with a `%read-count` `+$action`. This is ideal for high-frequency
+  linear data-structures. Chats in the Groups app use this method, recording the
+  number of unread messages in each chat.
+
+- *`.each`:* This stores the unreads as a `+$set` of `+$path`s, describing the set
+  of unread items. Unreads may be added to the set with an `%unread-each`
+  `+$action` and removed with a `%read-each` `+$action`. This is ideal for
+  non-linear, low-frequency data-structures. Notebooks in the Groups app use
+  this method, so posts can be read/unread on an individual basis.

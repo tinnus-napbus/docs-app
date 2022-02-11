@@ -14,8 +14,8 @@ A scry with an %x care and a path of `/all` will produce all settings for all de
 
 #### Type produced
 
-A [+$data](/~/scry/docs/dev/garden/settings-store/types.html#data-) structure
-with an [%all](/~/scry/docs/dev/garden/settings-store/types.html#-all-) tag.
+A [`+$data`](/~/scry/docs/dev/garden/settings-store/types.html#data-) structure
+with an [`%all`](/~/scry/docs/dev/garden/settings-store/types.html#-all-) tag.
 
 #### Noun example
 
@@ -80,8 +80,8 @@ buckets for the desk specified in the `[desk]` field.
 
 #### Type produced
 
-A [$data](/~/scry/docs/dev/garden/settings-store/types.html#data-) structure
-with a [%desk](/~/scry/docs/dev/garden/settings-store/types.html#-desk-) tag.
+A [`+$data`](/~/scry/docs/dev/garden/settings-store/types.html#data-) structure
+with a [`%desk`](/~/scry/docs/dev/garden/settings-store/types.html#-desk-) tag.
 
 #### Noun example
 
@@ -140,8 +140,8 @@ specified bucket for the specified desk.
 
 #### Type produced
 
-A [+$data](/~/scry/docs/dev/garden/settings-store/types.html#data-) structure
-with a [%bucket](/~/scry/docs/dev/garden/settings-store/types.html#-bucket-)
+A [`+$data`](/~/scry/docs/dev/garden/settings-store/types.html#data-) structure
+with a [`%bucket`](/~/scry/docs/dev/garden/settings-store/types.html#-bucket-)
 tag.
 
 #### Noun example
@@ -194,8 +194,8 @@ specified desk.
 
 #### Type produced
 
-A [$data](/~/scry/docs/dev/garden/settings-store/types.html#data-) structure
-with an [%entry](/~/scry/docs/dev/garden/settings-store/types.html#-entry-) tag.
+A [`+$data`](/~/scry/docs/dev/garden/settings-store/types.html#data-) structure
+with an [`%entry`](/~/scry/docs/dev/garden/settings-store/types.html#-entry-) tag.
 
 #### Noun example
 

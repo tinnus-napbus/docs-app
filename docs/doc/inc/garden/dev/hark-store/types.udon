@@ -1,0 +1,868 @@
+;>
+
+`%hark-store`'s data types are documented below.
+
+# place
+
+```
++$  place  [=desk =path]
+```
+
+A location under which stats are stored.
+
+The `.desk` will typically be the one your app resides in, and the `.path`
+format is app-dependent. The Groups app uses `/graph/[ship]/[channel]` for
+chats, for example.
+
+#### Examples
+
+Noun:
+
+```
+place=[desk=%some-desk path=/some/path]
+```
+
+JSON:
+
+```
+"place": {
+  "desk": "some-desk",
+  "path": "/some/path"
+}
+```
+
+---
+
+# bin
+
+```
++$  bin  [=path =place]
+```
+
+An identifier for grouping notifications.
+
+A [`+$place`](#place-) with an additional `path`. The meaning of the path is
+dependent on the app, but its purpose is to categorize different kinds of
+notifications. For example, the Groups app uses the `/mention` path for `@p`
+mentions.
+
+#### Examples
+
+Noun:
+
+```
+bin=[path=/foo/bar place=[desk=%some-desk path=/some/path]]
+```
+
+JSON:
+
+```
+"bin": {
+  "place": {
+    "desk": "some-desk",
+    "path": "/some/path"
+  },
+  "path": "/foo/bar"
+}
+```
+
+---
+
+# lid
+
+```
++$  lid
+  $%  [%archive =time]
+      [%seen ~]
+      [%unseen ~]
+  ==
+```
+
+A reference to a [`+$timebox`](#timebox-).
+
+These correspond to the three notification state buckets `%hark-store` keeps in
+its state.
+
+#### Examples
+
+Noun:
+
+```
+lid=[%seen ~]
+```
+
+JSON:
+
+```
+"lid": {
+  "seen": null
+}
+```
+
+---
+
+# content
+
+```
++$  content
+  $%  [%ship =ship]
+      [%text =cord]
+  ==
+```
+
+Notification content.
+
+These are used in both the `.title` and `.contents` of a notificaton [`+$body`](#body-).
+
+#### Examples
+
+Noun:
+
+```
+[%text cord='some text']
+```
+
+JSON:
+
+```
+"text": "some text"
+```
+
+---
+
+# body
+
+```
++$  body
+  $:  title=(list content)
+      content=(list content)
+      =time
+      binned=path
+      link=path
+  ==
+```
+
+A notification body.
+
+#### Examples
+
+Noun:
+
+```
+[ title=~[[%text cord='some title']]
+  content=~[[%text cord='some body']]
+  time=~2022.1.22..12.45.03..98b2
+  binned=/
+  link=/some/resource/path
+]
+```
+
+JSON:
+
+```
+{
+  "link": "/some/resource/path",
+  "title": [
+    {
+      "text": "some title"
+    }
+  ],
+  "time": 1642855549655,
+  "content": [
+    {
+      "text": "some body"
+    }
+  ]
+}
+```
+
+---
+
+# notification
+
+```
++$  notification
+  [date=@da =bin body=(list body)]
+```
+
+A notification.
+
+#### Examples
+
+Noun:
+
+```
+  notification
+[ date=~2022.1.23..12.41.48..6fe7
+  bin=[path=/foo/bar place=[desk=%some-desk path=/some/path]]
+    body
+  ~[
+    [ title=~[[%text cord='some title']]
+      content=~[[%text cord='some body']]
+      time=~2022.1.22..12.41.48..6fe7
+      binned=/
+      link=/some/resource/path
+    ]
+  ]
+]
+```
+
+JSON:
+
+```
+"notification": {
+  "body": [
+    {
+      "link": "/some/resource/path",
+      "title": [
+        {
+          "text": "some title"
+        }
+      ],
+      "time": 1642855393693,
+      "content": [
+        {
+          "text": "some body"
+        }
+      ]
+    }
+  ],
+  "bin": {
+    "place": {
+      "desk": "some-desk",
+      "path": "/some/path"
+    },
+    "path": "/foo/bar"
+  },
+  "time": 1642941793693
+}
+```
+
+---
+
+# timebox
+
+```
++$  timebox
+  (map bin notification)
+```
+
+A group of notifications.
+
+---
+
+# archive
+
+```
++$  archive
+  ((mop @da timebox) gth)
+```
+
+Archived notifications, ordered by time.
+
+---
+
+# action
+
+```
++$  action
+  $%  [%add-note =bin =body]
+      [%del-place =place]
+      [%unread-count =place inc=? count=@ud]
+      [%unread-each =place =path]
+      [%saw-place =place time=(unit time)]
+      [%archive =lid =bin]
+      [%read-count =place]
+      [%read-each =place =path]
+      [%read-note =bin]
+      [%archive-all ~]
+      [%opened ~]
+  ==
+```
+
+---
+
+## %add-note
+
+```
+[%add-note =bin =body]
+```
+
+Add a notification with the specified [`+$body`](#body-) to the specified
+[`+$bin`](#bin-).
+
+---
+
+## %del-place
+
+```
+[%del-place =place]
+```
+
+Underlying resource disappeared, remove all associated notifications.
+
+All notifications for the specified [`+$place`](#place-), whether seen, unseen,
+or archived, will be completely removed. The [`+$stats`](#stats-) for the
+`+$place` will be unaffected.
+
+---
+
+## %unread-count
+
+```
+[%unread-count =place inc=? count=@ud]
+```
+
+Change unread count by the specified `@ud`.
+
+The `.count` field is the amount to change by, not an absolute new value. If
+`inc` is `%.y`, it will be increased by `.count`. If `inc` is `%.n`, it will be
+decrease by `.count`. If you try to decrease it below zero, the poke will fail.
+
+The value you're changing is `.count` in the [`+$place`](#place-)'s
+[`+$stats`](#stats-).
+
+---
+
+## %unread-each
+
+```
+[%unread-each =place =path]
+```
+
+Add `.path` to list of unreads for [+$place](#place-).
+
+The given path will be added to the `.each` set in the [`+$stats`](#stats-) for
+[`+$place`](#place-).
+
+---
+
+## %saw-place
+
+```
+[%saw-place =place time=(unit time)]
+```
+
+This action updates the `.last` field in the [`+$stats`](#stats-) of the
+specified [`+$place`](#place-). The `.last` field is the time of the last event,
+e.g. the most recent chat message.
+
+If `.time` is null, it will be updated to `now.bowl`. Otherwise, it will be set
+to the `@da` specified.
+
+---
+
+## %archive
+
+```
+[%archive =lid =bin]
+```
+
+Archive notifications with the specified [`+$bin`](#bin-) in either `.seen` or
+`.unseen`, as specified by the [`+$lid`](#lid-).
+
+---
+
+## %read-count
+
+```
+[%read-count =place]
+```
+
+Set unread count to zero for the specified [`+$place`](#place-).
+
+The `.count` in the [`+$place`](#place-)'s [`+$stats`](#stats-) will be set back
+to zero, and any unarchived notifications will be moved to the `.archive`.
+
+---
+
+## %read-each
+
+```
+[%read-each =place =path]
+```
+
+Remove `.path` from unreads for [`+$place`](#place-).
+
+All notifications with the specified [`+$bin`](#bin-) `.path` and in the
+specified [`+$place`](#place-) will be archived. Any matching `.each` paths in
+the [`+$place`](#place-)'s [`+$stats`](#stats-) will also be removed from the
+set.
+
+---
+
+## %read-note
+
+```
+[%read-note =bin]
+```
+
+Mark the `.unseen` notifications in the specified [`+$bin`](#bin-) as read. The
+notifications will be moved to the `.archive`. If there are no unseen
+notifications for the specified [`+$bin`](#bin-), the poke will fail.
+
+---
+
+## %archive-all
+
+```
+[%archive-all ~]
+```
+
+Archive all notifications.
+
+---
+
+## %opened
+
+```
+[%opened ~]
+```
+
+User opened notifications, reset timeboxing logic.
+
+Unseen notifications will be moved to `.seen`. The [`+$timebox`](#timebox-) in
+the [`+$stats`](#stats-) of [`+$place`](#place-)s (representing the time of last
+viewing) will be reset. This occurs when a user opens the notifications pane.
+
+---
+
+# stats
+
+```
++$  stats
+  $:  count=@ud
+      each=(set path)
+      last=@da
+      timebox=(unit @da)
+  ==
+```
+
+Statistics for a [`+$place`](#place-).
+
+---
+
+# update
+
+```
++$  update
+  $%  action
+      [%archived =time =lid =notification]
+      [%more more=(list update)]
+      [%note-read =time =bin]
+      [%added =notification]
+      [%timebox =lid =(list notification)]
+      [%place-stats =place =stats]
+      [%all-stats places=(map place stats)]
+  ==
+--
+```
+
+Updates sent out to subscribers or produced by scry endpoints. Each one is
+documented below.
+
+---
+
+## %archived
+
+```
+[%archived =time =lid =notification]
+```
+
+Notification archived.
+
+#### Examples
+
+Noun:
+
+```
+[ %archived
+  time=~2022.1.24..12.41.48..6fe7
+  lid=[%seen ~]
+    notification
+  [ date=~2022.1.23..12.41.48..6fe7
+    bin=[path=/foo/bar place=[desk=%some-desk path=/some/path]]
+      body
+    ~[
+      [ title=~[[%text cord='some title']]
+        content=~[[%text cord='some body']]
+        time=~2022.1.22..12.41.48..6fe7
+        binned=/
+        link=/some/resource/path
+      ]
+    ]
+  ]
+]
+```
+
+JSON:
+
+```
+{
+  "archived": {
+    "lid": {
+      "seen": null
+    },
+    "notification": {
+      "body": [
+        {
+          "link": "/some/resource/path",
+          "title": [
+            {
+              "text": "some title"
+            }
+          ],
+          "time": 1642855393693,
+          "content": [
+            {
+              "text": "some body"
+            }
+          ]
+        }
+      ],
+      "bin": {
+        "place": {
+          "desk": "some-desk",
+          "path": "/some/path"
+        },
+        "path": "/foo/bar"
+      },
+      "time": 1642941793693
+    },
+    "time": "170.141.184.505.460.688.552.444.185.336.531.124.224"
+  }
+}
+```
+
+---
+
+## %more
+
+```
+[%more more=(list update)]
+```
+
+Multiple updates.
+
+#### Examples
+
+Noun:
+
+```
+[ %more
+    more
+  ~[
+    [ %archived
+      time=~2022.1.24..12.45.03..98b2
+      lid=[%seen ~]
+        notification
+      [ date=~2022.1.23..12.45.03..98b2
+        bin=[path=/foo/bar place=[desk=%some-desk path=/some/path]]
+          body
+        ~[
+          [ title=~[[%text cord='some title']]
+            content=~[[%text cord='some body']]
+            time=~2022.1.22..12.45.03..98b2
+            binned=/
+            link=/some/resource/path
+          ]
+        ]
+      ]
+    ]
+  ]
+]
+```
+
+JSON:
+
+```
+{
+  "more": [
+    {
+      "archived": {
+        "lid": {
+          "seen": null
+        },
+        "notification": {
+          "body": [
+            {
+              "link": "/some/resource/path",
+              "title": [
+                {
+                  "text": "some title"
+                }
+              ],
+              "time": 1642855549655,
+              "content": [
+                {
+                  "text": "some body"
+                }
+              ]
+            }
+          ],
+          "bin": {
+            "place": {
+              "desk": "some-desk",
+              "path": "/some/path"
+            },
+            "path": "/foo/bar"
+          },
+          "time": 1642941949655
+        },
+        "time": "170.141.184.505.460.691.429.431.728.968.514.404.352"
+      }
+    }
+  ]
+}
+```
+
+---
+
+## %note-read
+
+```
+[%note-read =time =bin]
+```
+
+Note has been read, with timestamp.
+
+#### Examples
+
+Noun:
+
+```
+[ %note-read
+  time=~2022.1.24..12.47.51..7333
+    bin
+  [path=/foo/bar place=[desk=%some-desk path=/some/path]]
+]
+```
+
+JSON:
+
+```
+{"note-read":[]}
+```
+
+---
+
+## %added
+
+```
+[%added =notification]
+```
+
+New [`+$notification`](#notification-) added.
+
+#### Examples
+
+Noun:
+
+```
+[ %added
+    notification
+  [ date=~2022.1.24..12.52.28..221f
+    bin=[path=/foo/bar place=[desk=%some-desk path=/some/path]]
+      body
+    ~[
+      [ title=~[[%text cord='some title']]
+        content=~[[%text cord='some body']]
+        time=~2022.1.24..12.52.28..221f
+        binned=/
+        link=/some/link/path
+      ]
+    ]
+  ]
+]
+```
+
+JSON:
+
+```
+{
+  "added": {
+    "body": [
+      {
+        "link": "/some/link/path",
+        "title": [
+          {
+            "text": "some title"
+          }
+        ],
+        "time": 1643028800914,
+        "content": [
+          {
+            "text": "some body"
+          }
+        ]
+      }
+    ],
+    "bin": {
+      "place": {
+        "desk": "some-desk",
+        "path": "/some/path"
+      },
+      "path": "/foo/bar"
+    },
+    "time": 1643028800914
+  }
+}
+```
+
+---
+
+## %timebox
+
+```
+[%timebox =lid =(list notification)]
+```
+
+New group of [`+$notification`](#notification-)s.
+
+#### Examples
+
+Noun:
+
+```
+[ %timebox
+  lid=[%unseen ~]
+    list
+  ~[
+    [ date=~2022.1.24..12.59.52..7dfe
+      bin=[path=/foo/bar place=[desk=%some-desk path=/some/path]]
+        body
+      ~[
+        [ title=~[[%text cord='some title']]
+          content=~[[%text cord='some body']]
+          time=~2022.1.24..12.59.52..7dfe
+          binned=/
+          link=/some/link/path
+        ]
+      ]
+    ]
+  ]
+]
+```
+
+JSON:
+
+```
+{
+  "timebox": {
+    "lid": {
+      "unseen": null
+    },
+    "notifications": [
+      {
+        "body": [
+          {
+            "link": "/some/link/path",
+            "title": [
+              {
+                "text": "some title"
+              }
+            ],
+            "time": 1643029237134,
+            "content": [
+              {
+                "text": "some body"
+              }
+            ]
+          }
+        ],
+        "bin": {
+          "place": {
+            "desk": "some-desk",
+            "path": "/some/path"
+          },
+          "path": "/foo/bar"
+        },
+        "time": 1643029237134
+      }
+    ]
+  }
+}
+```
+
+---
+
+## %place-stats
+
+```
+[%place-stats =place =stats]
+```
+
+Statistics for a particular [`+$place`](#place-).
+
+#### Examples
+
+Noun:
+
+```
+[ %place-stats
+  place=[desk=%landscape path=/graph/~wet/test-5716]
+    stats
+  [ count=3
+    each={}
+    last=~2022.2.11..13.41.31..9c0d
+    timebox=~
+  ]
+]
+```
+
+JSON:
+
+```
+{"place-stats":[]}
+```
+
+---
+
+## %all-stats
+
+```
+[%all-stats places=(map place stats)]
+```
+
+Statistics for all [`+$place`](#place-)s.
+
+#### Examples
+
+Noun:
+
+```
+[ %all-stats
+    places
+  { [ p=[desk=%landscape path=/graph/~wet/test-5716]
+        q
+      [ count=3
+        each={}
+        last=~2022.2.11..13.37.36..f9de
+        timebox=~
+      ]
+    ]
+  }
+]
+```
+
+JSON:
+
+```
+{
+  "all-stats":[
+    {
+      "place":{
+        "desk":"landscape",
+        "path":"/graph/~wet/test-5716"
+      },
+      "stats":{
+        "count":3,
+        "each":[
+          
+        ],
+        "last":1644586794358
+      }
+    }
+  ]
+}
+```
