@@ -538,26 +538,18 @@
     ?~  tub
       ?+    mar  [%.n leaf+"could not build mark conversion tube" ~]
           %gmi
-        %-  clean
-        %-  gmi-to-docu
-        .^((list gmni) %cx (scrio root path))
+        (clean (mule |.((gmi-to-docu .^((list gmni) %cx (scrio root path))))))
+      ::
           %udon
-        %-  clean
-        %-  udon-to-docu
-        .^(@t %cx (scrio root path))
+        (clean (mule |.((udon-to-docu .^(@t %cx (scrio root path))))))
+      ::
           %txt
-        %-  clean
-        %-  txt-to-docu
-        .^(wain %cx (scrio root path))
+        (clean (mule |.((txt-to-docu .^(wain %cx (scrio root path))))))
+      ::
           %html
-        %-  clean
-        %-  html-to-docu
-        .^(@t %cx (scrio root path))
+        (clean (mule |.((html-to-docu .^(@t %cx (scrio root path))))))
       ==
-    %-  clean
-    !<  (each manx tang)
-    %-  u.tub
-    .^(vase %cr (scrio root path))
+    (clean (mule |.(!<(manx (u.tub .^(vase %cr (scrio root path)))))))
   :: generate ToC and return
   ::
   ?:  ?=(%.n -.docu)

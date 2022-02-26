@@ -10,19 +10,12 @@ The %docs app supports any mark, as long as it has a conversion method to its
 %docu mark. The %docu mark is not expected to be used directly to write
 documentation, its purpose is to be a mark conversion target.
 
-The %docu mark expects an `(each manx tang)`.
+The %docu mark expects a +$manx.
 
 A +$manx is how an XML node structure is represented in hoon. See [Section
 5e](https://urbit.org/docs/hoon/reference/stdlib/5e#manx) of the urbit.org
 standard library reference for details. A +$manx is what ++de-xml:html and
 ++en-xml:html decode/encode raw XML strings from/to.
-
-The +$tang should contain a stack trace and/or error messages if the mark
-conversion failed. The %docs app operates purely on scries, so any crashes will
-produce an unsightly HTTP error for the user. Therefore, you should design mark
-conversion methods to never crash. You can virtualise any functions that might
-crash with ++mule or a similar function. If the ++each contains a +$tang it will
-be displayed on an error page for the user.
 
 The %docu mark will technically accept any `+$manx`, but the %docs agent itself
 makes some changes and imposes some additional rules:

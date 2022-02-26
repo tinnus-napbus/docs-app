@@ -1,45 +1,19 @@
 /-  *gemtext
 /+  *docs, cram
-|_  dcu=(each manx tang)
+|_  dcu=manx
 ++  grab
   |%
   ++  docu        dcu
-  ++  htm         |=(a=manx [%.y a])
-  ++  hymn        |=(a=manx [%.y a])
-  ++  x-htm       |=(a=manx [%.y a])
-  ++  x-htm-elem  |=(a=manx [%.y a])
-::
-  ++  gmi
-  |=  gem=(list gmni)
-  ^-  (each manx tang)
-  (mule |.((gmi:to-docu gem)))
-::
-  ++  html
-  |=  htm=@t
-  ^-  (each manx tang)
-  =/  res=(unit manx)  (de-xml:^html htm)
-  ?~  res
-    [%.n leaf+"Failed to parse HTML file" ~]
-  [%.y u.res]
-::
-  ++  noun
-    |=  non=*
-    ^-  (each manx tang)
-    =/  res=(unit (each manx tang))
-      ((soft (each manx tang)) non)
-    ?~  res
-      [%.n leaf+"Failed to clam noun to docu type" ~]
-    u.res
-::
-  ++  txt
-    |=  tex=wain
-    ^-  (each manx tang)
-    (mule |.((txt:to-docu tex)))
-::
-  ++  udon
-    |=  mud=@t
-    ^-  (each manx tang)
-    (mule |.(elm:(static:cram (ream mud))))
+  ++  elem        |=(a=manx a)
+  ++  htm         |=(a=manx a)
+  ++  hymn        |=(a=manx a)
+  ++  x-htm       |=(a=manx a)
+  ++  x-htm-elem  |=(a=manx a)
+  ++  gmi         |=(gem=(list gmni) (gmi:to-docu gem))
+  ++  html        |=(htm=@t (need (de-xml:^html htm)))
+  ++  noun        |=(non=* (manx non))
+  ++  txt         |=(tex=wain (txt:to-docu tex))
+  ++  udon        |=(mud=@t elm:(static:cram (ream mud)))
   --
 ++  grow
   |%
