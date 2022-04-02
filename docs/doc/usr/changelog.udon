@@ -1,5 +1,13 @@
 ;>
 
+## 0.2.3
+
+Date: ~2022.4.2
+
+- Add tile icon
+- Move virtualisation inside agent so %docu mark doesn't need to be an `++each`
+- Update docs docs to reflect this
+
 ## 0.2.2
 
 Date: ~2021.2.12
