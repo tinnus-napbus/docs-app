@@ -69,7 +69,13 @@
       %+  skip
         =+  (rush url.request.q.req aurf:de-purl:html)
         ?~  -
-          (stab url.request.q.req)
+          ^-  (list @t)
+          %-  tail
+          %+  rash  url.request.q.req
+          ;~  sfix
+            apat:de-purl:html
+            yquy:de-purl:html
+          ==
         q.q.p.u.-
       (cury test '')
     ?.  ?=([%docs *] path)  (on-poke:def [mark vase])
