@@ -5,11 +5,11 @@ distribute, making them available for easy browsing by users and developers.
 The %docs app will automatically detect and publish any docs included with any
 installed desks. As long as they're in the correct place, of a filetype with
 appropriate `mark` conversion methods, and include a
-[`doc.clue`](/~/scry/docs/dev/docs//file-format.html) index file, they'll be
+[`doc.toc`](/docs/docs/dev/index-file) index file, they'll be
 picked up.
 
-A `doc.clue` file must be included in the root of the desk, specifying the files
-to be included, their `mark`s, and their titles. See the [Index File](/~/scry/docs/dev/docs//index-file.html) section for details.
+A `doc.toc` file must be included in the root of the desk, specifying the files
+to be included, their `mark`s, and their titles. See the [Index File](/docs/docs/dev/index-file) section for details.
 
 The files themselves will be in a `/doc` directory in the root of the desk. In
 `/doc`, there'll be two subdirectories - `/usr` and `/dev`. The former will contain
@@ -42,12 +42,12 @@ conversion methods for the following marks by default:
 
 For more details of these file formats, as well as details of the `%docu` mark
 and other format requirements of the %docs app, see the [File
-Format](/~/scry/docs/dev/docs//file-format.html) section.
+Format](/docs/docs/dev/file-format) section.
 
 Apart from the `mark` and location requirements described above, there are no
 particular restrictions on how you organise your docs, or what docs you include.
 There are, however, some general recommendations detailed in the [Suggested
-Structure](/~/scry/docs/dev/docs//structure.html) section.
+Structure](/docs/docs/dev/structure) section.
 
 ## Dev desk
 

@@ -1,0 +1,60 @@
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/apps/landscape/fonts/inter-regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Code Pro";
+  src: url("/apps/landscape/fonts/sourcecodepro-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+body {
+  background-color: var(--bg-color);
+  color: var(--plain-text-color);
+  font-family: var(--normal-font);
+  font-size: 1.2em;
+  margin: 0;
+  padding: 2em;
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+div {
+  max-height: 100%;
+  width: 100%;
+  max-width: 40rem;
+  box-sizing: border-box;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+div > p {
+  margin: 0.5rem 0;
+  font-size: 2em;
+  text-align: center;
+  flex: 0 0 auto;
+}
+a {
+  text-decoration: none;
+  color: var(--link-text-color);
+}
+a:hover {color: var(--link-text-hover-color)}
+pre {
+  background-color: var(--code-bg);
+  font-family: var(--mono-font);
+  border-radius: 0.3em;
+  padding: 1em;
+  overflow-x: auto;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  max-width: 100%;
+}

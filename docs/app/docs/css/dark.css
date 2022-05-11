@@ -1,0 +1,20 @@
+:root {
+  --bg-color: #181818;
+  --plain-text-color: #d8d8d8;
+  --toc-link-text-hover-color: #ab4642;
+  --link-text-color: #ab4642;
+  --link-text-hover-color: #be5b58;
+  --mono-font: "Source Code Pro", monospace;
+  --normal-font: Inter, sans;
+  --code-bg: #282828;
+  --code-link-text: #ba8baf;
+  --code-link-bg: rgba(186,139,175,0.07);
+  --code-link-border: rgba(186,139,175,0.2);
+  --code-link-border-hover: rgba(171,70,66,0.5);
+  --code-link-bg-hover: rgba(171,70,66,0.15);
+  --code-link-text-hover: rgb(171,70,66);
+  --quote-bg: #24434e;
+  --quote-left-border-bg: #1e3841;
+  --hr-color: #484848;
+  --link-color-hover: #ab4642;
+}

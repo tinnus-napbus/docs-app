@@ -1,12 +1,12 @@
 ;>
 
 All of `%hark-store`'s pokes are documented below. All of them are of the
-[`+$action`](/~/scry/docs/dev/garden/hark-store/types.html#action-) type, and
+[`+$action`](/docs/garden/dev/hark-store/types#action-) type, and
 all of them use a `mark` of `%hark-action`. These pokes can all be performed as
 JSON through Eyre's web interface.
 
 You may wish to refer to the [Data
-Types](/~/scry/docs/dev/garden/hark-store/types.html) documentation as well.
+Types](/docs/garden/dev/hark-store/types) documentation as well.
 
 These pokes are grouped by whether they pertain to notifications, unread counts,
 or both.
@@ -20,8 +20,8 @@ or both.
 ```
 
 Add a notification with the specified
-[+$body](/~/scry/docs/dev/garden/hark-store/types.html#body-) to the specified
-[`+$bin`](/~/scry/docs/dev/garden/hark-store/types.html#bin-).
+[+$body](/docs/garden/dev/hark-store/types#body-) to the specified
+[`+$bin`](/docs/garden/dev/hark-store/types#bin-).
 
 ---
 
@@ -32,10 +32,10 @@ Add a notification with the specified
 ```
 
 Mark the `.unseen` notifications in the specified
-[`+$bin`](/~/scry/docs/dev/garden/hark-store/types.html#bin-) as read. The
+[`+$bin`](/docs/garden/dev/hark-store/types#bin-) as read. The
 notifications will be moved to the `.archive`. If there are no unseen
 notifications for the specified
-[`+$bin`](/~/scry/docs/dev/garden/hark-store/types.html#bin-), the poke will
+[`+$bin`](/docs/garden/dev/hark-store/types#bin-), the poke will
 fail.
 
 ---
@@ -47,9 +47,9 @@ fail.
 ```
 
 Archive notifications with the specified
-[`+$bin`](/~/scry/docs/dev/garden/hark-store/types.html#bin-) in either `.seen`
+[`+$bin`](/docs/garden/dev/hark-store/types#bin-) in either `.seen`
 or `.unseen`, as specified by the
-[`+$lid`](/~/scry/docs/dev/garden/hark-store/types.html#bin-).
+[`+$lid`](/docs/garden/dev/hark-store/types#bin-).
 
 ---
 
@@ -72,11 +72,11 @@ Archive all notifications.
 Underlying resource disappeared, remove all associated notifications.
 
 All notifications for the specified
-[`+$place`](/~/scry/docs/dev/garden/hark-store/types.html#place-), whether seen,
+[`+$place`](/docs/garden/dev/hark-store/types#place-), whether seen,
 unseen, or archived, will be completely removed.
 
-The [`+$stats`](/~/scry/docs/dev/garden/hark-store/types.html#stats-) for the
-[`+$place`](/~/scry/docs/dev/garden/hark-store/types.html#place-) will be
+The [`+$stats`](/docs/garden/dev/hark-store/types#stats-) for the
+[`+$place`](/docs/garden/dev/hark-store/types#place-) will be
 unaffected.
 
 ---
@@ -97,8 +97,8 @@ be decrease by `.count`. If you try to decrease it below zero, the poke will
 fail.
 
 The value you're changing is `.count` in the
-[`+$place`](/~/scry/docs/dev/garden/hark-store/types.html#place-)'s
-[`+$stats`](/~/scry/docs/dev/garden/hark-store/types.html#stats-).
+[`+$place`](/docs/garden/dev/hark-store/types#place-)'s
+[`+$stats`](/docs/garden/dev/hark-store/types#stats-).
 
 ---
 
@@ -111,8 +111,8 @@ The value you're changing is `.count` in the
 Add `.path` to list of unreads for `.place`.
 
 The given path will be added to the `.each` set in the
-[`+$stats`](/~/scry/docs/dev/garden/hark-store/types.html#stats-) for
-[`+$place`](/~/scry/docs/dev/garden/hark-store/types.html#place-).
+[`+$stats`](/docs/garden/dev/hark-store/types#stats-) for
+[`+$place`](/docs/garden/dev/hark-store/types#place-).
 
 ---
 
@@ -123,8 +123,8 @@ The given path will be added to the `.each` set in the
 ```
 
 This action updates the `.last` field in the
-[`+$stats`](/~/scry/docs/dev/garden/hark-store/types.html#stats-) of the
-specified [`+$place`](/~/scry/docs/dev/garden/hark-store/types.html#place-). The
+[`+$stats`](/docs/garden/dev/hark-store/types#stats-) of the
+specified [`+$place`](/docs/garden/dev/hark-store/types#place-). The
 `.last` field is the time of the last event, e.g. the most recent chat message.
 
 If the `.time` field is null, it will be updated to `now.bowl`. Otherwise, it
@@ -141,11 +141,11 @@ will be set to the `@da` specified.
 ```
 
 Set unread count to zero for the specified
-[`+$place`](/~/scry/docs/dev/garden/hark-store/types.html#place-).
+[`+$place`](/docs/garden/dev/hark-store/types#place-).
 
 The `.count` in the
-[`+$place`](/~/scry/docs/dev/garden/hark-store/types.html#place-)'s
-[`+$stats`](/~/scry/docs/dev/garden/hark-store/types.html#stats-) will be set
+[`+$place`](/docs/garden/dev/hark-store/types#place-)'s
+[`+$stats`](/docs/garden/dev/hark-store/types#stats-) will be set
 back to zero, and any unarchived notifications will be moved to the `.archive`.
 
 ---
@@ -159,11 +159,11 @@ back to zero, and any unarchived notifications will be moved to the `.archive`.
 Remove `.path` from unreads for `.place`.
 
 All notifications with the specified
-[`+$bin`](/~/scry/docs/dev/garden/hark-store/types.html#bin) `path` and in the
-specified [`+$place`](/~/scry/docs/dev/garden/hark-store/types.html#place-) will
+[`+$bin`](/docs/garden/dev/hark-store/types#bin) `path` and in the
+specified [`+$place`](/docs/garden/dev/hark-store/types#place-) will
 be archived. Any matching `.each` paths in the
-[`+$place`](/~/scry/docs/dev/garden/hark-store/types.html#place-)'s
-[`+$stats`](/~/scry/docs/dev/garden/hark-store/types.html#stats-) will also be
+[`+$place`](/docs/garden/dev/hark-store/types#place-)'s
+[`+$stats`](/docs/garden/dev/hark-store/types#stats-) will also be
 removed from the set.
 
 ---
@@ -177,7 +177,7 @@ removed from the set.
 User opened notifications, reset timeboxing logic.
 
 Unseen notifications will be moved to `.seen`. The `.timebox` in the
-[`+$stats`](/~/scry/docs/dev/garden/hark-store/types.html#stats-) of
-[`+$place`](/~/scry/docs/dev/garden/hark-store/types.html#place-)s (representing
+[`+$stats`](/docs/garden/dev/hark-store/types#stats-) of
+[`+$place`](/docs/garden/dev/hark-store/types#place-)s (representing
 the time of last viewing) will be reset. This occurs when a user opens the
 notifications pane.

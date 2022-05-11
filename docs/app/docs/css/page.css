@@ -1,0 +1,220 @@
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/apps/landscape/fonts/inter-regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Code Pro";
+  src: url("/apps/landscape/fonts/sourcecodepro-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@media only screen and (min-width: 92rem) {
+  nav > div {margin: auto 0}
+  nav {
+    max-height: 100vh;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    max-width: 16rem;
+    padding: 0 1em;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+  nav hr {display: none}
+}
+body {
+  background-color: var(--bg-color);
+  color: var(--plain-text-color);
+  font-family: var(--normal-font);
+  font-size: 1.2em;
+  width: 100%;
+  margin: 0;
+  margin-bottom: 50vh;
+}
+header {margin: 1em 0 2em 0;}
+header > h1 {font-size: 2.4em; margin: 0}
+nav ul {
+  list-style-type: none;
+  padding-left: 0.6em;
+}
+nav > div {padding: 1em 0}
+nav h2 {margin: 1em 0}
+nav ul {font-weight: bold}
+nav ul ul {font-weight: normal}
+nav ul ul ul {font-style: italic}
+nav li {margin-top: 0.5em}
+nav li li {margin-top: 0.3em}
+nav li li li {margin-top: 0.2em}
+nav a {color: var(--plain-text-color)}
+nav a:hover {color: var(--toc-link-text-hover-color)}
+nav a:hover code {
+  background-color: var(--code-link-bg);
+  color: var(--code-link-text);
+}
+nav hr {margin: 2em 0}
+nav > div > :first-child {margin-top: 0}
+nav > div > :last-child {margin-bottom: 0}
+body > div {
+  max-width: 60rem;
+  width: calc(100% - 2rem);
+  margin-left: auto;
+  margin-right: auto;
+  overflow-x: hidden;
+}
+a {
+  text-decoration: none;
+  color: var(--link-text-color);
+}
+a:hover {color: var(--link-text-hover-color)}
+main a pre, main a code {
+  color: var(--code-link-text);
+  background-color: var(--code-link-bg);
+  border: 1px solid var(--code-link-border);
+}
+main a:hover pre, main a:hover code {
+  background-color: var(--code-link-bg-hover);
+  border: 1px solid var(--code-link-border-hover);
+  color: var(--code-link-text-hover);
+}
+p {
+  line-height: 1.5;
+  margin: 1.8em 0;
+}
+pre {
+  background-color: var(--code-bg);
+  font-family: var(--mono-font);
+  border-radius: 0.3em;
+  padding: 1rem;
+  overflow: auto;
+  margin: 2em 0;
+  width: fit-content;
+  overflow: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+code {
+  background-color: var(--code-bg);
+  font-family: var(--mono-font);
+  font-size: 0.9em;
+  border-radius: 0.3em;
+  padding: 0 0.4em;
+  display: inline-block;
+}
+blockquote {
+  background-color: var(--quote-bg);
+  font-style: italic;
+  border-radius: 0.3em;
+  border: 1px solid var(--quote-left-border-bg);
+  border-left: 1.2em solid var(--quote-left-border-bg);
+  padding: 1em;
+  margin: 2em 0;
+  width: fit-content;
+  overflow: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+main {margin-top: 3em;}
+main ul {
+  list-style-type: disc;
+}
+main li {margin: 1em 0}
+main li p {margin: 0.8em 0}
+main > div > ul {margin: 3em 0}
+main > div > ol {margin: 3em 0}
+blockquote > ul {margin: 2em 0}
+blockquote > ol {margin: 2em 0}
+blockquote > :first-child {margin-top: 0}
+blockquote > :last-child {margin-bottom: 0}
+main > div > :first-child {margin-top: 1em}
+main > div div {margin: 1em 0}
+main > div div > :first-child {margin-top: 0}
+main > div div > :last-child {margin-bottom: 0}
+h1 {margin: 3em 0 1.4em 0}
+h2 {margin: 2.6em 0 1.6em 0}
+h3 {margin: 2.3em 0 1.4em 0}
+h4 {margin: 1.8em 0 1em 0}
+h5 {margin: 1.6em 0 1em 0}
+h6 {margin: 1.3em 0 1em 0}
+img {max-width: 100%}
+p > img:only-child {
+  display: block;
+  margin: 0 auto;
+}
+main hr {font-size: 2em; margin: 3em 0}
+footer {
+  margin: 4em 0 0 0;
+  display: flex;
+  flex-wrap:wrap;
+  justify-content: space-between;
+  font-size: 2em;
+  font-weight: bold;
+}
+hr {
+  border-color: var(--hr-color)
+}
+.lang-block-hl {
+  font-family: var(--mono-font);
+  border-radius: 0.3em;
+  padding: 1rem;
+  overflow: auto;
+  margin: 2em 0;
+  width: fit-content;
+  overflow: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.dropdown {
+  position: relative;
+}
+.dropdown > a > h2 {
+  display: inline-block;
+  margin: 0;
+}
+.dropdown > a > h2:after {
+  content: ' +';
+}
+.dropdown:hover > a > h2:after {
+  content: ' -';
+}
+.dropdown-content {
+  background-color: var(--bg-color);
+  display: none;
+  position: absolute;
+  max-width: 50vw;
+  box-sizing: border-box;
+  margin: 0 1em 1em 1em;
+  padding: 2em;
+  max-width: 100%;
+  border-radius: 0.3em;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.dropdown-content a {
+  color: var(--plain-text-color);
+}
+.dropdown-content a:hover {
+  color: var(--link-text-color);
+}
+.dropdown-content ul {
+  list-style-type: none;
+  padding-left: 0.6em;
+  margin: 0;
+}
+.dropdown-content li {
+  line-height: 1.5;
+}
+.dropdown-content .dir {
+  margin: 0.4em 0;
+}
+.dropdown-content .cont {
+  margin: 0.4em 0;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+}

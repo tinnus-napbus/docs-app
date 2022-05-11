@@ -3,10 +3,10 @@
   info+'User and developer documentation for Urbit apps'
   color+0xff.cf00
   image+'https://m.tinnus-napbus.xyz/pub/books.svg'
-  version+[0 2 3]
+  version+[0 3 0]
   website+'https://github.com/tinnus-napbus/docs-app'
   license+'MIT'
   base+'docs'
-  site+/~/scry/docs/[~.usr.html]
+  site+/docs
 ==
 

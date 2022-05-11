@@ -10,7 +10,7 @@ Hark-store only has a single scry endpoint.
 
 A scry with a `%x` `care` and a path of `/recent/inbox/[date]/[count]` will
 produce the most recent archived
-[`+$timebox`](/~/scry/docs/dev/garden/hark-store/types.html#timebox-)es (groups
+[`+$timebox`](/docs/garden/dev/hark-store/types#timebox-)es (groups
 of notifications). The `[date]` field is a `@da` date-time value as a `@ud`, and
 specifies "older than this date". The `[count]` field is a `@ud`, and specifies
 the maximum number of items to retrieve.
@@ -21,8 +21,8 @@ the maximum number of items to retrieve.
 
 ## Type produced
 
-An [`+$update`](/~/scry/docs/dev/garden/hark-store/types.html#update-) structure
-with a [`%more`](/~/scry/docs/dev/garden/hark-store/types.html#-more-) tag.
+An [`+$update`](/docs/garden/dev/hark-store/types#update-) structure
+with a [`%more`](/docs/garden/dev/hark-store/types#-more-) tag.
 
 ## Noun example
 

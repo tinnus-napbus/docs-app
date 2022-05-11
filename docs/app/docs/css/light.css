@@ -1,0 +1,20 @@
+:root {
+  --bg-color: white;
+  --plain-text-color: black;
+  --toc-link-text-hover-color: #cd0000;
+  --link-text-color: #cd0000;
+  --link-text-hover-color: #ff7700;
+  --mono-font: "Source Code Pro", monospace;
+  --normal-font: Inter, sans;
+  --code-bg: rgba(205,205,205,0.5);
+  --code-link-bg: rgba(205,0,0,0.1);
+  --code-link-border: rgba(205,0,0,0.3);
+  --code-link-border-hover: rgba(255,119,0,0.5);
+  --code-link-bg-hover: rgba(255,119,0,0.15);
+  --code-link-text-hover: rgb(224,105,0);
+  --path-separators: rgb(108,108,108);
+  --quote-bg: #ffe8c7;
+  --quote-left-border-bg: #ffce8a;
+  --hr-color: #e8e8e8;
+  --link-color-hover: #cd0000;
+}

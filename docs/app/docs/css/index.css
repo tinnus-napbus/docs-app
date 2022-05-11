@@ -1,0 +1,86 @@
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/apps/landscape/fonts/inter-regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Code Pro";
+  src: url("/apps/landscape/fonts/sourcecodepro-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+body {
+  color: var(--plain-text-color);
+  background-color: var(--bg-color);
+  font-family: var(--normal-font);
+  font-size: 1.2em;
+  width: 100%;
+  margin: 0;
+  padding: 1em;
+  box-sizing: border-box;
+}
+div {
+   max-width: 40rem;
+   width: 100%;
+   margin-left: auto;
+   margin-right: auto;
+}
+header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin-bottom: 1em;
+}
+h1 {
+  margin: 0.2em 0;
+}
+button {
+  font-family: var(--mono-font);
+  background-color: var(--bg-color);
+  color: var(--plain-text-color);
+  border: 0;
+  cursor: pointer;
+  font-size: 1.4rem;
+}
+button:hover {
+  color: var(--link-color-hover);
+}
+a {
+  text-decoration: none;
+  color: var(--plain-text-color);
+}
+a:hover {color: var(--link-color-hover)}
+section {
+  overflow: hidden;
+  margin: 1em 0;
+  padding: 1em 1em 1.4em 1em;
+  box-sizing: border-box;
+}
+section li {line-height: 1.5}
+section > ul {
+  padding-left: 0.4em;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding-left: 1em;
+}
+.cont {
+  margin-bottom: 0.6em;
+}
+.dir {
+  margin: 0.6em 0;
+}
+h2 {
+  margin-top: 0;
+}
+hr {
+  border: 1px solid var(--hr-color);
+}

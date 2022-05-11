@@ -9,6 +9,7 @@ The Docs app displays documentation for other installed apps. All apps are
 automatically checked for docs, so if a particular app is not listed, it doesn't
 have docs.
 
-App publishers can include documentation for ordinary users, as well as
-documentation for developers. You can switch between user and developer docs
-with the button at the top of the main page.
+App publishers may include documentation for ordinary users and/or developers.
+
+You can toggle between dark-mode and light-mode with the button at the top-right
+of the main page.

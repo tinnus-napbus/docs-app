@@ -1,5 +1,5 @@
 /-  *gemtext
-/+  *docs, cram
+/+  *docu, cram
 |_  dcu=manx
 ++  grab
   |%
