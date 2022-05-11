@@ -398,7 +398,7 @@
         ==
     ?:  ?=(%base dsk.a)  %.y
     ?:  ?=(%base dsk.b)  %.n
-    (aor (crip nam.a) (crip nam.b))
+    (aor (crip (cass nam.a)) (crip (cass nam.b)))
   |=  [dsk=desk nam=tape u=(unit [? =toc])]
   ^-  manx
   ?>  ?=(^ u)

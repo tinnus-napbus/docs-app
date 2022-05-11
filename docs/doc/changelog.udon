@@ -1,5 +1,19 @@
 ;>
 
+## 0.3.2
+
+Date: ~2022.5.11
+
+- Fix desk ordering in index
+- Fix long dropdown getting cut off
+
+## 0.3.1
+
+Date: ~2022.5.11
+
+- Handle query parameters after URL path.
+- Tweak drop-down CSS.
+
 ## 0.3.0
 
 Date: ~2022.5.11
