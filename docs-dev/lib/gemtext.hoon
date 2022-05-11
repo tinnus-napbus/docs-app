@@ -1,1 +1,0 @@
-../../docs/lib/gemtext.hoon
