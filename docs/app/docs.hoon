@@ -1,5 +1,8 @@
 /-  *docs, *gemtext, docket
 /+  *docs, *toc, styles=base16-styles, default-agent, dbug, agentio
+/%  toc-mark-core  %toc
+/%  clue-mark-core  %clue
+/%  css-mark-core  %css
 /$  gmi-docu   %gmi   %docu
 /$  udon-docu  %udon  %docu
 /$  txt-docu   %txt   %docu
@@ -487,9 +490,10 @@
     %-  ~(run by initial.charges)
     |=(=charge:docket title.docket.charge)
   =/  desks=(list desk)
-    %~  tap  in
-    %~  key  by
-    .^((map desk *) %gx (scrio %hood /kiln/ark/noun))
+    %+  murn
+      %~  tap  by
+      .^(rock:tire:clay %cx (scrio %$ /tire))
+    |=([=desk =zest:clay *] ?.(=(%live zest) ~ (some desk)))
   %-  ~(gas by *(map desk (unit @t)))
   (turn desks |=(d=desk [d (~(get by meta-map) d)]))
 :: read a toc for a desk from clay
