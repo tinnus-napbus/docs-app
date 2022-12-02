@@ -1,5 +1,12 @@
 ;>
 
+## 0.3.5
+
+Date ~2022.12.2
+
+- Switch live desk source from Kiln to Clay
+- Bump to Zuse 417K
+
 ## 0.3.4
 
 Date ~2022.6.1
