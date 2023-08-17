@@ -1,5 +1,12 @@
 ;>
 
+## 0.3.6
+
+Date ~2023.8.17
+
+- Make .toc file optional
+- Change .txt file rendering to wrapped, preformatted codeblock.
+
 ## 0.3.5
 
 Date ~2022.12.2

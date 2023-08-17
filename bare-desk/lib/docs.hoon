@@ -155,14 +155,16 @@
   |=  x=manx
   ^-  manx
   ?.  ?=(%pre n.g.x)        x
-  ?~  c.x  (hler (b16-gen ""))
+  ?~  c.x  (hler ~ (b16-gen ""))
   ?.  ?=(%$ n.g.i.c.x)      x
   ?~  a.g.i.c.x             x
   ?.  ?=(%$ n.i.a.g.i.c.x)  x
-  ?~  a.g.x  (hler (b16-gen v.i.a.g.i.c.x))
+  ?~  a.g.x  (hler ~ (b16-gen v.i.a.g.i.c.x))
   ?:  =([%class "language-json"] i.a.g.x)
-    (hler (b16-json v.i.a.g.i.c.x))
-  (hler (b16-gen v.i.a.g.i.c.x))
+    (hler `v.i.a.g.x (b16-json v.i.a.g.i.c.x))
+  ?:  =([%class "language-plaintext"] i.a.g.x)
+    (hler `v.i.a.g.x (b16-gen v.i.a.g.i.c.x))
+  (hler ~ (b16-gen v.i.a.g.i.c.x))
 :: make an id for a section
 ::
 :: apply section headers and produce marl for ToC
