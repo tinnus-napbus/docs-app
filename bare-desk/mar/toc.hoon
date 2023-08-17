@@ -1,4 +1,3 @@
-/-  docs
 |_  tab=@t
 ++  grab
   |%
