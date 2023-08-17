@@ -499,7 +499,9 @@
 :: read a toc for a desk from clay
 ::
 ::   if it's a clue, convert to toc. If it's included,
-::   get from %docs desk instead
+::   get from %docs desk instead.
+::   if there's no toc file at all, but there are other files under /doc,
+::   construct a toc from the file listing
 ::
 ++  read-toc
   |=  dsk=desk
@@ -510,7 +512,7 @@
     ?:  .^(? %cu (scrio %docs /doc/inc/[dsk]/doc/toc))   [~ & &]
     ?:  .^(? %cu (scrio %docs /doc/inc/[dsk]/doc/clue))  [~ & |]
     ~
-  ?~  u  ~
+  ?~  u  (bind (infer-toc dsk) (lead |))
   ?:  toc.u.u
     =/  res=(unit (list raw))
       ?.  inc.u.u
@@ -527,6 +529,66 @@
   ?.  inc.u.u
     .^(wain %cx (scrio dsk /doc/clue))
   .^(wain %cx (scrio %docs /doc/inc/[dsk]/doc/clue))
+:: infer a toc for a desk from its /doc folder contents in clay
+::
+++  infer-toc
+  |=  dsk=desk
+  ^-  (unit toc)
+  =+  .^(arc=arch %cy (scrio dsk /doc))
+  ?:  =(~ dir.arc)  ~
+  %-  some
+  %-  process
+  ^-  (list raw)
+  |^  (loop (sort ~(tap in ~(key by dir.arc)) tor))
+  ::
+  ++  loop
+    =/  bas=path  /doc
+    =/  lev=@ud   0
+    |=  nex=(list @ta)
+    ^-  (list raw)
+    ?~  nex  ~
+    =-  (weld - $(nex t.nex))
+    =+  .^(arc=arch %cy (scrio dsk (snoc bas i.nex)))
+    ::  files should have been handled by the code below
+    ::
+    ?>  =(~ fil.arc)
+    ::  for all children that are files (file exts), produce the file here,
+    ::  before we start delving into the children (dirs) themselves
+    ::
+    =/  [fiz=(list raw) dex=(list @ta)]
+      %+  roll
+        (sort ~(tap in ~(key by dir.arc)) tor)
+      |=  [kid=@ta fiz=(list raw) dex=(list @ta)]
+      =+  .^(arc=arch %cy (scrio dsk (weld bas ~[i.nex kid])))
+      ?.  ?=([^ ~] arc)  [fiz (snoc dex kid)]
+      [(snoc fiz [lev [i.nex kid] (to-title i.nex)]) dex]
+    %+  weld  fiz
+    ^-  (list raw)
+    ?:  =(~ dex)  ~
+    ::  add a dir entry, and delve deeper
+    ::
+    :-  [lev i.nex (to-title i.nex)]
+    $(lev +(lev), bas (snoc bas i.nex), nex dex)
+  ::
+  ++  tor  ::  like +aor, but "overview" always at the top
+    |=  [a=@t b=@t]
+    ?:  =(a 'overview')  &
+    ?:  =(b 'overview')  |
+    (aor a b)
+  ::
+  ++  to-title  ::  change 'some-name' into 'Some Name'
+    |=  nom=@ta
+    ^-  @t
+    ?:  =('usr' nom)  'User'
+    ?:  =('dev' nom)  'Developer'
+    %-  crip
+    %+  roll  (trip nom)
+    |=  [c=@t n=tape]
+    %+  snoc  n
+    ?:  =('-' c)  ' '
+    =/  cap=?  |(=(~ n) =(' ' (rear n)))
+    ?:(&(cap (gte c 'a') (lte c 'z')) (sub c 32) c)
+  --
 :: read a doc from clay, performing mark conversion to %docu
 ::
 ++  read-doc

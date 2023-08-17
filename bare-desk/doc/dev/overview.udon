@@ -8,7 +8,7 @@ appropriate `mark` conversion methods, and include a
 [`doc.toc`](/docs/docs/dev/index-file) index file, they'll be
 picked up.
 
-A `doc.toc` file must be included in the root of the desk, specifying the files
+A `doc.toc` file may be included in the root of the desk, specifying the files
 to be included, their `mark`s, and their titles. See the [Index File](/docs/docs/dev/index-file) section for details.
 
 The files themselves will be in a `/doc` directory in the root of the desk. In
