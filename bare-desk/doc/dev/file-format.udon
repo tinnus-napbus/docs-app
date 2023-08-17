@@ -113,10 +113,8 @@ hoon compiler. Here is its syntax in brief:
 
 ## `%txt`
 
-The %docs app supports plain `.txt` files. Consecutive lines of text are
-interpreted as hard-wrapped paragraphs. Additionally, values with atom aura
-syntax will be rendered as inline code, as well as arm paths like `++foo:bar`
-and wing paths like `.foo.bar`.
+The %docs app supports plain `.txt` files. The file will be rendered as a
+preformatted codeblock with wrapping.
 
 ## `%html`
 
