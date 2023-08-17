@@ -5,7 +5,7 @@
   ^-  manx
   =/  style
     "background-color:{(rgb-string b0.sch)};".
-    "white-space:pre;"
+    "white-space:pre-wrap;"
   ;div.lang-block-hl(style style)
     ;*  (turn segs seg-to-manx)
   ==
