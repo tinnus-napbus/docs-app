@@ -120,6 +120,12 @@ blockquote {
   max-width: 100%;
   box-sizing: border-box;
 }
+div.lang-block-hl {
+  white-space: pre;
+}
+div.language-plaintext {
+  white-space: pre-wrap !important;
+}
 main {margin-top: 3em;}
 main ul {
   list-style-type: disc;

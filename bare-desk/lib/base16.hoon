@@ -1,12 +1,14 @@
 /-  *base16
 |_  =sch
 ++  highlight
-  |=  =segs
+  |=  [class=(unit tape) =segs]
   ^-  manx
-  =/  style
-    "background-color:{(rgb-string b0.sch)};".
-    "white-space:pre-wrap;"
-  ;div.lang-block-hl(style style)
+  =/  style  "background-color:{(rgb-string b0.sch)};"
+  =/  class-all
+    ?~  class
+      "lang-block-hl"
+    "lang-block-hl {u.class}"
+  ;div(class class-all, style style)
     ;*  (turn segs seg-to-manx)
   ==
 ++  seg-to-manx

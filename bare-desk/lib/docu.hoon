@@ -95,7 +95,9 @@
     |=  tex=wain
     ^-  manx
     ;div
-      ;pre:"{(trip (of-wain:format tex))}"
+      ;pre.language-plaintext
+        ;+  ;/  (trip (of-wain:format tex))
+      ==
     ==
   --
 --
