@@ -1,9 +1,9 @@
 :~
   title+'Docs'
   info+'User and developer documentation for Urbit apps'
-  color+0xff.cf00
-  image+'https://m.tinnus-napbus.xyz/pub/books.svg'
-  version+[0 3 7]
+  color+0xa0.dce6
+  image+'https://m.tinnus-napbus.xyz/pub/docs-tile.svg'
+  version+[0 3 8]
   website+'https://github.com/tinnus-napbus/docs-app'
   license+'MIT'
   base+'docs'
