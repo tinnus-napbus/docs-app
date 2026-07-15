@@ -1,1 +1,0 @@
-../../base-deps/lib/skeleton.hoon

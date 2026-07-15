@@ -1,1 +1,0 @@
-../../bare-desk/lib/docs.hoon
