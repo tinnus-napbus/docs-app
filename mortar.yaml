@@ -1,0 +1,43 @@
+output: dist
+
+local docs-desk:
+  path: ./desk
+  priority: 100
+
+github base-dev:
+  repo: urbit/urbit
+  branch: master
+  root: pkg/base-dev
+  include:
+    - mar/bill.hoon
+    - mar/css.hoon
+    - mar/hoon.hoon
+    - mar/htm.hoon
+    - mar/html.hoon
+    - mar/hymn.hoon
+    - mar/kelvin.hoon
+    - mar/mime.hoon
+    - mar/noun.hoon
+    - mar/txt-diff.hoon
+    - mar/txt.hoon
+    - mar/udon.hoon
+    - mar/xhtml.hoon
+    - lib/agentio.hoon
+    - lib/cram.hoon
+    - lib/dbug.hoon
+    - lib/default-agent.hoon
+    - lib/skeleton.hoon
+  priority: 10
+  revision: 0a9a312e133891937de9c4df1ebecad5cf669c7c
+
+github landscape-dev:
+  repo: tloncorp/landscape
+  branch: develop
+  root: desk-dev
+  include:
+    - mar/docket-0.hoon
+    - lib/docket.hoon
+    - lib/mip.hoon
+    - sur/docket.hoon
+  priority: 9
+  revision: 46c6ed8738082b6a94558710b1e3619befa83057

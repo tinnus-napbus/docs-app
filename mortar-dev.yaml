@@ -1,0 +1,40 @@
+output: dist-dev
+
+local docs-desk:
+  path: ./desk
+  priority: 100
+  include:
+    - sur/base16.hoon
+    - sur/docs.hoon
+    - sur/gemtext.hoon
+    - lib/base16
+    - lib/base16.hoon
+    - lib/docs.hoon
+    - lib/docu.hoon
+    - lib/gemtext.hoon
+    - lib/manx-utils.hoon
+    - lib/toc.hoon
+    - mar/clue.hoon
+    - mar/docu.hoon
+    - mar/gmi-diff.hoon
+    - mar/gmi.hoon
+    - mar/toc.hoon
+
+github base-dev:
+  repo: urbit/urbit
+  branch: master
+  root: pkg/base-dev
+  include:
+    - mar/css.hoon
+    - mar/hoon.hoon
+    - mar/htm.hoon
+    - mar/html.hoon
+    - mar/hymn.hoon
+    - mar/mime.hoon
+    - mar/noun.hoon
+    - mar/txt-diff.hoon
+    - mar/txt.hoon
+    - mar/udon.hoon
+    - mar/xhtml.hoon
+  priority: 10
+  revision: 0a9a312e133891937de9c4df1ebecad5cf669c7c
