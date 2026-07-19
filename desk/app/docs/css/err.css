@@ -55,7 +55,7 @@ body {
 .eyebrow {
   margin: 0 0 0.8rem;
   color: var(--accent-color);
-  font: 600 0.7rem/1 var(--mono-font);
+  font: 600 0.75rem/1 var(--mono-font);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -66,7 +66,7 @@ h1 {
   font-size: clamp(1.8rem, 5vw, 2.8rem);
   font-weight: 700;
   line-height: 1.08;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
   text-wrap: balance;
 }
 
@@ -79,7 +79,7 @@ pre {
   border-radius: 0.55rem;
   background: var(--code-bg);
   color: var(--code-text);
-  font: 0.85rem/1.58 var(--mono-font);
+  font: 0.9rem/1.58 var(--mono-font);
   white-space: pre-wrap;
 }
 
@@ -87,7 +87,7 @@ pre {
 
 a {
   color: var(--accent-color);
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   text-underline-offset: 0.16em;
 }

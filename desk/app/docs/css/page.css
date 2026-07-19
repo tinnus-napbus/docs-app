@@ -99,7 +99,7 @@ summary:focus-visible {
 .toc-label {
   margin: 0 0 1rem;
   color: var(--accent-color);
-  font: 600 0.7rem/1 var(--mono-font);
+  font: 600 0.75rem/1 var(--mono-font);
   letter-spacing: 0.13em;
   text-transform: uppercase;
 }
@@ -110,7 +110,7 @@ summary:focus-visible {
   font-size: clamp(2.4rem, 6vw, 4.5rem);
   font-weight: 700;
   line-height: 1.02;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
@@ -142,10 +142,10 @@ summary:focus-visible {
 
 .desk-menu-label {
   color: var(--muted-text-color);
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
 }
 
-.desk-menu-name { font-size: 0.82rem; font-weight: 700; }
+.desk-menu-name { font-size: 0.9375rem; font-weight: 700; }
 
 .desk-menu-panel {
   width: min(24rem, calc(100vw - 2rem));
@@ -170,14 +170,14 @@ summary:focus-visible {
   margin-bottom: 0.7rem;
   padding: 0.2rem 0.35rem 0.8rem;
   border-bottom: 1px solid var(--border-color);
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 700;
 }
 
 .desk-menu-heading a {
   flex: 0 0 auto;
   color: var(--accent-color);
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   text-decoration: none;
 }
@@ -203,10 +203,12 @@ summary:focus-visible {
   padding: 0.38rem 0.45rem;
   border-radius: 0.35rem;
   color: var(--muted-text-color);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   line-height: 1.42;
   text-decoration: none;
 }
+
+.page-toc li a { font-size: 0.9375rem; }
 
 .desk-menu-panel li a:hover,
 .page-toc li a:hover {
@@ -218,7 +220,7 @@ summary:focus-visible {
   margin: 0.7rem 0 0.15rem;
   padding: 0 0.45rem;
   color: var(--plain-text-color);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -285,11 +287,11 @@ summary:focus-visible {
   text-wrap: balance;
 }
 
-.document-content h1 { margin: 3.4rem 0 0.9rem; font-size: 2.1rem; font-weight: 700; letter-spacing: -0.025em; }
-.document-content h2 { margin: 3rem 0 0.8rem; font-size: 1.65rem; font-weight: 700; letter-spacing: -0.018em; }
-.document-content h3 { margin: 2.5rem 0 0.7rem; font-size: 1.3rem; font-weight: 600; letter-spacing: -0.01em; }
-.document-content h4 { margin: 2.2rem 0 0.6rem; font-size: 1.1rem; font-weight: 600; letter-spacing: 0; }
-.document-content h5,
+.document-content h1 { margin: 3.4rem 0 0.9rem; font-size: 2.25rem; font-weight: 700; letter-spacing: -0.025em; }
+.document-content h2 { margin: 3rem 0 0.8rem; font-size: 1.75rem; font-weight: 700; letter-spacing: -0.018em; }
+.document-content h3 { margin: 2.5rem 0 0.7rem; font-size: 1.375rem; font-weight: 600; letter-spacing: -0.01em; }
+.document-content h4 { margin: 2.2rem 0 0.6rem; font-size: 1.125rem; font-weight: 600; letter-spacing: 0; }
+.document-content h5 { margin: 1.9rem 0 0.55rem; font-size: 1.0625rem; font-weight: 600; letter-spacing: 0; }
 .document-content h6 { margin: 1.9rem 0 0.55rem; font-size: 1rem; font-weight: 600; letter-spacing: 0; }
 
 .document-content ul,
@@ -313,7 +315,7 @@ summary:focus-visible {
   background: var(--code-bg);
   color: var(--code-text);
   font-family: var(--mono-font);
-  font-size: 0.85em;
+  font-size: 0.875em;
   font-weight: 400;
   overflow-wrap: anywhere;
 }
@@ -329,7 +331,7 @@ summary:focus-visible {
   background: var(--code-bg);
   color: var(--code-text);
   font-family: var(--mono-font);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   line-height: 1.58;
   tab-size: 2;
   white-space: pre;
@@ -395,7 +397,7 @@ summary:focus-visible {
   border: 1px solid var(--border-color);
   border-radius: 0.6rem;
   overflow: hidden;
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
   line-height: 1.5;
 }
 
@@ -434,13 +436,13 @@ summary:focus-visible {
 }
 
 .pager-link:hover { background: var(--surface-subtle); color: var(--plain-text-color); }
-.pager-direction { font-size: 0.78rem; font-weight: 600; }
+.pager-direction { font-size: 0.875rem; font-weight: 600; }
 .pager-title {
   color: var(--plain-text-color);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   line-height: 1.35;
 }
-.pager-arrow { color: var(--accent-color); font-size: 1.15rem; }
+.pager-arrow { color: var(--accent-color); font-size: 1.2rem; }
 
 @media (max-width: 52rem) {
   .content-grid { display: block; }
@@ -462,7 +464,7 @@ summary:focus-visible {
     padding: 1rem;
     color: var(--plain-text-color);
     cursor: pointer;
-    font: 600 0.75rem/1 var(--mono-font);
+    font: 600 0.8125rem/1 var(--mono-font);
     letter-spacing: 0.1em;
     list-style: none;
     text-transform: uppercase;
@@ -470,7 +472,7 @@ summary:focus-visible {
   .page-toc-summary::-webkit-details-marker { display: none; }
   .page-toc-chevron {
     color: var(--accent-color);
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
   .page-toc-details[open] .page-toc-chevron { transform: rotate(180deg); }
   .page-toc-details:not([open]) > .page-toc-nav { display: none; }
