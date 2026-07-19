@@ -36,6 +36,7 @@ to the `%docu` mark used by the %docs app. The %docs app includes parsers and
 conversion methods for the following marks by default:
 
 - `%txt` - Ordinary `.txt` text files.
+- `%md` - Markdown, including common GitHub-flavored extensions.
 - `%udon` - A markdown-like format that supports embedded hoon.
 - `%gmi` - An ultra-minimalist markup format called "gemtext".
 - `%html` - An ordinary `.html` file.

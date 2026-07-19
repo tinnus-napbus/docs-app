@@ -1,4 +1,4 @@
-/-  *docs, *gemtext, docket
+/-  *docs, *gemtext, docket, m=markdown
 /+  *docs, *toc, styles=base16-styles, default-agent, dbug, agentio
 /%  toc-mark-core  %toc
 /%  clue-mark-core  %clue
@@ -7,6 +7,7 @@
 /$  udon-docu  %udon  %docu
 /$  txt-docu   %txt   %docu
 /$  html-docu  %html  %docu
+/$  md-docu    %md    %docu
 ::
 |%
 +$  versioned-state
@@ -663,18 +664,19 @@
   :: get tube from mark to docu
   ::
   =/  tub=(unit tube:clay)
-    ?:  ?=(?(%gmi %udon %txt %html) mar)  ~
+    ?:  ?=(?(%gmi %udon %txt %html %md) mar)  ~
     [~ .^(tube:clay %cc (scrio rt /[mar]/docu))]
   :: read file & perform mark conversion
   ::
   =/  docu=(each manx tang)
     ?~  tub
-      ?.  ?=(?(%gmi %udon %txt %html) mar)
+      ?.  ?=(?(%gmi %udon %txt %html %md) mar)
         [%.n leaf+"could not build mark conversion tube" ~]
       %-  mule
       ?-  mar
         %udon  |.((udon-docu .^(@t %cx (scrio rt pt))))
         %html  |.((html-docu .^(@t %cx (scrio rt pt))))
+        %md    |.((md-docu .^(markdown:m %cx (scrio rt pt))))
         %txt   |.((txt-docu .^(wain %cx (scrio rt pt))))
         %gmi   |.((gmi-docu .^((list gmni) %cx (scrio rt pt))))
       ==

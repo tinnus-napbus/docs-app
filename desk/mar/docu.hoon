@@ -1,5 +1,5 @@
-/-  *gemtext
-/+  *docu, cram
+/-  *gemtext, m=markdown
+/+  *docu, cram, markdown-lib=markdown
 |_  dcu=manx
 ++  grab
   |%
@@ -11,6 +11,7 @@
   ++  x-htm-elem  |=(a=manx a)
   ++  gmi         |=(gem=(list gmni) (gmi:to-docu gem))
   ++  html        |=(htm=@t (need (de-xml:^html htm)))
+  ++  md          |=(doc=markdown:m (sail-en:markdown-lib doc))
   ++  noun        |=(non=* (manx non))
   ++  txt         |=(tex=wain (txt:to-docu tex))
   ++  udon        |=(mud=@t elm:(static:cram (ream mud)))

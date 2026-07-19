@@ -29,29 +29,36 @@ makes some changes and imposes some additional rules:
 + Only these tags are allowed: `<a>`, `<address>`, `<b>`, `<br>`,
   `<blockquote>`, `<code>`, `<del>`, `<div>`, `<em>`, `<h1>`, `<h2>`, `<h3>`,
   `<h4>`, `<h5>`, `<h6>`, `<hr>`, `<i>`, `<img>`, `<ins>`, `<li>`, `<ol>`,
-  `<p>`, `<pre>`, `<q>`, `<small>`, `<span>`, `<strong>`, `<sub>`, `<sup>`,
-  `<time>`, `<ul>`, `<var>`.
-+ Inside the `<h1>`, `<h2>`, and `<h3>` headers that are direct children of the
-  root `<div>` (and will therefore be used in the table of contents), only a
-  subset of the tags listed above are allowed: `<b>`, `<code>`, `<del>`, `<em>`,
-  `<i>`, `<ins>`, `<q>`, `<small>`, `<span>`, `<strong>`, `<sub>`, `<sup>`,
-  `<time>`, `<var>`.
+  `<p>`, `<pre>`, `<q>`, `<small>`, `<span>`, `<strike>`, `<strong>`, `<sub>`,
+  `<sup>`, `<table>`, `<tbody>`, `<td>`, `<th>`, `<thead>`, `<time>`, `<tr>`,
+  `<ul>`, `<var>`, and the restricted `<input>` form described below.
++ Inside headings that are direct children of the root `<div>`, only safe inline
+  elements are allowed. Section IDs and table-of-contents entries are generated
+  from their plain text; images and formatting are not copied into navigation.
 + All attributes will be stripped from all elements (you can still include them
   but they'll be removed), with the following exceptions:
   - The `src` and `alt` attributes in an `<img>` tag.
-  - The `href` attribute in an `<a>` tag.
-  - A `class` attribute in a `<pre>` tag beginning with `language-` (e.g.
-    `class="language-hoon"`). This is not currently used for anything but will be used
-    for syntax highlighting in the future.
-
-> Note: table elements are not currently supported but will likely be added in
-  a future release.
+  - The `href` and `title` attributes in an `<a>` tag.
+  - A `class` attribute beginning with `language-` on `<pre>` or `<code>`.
+  - The `start` attribute on `<ol>` and `align` on `<th>` and `<td>`.
+  - `class="task-list"` on `<ul>`.
++ `<input>` is accepted only as an empty direct child of `<li>`, with exactly
+  `type="checkbox"` and an optional `checked="true"`. It is always rendered
+  disabled. Table elements are likewise checked for valid table nesting.
 
 ---
 
 # Included marks
 
 The following marks are supported by the %docs app and you can use them to write docs right away.
+
+## `%md`
+
+Markdown files use the `.md` extension. The included parser supports ordinary
+Markdown as well as tables, task lists, strikethrough, fenced code-block language
+tags, autolinks, and other common GitHub-flavored extensions. Raw HTML still has
+to satisfy the `%docu` tag, attribute, and structural restrictions described
+above.
 
 ## `%udon`
 
