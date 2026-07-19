@@ -13,7 +13,7 @@
   --accent-soft: #26365c;
   --accent-contrast: #101722;
   --mono-font: "Source Code Pro", "SFMono-Regular", Consolas, monospace;
-  --normal-font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --normal-font: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --code-bg: #202c38;
   --code-text: #dce6f2;
   --code-link-text: #a9bcff;

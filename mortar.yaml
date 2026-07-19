@@ -21,6 +21,7 @@ github base-dev:
     - mar/txt-diff.hoon
     - mar/txt.hoon
     - mar/udon.hoon
+    - mar/woff2.hoon
     - mar/xhtml.hoon
     - lib/agentio.hoon
     - lib/cram.hoon

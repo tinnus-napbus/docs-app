@@ -35,6 +35,7 @@ github base-dev:
     - mar/txt-diff.hoon
     - mar/txt.hoon
     - mar/udon.hoon
+    - mar/woff2.hoon
     - mar/xhtml.hoon
   priority: 10
   revision: 0a9a312e133891937de9c4df1ebecad5cf669c7c

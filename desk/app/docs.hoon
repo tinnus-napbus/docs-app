@@ -153,10 +153,18 @@
   ^-  (unit (unit cage))
   ?+    path  (on-peek:def path)
   ::
-    [%x %style %var ~]    [~ ~ %css !>(?:(dark dark:css:hc light:css:hc))]
-    [%x %style %index ~]  [~ ~ %css !>(index:css:hc)]
-    [%x %style %page ~]   [~ ~ %css !>(page:css:hc)]
-    [%x %style %err ~]    [~ ~ %css !>(err:css:hc)]
+      [%x %style %var ~]    [~ ~ %css !>(?:(dark dark:css:hc light:css:hc))]
+      [%x %style %index ~]  [~ ~ %css !>(index:css:hc)]
+      [%x %style %page ~]   [~ ~ %css !>(page:css:hc)]
+      [%x %style %err ~]    [~ ~ %css !>(err:css:hc)]
+      [%x %font %source-sans-3-upright ~]
+    ``woff2+!>(.^(octs %cx /(scot %p our.bowl)/docs/(scot %da now.bowl)/app/docs/fonts/source-sans-3-upright/woff2))
+      [%x %font %source-sans-3-italic ~]
+    ``woff2+!>(.^(octs %cx /(scot %p our.bowl)/docs/(scot %da now.bowl)/app/docs/fonts/source-sans-3-italic/woff2))
+      [%x %font %sourcecodepro-regular ~]
+    ``woff2+!>(.^(octs %cx /(scot %p our.bowl)/docs/(scot %da now.bowl)/app/docs/fonts/sourcecodepro-regular/woff2))
+      [%x %font %sourcecodepro-semibold ~]
+    ``woff2+!>(.^(octs %cx /(scot %p our.bowl)/docs/(scot %da now.bowl)/app/docs/fonts/sourcecodepro-semibold/woff2))
   ::
       [%x kind ~]
     :^  ~  ~  %html  !>

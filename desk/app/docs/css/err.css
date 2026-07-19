@@ -1,15 +1,30 @@
 @font-face {
-  font-family: "Inter";
+  font-family: "Source Sans 3";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 200 900;
   font-display: swap;
-  src: url("/apps/landscape/fonts/inter-regular.woff2") format("woff2");
+  src: url("/~/scry/docs/font/source-sans-3-upright.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: italic;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url("/~/scry/docs/font/source-sans-3-italic.woff2") format("woff2");
 }
 
 @font-face {
   font-family: "Source Code Pro";
-  src: url("/apps/landscape/fonts/sourcecodepro-regular.woff2") format("woff2");
+  src: url("/~/scry/docs/font/sourcecodepro-regular.woff2") format("woff2");
   font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Code Pro";
+  src: url("/~/scry/docs/font/sourcecodepro-semibold.woff2") format("woff2");
+  font-weight: 600;
   font-display: swap;
 }
 
@@ -24,6 +39,8 @@ body {
   background: var(--bg-color);
   color: var(--plain-text-color);
   font-family: var(--normal-font);
+  font-synthesis: none;
+  line-height: 1.5;
 }
 
 .err {
@@ -43,7 +60,15 @@ body {
   text-transform: uppercase;
 }
 
-h1 { margin: 0 0 1.5rem; font-size: clamp(1.8rem, 5vw, 2.8rem); letter-spacing: -0.04em; }
+h1 {
+  max-width: 16ch;
+  margin: 0 0 1.5rem;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
 
 pre {
   max-height: 45vh;
@@ -54,7 +79,7 @@ pre {
   border-radius: 0.55rem;
   background: var(--code-bg);
   color: var(--code-text);
-  font: 0.85rem/1.6 var(--mono-font);
+  font: 0.85rem/1.58 var(--mono-font);
   white-space: pre-wrap;
 }
 
