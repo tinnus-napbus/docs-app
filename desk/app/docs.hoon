@@ -12,12 +12,23 @@
 |%
 +$  versioned-state
   $%  state-0
+      state-1
   ==
+::
 +$  state-0  [%0 dark=_|]
++$  state-1
+  $:  %1
+      dark=_|
+      cached=(map @t @uv)
+      watched=(set desk)
+  ==
+::
++$  cache-file  [mime=@t data=octs]
+::
 +$  card  card:agent:gall
 --
 ::
-=|  state-0
+=|  state-1
 =*  state  -
 ::
 =<
@@ -31,17 +42,36 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  :_  this
-  [%pass /bind %arvo %e %connect `/'docs' %docs]~
+  =/  [cache-cards=(list card) new-cache=(map @t @uv)]
+    (refresh-cache:hc cached)
+  :_  this(cached new-cache)
+  %+  weld
+    ^-  (list card)
+    :~  [%pass /bind %arvo %e %connect `/'docs' %docs]
+        ~(tire pass:io /tire)
+        [%pass /docket %agent [our.bowl %docket] %watch /charges]
+    ==
+  cache-cards
 ::
 ++  on-load
   |=  old-vase=vase
   ^-  (quip card _this)
-  =/  old  !<  ?(~ versioned-state)  old-vase
-  ?~  old
-    :_  this
-    [%pass /bind %arvo %e %connect `/'docs' %docs]~
-  [~ this(state old)]
+  =/  old  !<(versioned-state old-vase)
+  =.  state
+    ?-  -.old
+      %0  [%1 dark.old ~ ~]
+      %1  old
+    ==
+  =^  cards=(list card)  cached
+    (refresh-cache:hc cached)
+  =?  cards  ?=(%0 -.old)
+    %+  weld
+      ^-  (list card)
+      :~  ~(tire pass:io /tire)
+          [%pass /docket %agent [our.bowl %docket] %watch /charges]
+      ==
+    cards
+  [cards this]
 ::
 ++  on-save
   ^-  vase
@@ -99,13 +129,17 @@
     ?+    v.i.u.query  [(go-to-index p.req) this]
         %dark
       ?:  dark
-        [(go-to-index p.req) this]
+        =/  [cache-cards=(list card) new-cache=(map @t @uv)]
+          (refresh-theme:hc cached)
+        [(weld cache-cards (go-to-index p.req)) this(cached new-cache)]
       :_  this(dark %.y)
       ~[(~(poke-self pass:io /self) [mark vase])]
     ::
         %light
       ?.  dark
-        [(go-to-index p.req) this]
+        =/  [cache-cards=(list card) new-cache=(map @t @uv)]
+          (refresh-theme:hc cached)
+        [(weld cache-cards (go-to-index p.req)) this(cached new-cache)]
       :_  this(dark %.n)
       ~[(~(poke-self pass:io /self) [mark vase])]
     ==
@@ -154,10 +188,6 @@
   ^-  (unit (unit cage))
   ?+    path  (on-peek:def path)
   ::
-      [%x %style %var ~]    [~ ~ %css !>(?:(dark dark:css:hc light:css:hc))]
-      [%x %style %index ~]  [~ ~ %css !>(index:css:hc)]
-      [%x %style %page ~]   [~ ~ %css !>(page:css:hc)]
-      [%x %style %err ~]    [~ ~ %css !>(err:css:hc)]
       [%x %font %source-sans-3-upright ~]
     ``woff2+!>(.^(octs %cx /(scot %p our.bowl)/docs/(scot %da now.bowl)/app/docs/fonts/source-sans-3-upright/woff2))
       [%x %font %source-sans-3-italic ~]
@@ -208,20 +238,101 @@
 ++  on-arvo
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
-  ?.  ?=([%bind ~] wire)
-    (on-arvo:def [wire sign-arvo])
-  ?.  ?=([%eyre %bound *] sign-arvo)
-    (on-arvo:def [wire sign-arvo])
-  ~?  !accepted.sign-arvo
-    %eyre-rejected-docs-binding
-  `this
+  ?+  wire  (on-arvo:def [wire sign-arvo])
+      [%bind ~]
+    ?.  ?=([%eyre %bound *] sign-arvo)
+      (on-arvo:def [wire sign-arvo])
+    ~?  !accepted.sign-arvo
+      %eyre-rejected-docs-binding
+    `this
+  ::
+      [%tire ~]
+    ?>  ?=([%clay %tire *] sign-arvo)
+    ?-  -.p.sign-arvo
+        %&
+      =/  live=(set desk)
+        %-  ~(gas in *(set desk))
+        %+  murn  ~(tap by p.p.sign-arvo)
+        |=  [dsk=desk =zest:clay *]
+        ?.(=(%live zest) ~ `dsk)
+      =/  watch-cards=(list card)  (watch-cards:hc watched live)
+      =.  watched  live
+      =/  [cache-cards=(list card) new-cache=(map @t @uv)]
+        (refresh-cache:hc cached)
+      [(weld watch-cards cache-cards) this(cached new-cache)]
+    ::
+        %|
+      =/  =wave:tire:clay  p.p.sign-arvo
+      ?-  -.wave
+          %zest
+        =/  live=(set desk)
+          ?:  =(%live zest.wave)
+            (~(put in watched) desk.wave)
+          (~(del in watched) desk.wave)
+        =/  watch-cards=(list card)  (watch-cards:hc watched live)
+        =.  watched  live
+        =/  [cache-cards=(list card) new-cache=(map @t @uv)]
+          (refresh-desk:hc cached desk.wave)
+        [(weld watch-cards cache-cards) this(cached new-cache)]
+      ::
+          ?(%wait %warp)
+        [~ this]
+      ==
+    ==
+  ::
+      [%clay @ @ *]
+    ?>  ?=(%writ +<.sign-arvo)
+    =/  dsk=desk  i.t.wire
+    ?.  (~(has in watched) dsk)  [~ this]
+    ?>  ?=(?(%t %x) i.t.t.wire)
+    =/  car=care:clay  i.t.t.wire
+    =/  pax=path  t.t.t.wire
+    =/  [cache-cards=(list card) new-cache=(map @t @uv)]
+      (refresh-changes:hc cached dsk (~(put in *(set (pair care:clay path))) [car pax]))
+    =/  watch-cards=(list card)
+      ?:  (wide-change:hc dsk car pax)
+        (watch-desk:hc dsk)
+      ?.  (~(has in (watch-paths:hc dsk)) [car pax])  ~
+      [(watch-path:hc dsk car pax) ~]
+    [(weld watch-cards cache-cards) this(cached new-cache)]
+  ==
 ::
-++  on-agent  on-agent:def
+++  on-agent
+  |=  [=wire =sign:agent:gall]
+  ^-  (quip card _this)
+  ?.  ?=([%docket ~] wire)  (on-agent:def wire sign)
+  ?+    -.sign  (on-agent:def wire sign)
+      %watch-ack  [~ this]
+      %fact
+    ?>  =(%charge-update p.cage.sign)
+    =/  update=charge-update:docket
+      !<(charge-update:docket q.cage.sign)
+    ?-  -.update
+      %initial
+        =/  [cache-cards=(list card) new-cache=(map @t @uv)]
+          (refresh-cache:hc cached)
+        [cache-cards this(cached new-cache)]
+      %add-charge
+        =/  [cache-cards=(list card) new-cache=(map @t @uv)]
+          (refresh-desk:hc cached desk.update)
+        [cache-cards this(cached new-cache)]
+      %del-charge
+        =/  [cache-cards=(list card) new-cache=(map @t @uv)]
+          (refresh-desk:hc cached desk.update)
+        [cache-cards this(cached new-cache)]
+    ==
+  ::
+      %kick
+    :_  this
+    [%pass /docket %agent [our.bowl %docket] %watch /charges]~
+  ==
 ++  on-fail   on-fail:def
 ++  on-leave  on-leave:def
 --
 ::
 |_  =bowl:gall
++*  io    ~(. agentio bowl)
+    pass  pass:io
 ++  scrio  ~(scry agentio bowl)
 ::
 ++  css
@@ -232,6 +343,325 @@
   ++  page   .^(@t %cx (scrio %docs /app/docs/css/page/css))
   ++  err   .^(@t %cx (scrio %docs /app/docs/css/err/css))
   --
+:: construct an authenticated Eyre cache entry for a rendered page
+::
+++  cache-entry
+  |=  file=cache-file
+  ^-  cache-entry:eyre
+  =/  hed=response-header:http
+    :-  200
+    :~  ['Content-Type' mime.file]
+        ['Content-Length' (crip ((d-co:co 1) p.data.file))]
+    ==
+  =/  payload=simple-payload:http  [hed `data.file]
+  [& %payload payload]
+:: eagerly render the styles, index and every indexed document
+::
+++  cache-pages
+  ^-  (map @t cache-file)
+  =/  idx=octs
+    (as-octs:mimes:html (crip (en-xml:html index)))
+  =/  pages=(map @t cache-file)
+    %-  ~(gas by *(map @t cache-file))
+    :~  ['/docs' 'text/html' idx]
+        ['/docs/' 'text/html' idx]
+        ['/docs/assets/style/var.css' 'text/css' (as-octs:mimes:html ?:(dark dark:css light:css))]
+        ['/docs/assets/style/index.css' 'text/css' (as-octs:mimes:html index:css)]
+        ['/docs/assets/style/page.css' 'text/css' (as-octs:mimes:html page:css)]
+        ['/docs/assets/style/err.css' 'text/css' (as-octs:mimes:html err:css)]
+    ==
+  %-  ~(gas by pages)
+  %-  zing
+  %+  turn  ~(tap by desk-map)
+  |=  [dsk=desk *]
+  ~(tap by (desk-pages dsk))
+:: render every indexed page belonging to one live desk
+::
+++  desk-pages
+  |=  dsk=desk
+  ^-  (map @t cache-file)
+  ?.  (~(has by desk-map) dsk)  ~
+  %-  malt
+  ^-  (list [@t cache-file])
+  ^-  (list [@t cache-file])
+  =/  utoc=(unit [? =toc])  (read-toc dsk)
+  ?~  utoc  ~
+  %+  murn  toc.u.utoc
+  |=  =ent
+  ^-  (unit [@t cache-file])
+  ?.  ?=(%fil -.ent)  ~
+  ?>  ?=(^ pa.ent)
+  =/  pa=path  (flop t.pa.ent)
+  =/  url=@t  (crip (spud [%docs dsk pa]))
+  =/  dat=octs
+    (as-octs:mimes:html (crip (en-xml:html (make-doc dsk pa))))
+  `[url 'text/html' dat]
+:: reconcile freshly rendered pages with the URLs already cached in Eyre
+::
+++  refresh-cache
+  |=  old=(map @t @uv)
+  ^-  [(list card) (map @t @uv)]
+  =/  pages=(map @t cache-file)  cache-pages
+  =/  fresh=(map @t @uv)
+    %-  ~(run by pages)
+    |=  file=cache-file
+    (mug file)
+  =/  updates=(list card)
+    %+  murn  ~(tap by pages)
+    |=  [url=@t file=cache-file]
+    =/  old-hash=(unit @uv)  (~(get by old) url)
+    ?:  ?&(?=(^ old-hash) =(u.old-hash (~(got by fresh) url)))  ~
+    `(~(arvo pass /cache) %e %set-response url `(cache-entry file))
+  =/  removed=(set @t)
+    (~(dif in ~(key by old)) ~(key by fresh))
+  =/  deletes=(list card)
+    %+  turn  ~(tap in removed)
+    |=(url=@t (~(arvo pass /cache) %e %set-response url ~))
+  [(weld updates deletes) fresh]
+:: replace only the theme-dependent stylesheet after a mode change
+::
+++  refresh-theme
+  |=  old=(map @t @uv)
+  ^-  [(list card) (map @t @uv)]
+  =/  url=@t  '/docs/assets/style/var.css'
+  =/  file=cache-file
+    ['text/css' (as-octs:mimes:html ?:(dark dark:css light:css))]
+  =/  hash=@uv  (mug file)
+  =/  fresh=(map @t @uv)  (~(put by old) url hash)
+  =/  old-hash=(unit @uv)  (~(get by old) url)
+  ?:  ?&(?=(^ old-hash) =(u.old-hash hash))  [~ fresh]
+  =/  card=card
+    (~(arvo pass /cache) %e %set-response url `(cache-entry file))
+  [[card ~] fresh]
+:: reconcile a partial set of rendered pages and explicitly removable URLs
+::
+++  refresh-pages
+  |=  [old=(map @t @uv) pages=(map @t cache-file) remove=(set @t)]
+  ^-  [(list card) (map @t @uv)]
+  =/  updates=(list card)
+    %+  murn  ~(tap by pages)
+    |=  [url=@t file=cache-file]
+    =/  hash=@uv  (mug file)
+    =/  old-hash=(unit @uv)  (~(get by old) url)
+    ?:  ?&(?=(^ old-hash) =(u.old-hash hash))  ~
+    `(~(arvo pass /cache) %e %set-response url `(cache-entry file))
+  =/  fresh=(map @t @uv)
+    %+  roll  ~(tap by pages)
+    |=  [[url=@t file=cache-file] out=(map @t @uv)]
+    (~(put by out) url (mug file))
+  =.  fresh  (~(uni by fresh) old)
+  =/  gone=(set @t)  (~(dif in remove) ~(key by pages))
+  =/  deletes=(list card)
+    %+  turn  ~(tap in gone)
+    |=(url=@t (~(arvo pass /cache) %e %set-response url ~))
+  =.  fresh
+    %+  roll  ~(tap in gone)
+    |=  [url=@t out=(map @t @uv)]
+    (~(del by out) url)
+  [(weld updates deletes) fresh]
+:: rebuild the index and all cached pages belonging to one desk
+::
+++  refresh-desk
+  |=  [old=(map @t @uv) dsk=desk]
+  ^-  [(list card) (map @t @uv)]
+  =/  idx=cache-file
+    ['text/html' (as-octs:mimes:html (crip (en-xml:html index)))]
+  =/  pages=(map @t cache-file)
+    (~(put by (desk-pages dsk)) '/docs/' idx)
+  =.  pages  (~(put by pages) '/docs' idx)
+  =/  prefix=tape  (weld "/docs/" (weld (trip dsk) "/"))
+  =/  remove=(set @t)
+    %-  silt
+    %+  murn  ~(tap in ~(key by old))
+    |=  url=@t
+    =/  txt=tape  (trip url)
+    ?:  ?&  (lte (lent prefix) (lent txt))
+            =(prefix (scag (lent prefix) txt))
+        ==
+      `url
+    ~
+  (refresh-pages old pages remove)
+:: rebuild or remove one indexed document page
+::
+++  refresh-doc
+  |=  [old=(map @t @uv) dsk=desk pa=path]
+  ^-  [(list card) (map @t @uv)]
+  =/  url=@t  (crip (spud [%docs dsk pa]))
+  =/  pages=(map @t cache-file)
+    ?.  (indexed dsk pa)  ~
+    =/  dat=octs
+      (as-octs:mimes:html (crip (en-xml:html (make-doc dsk pa))))
+    (~(put by *(map @t cache-file)) url ['text/html' dat])
+  =/  remove=(set @t)  (~(put in *(set @t)) url)
+  (refresh-pages old pages remove)
+:: classify exact %mult changes and apply only the necessary rebuilds
+::
+++  refresh-changes
+  |=  [old=(map @t @uv) src=desk changes=(set (pair care:clay path))]
+  ^-  [(list card) (map @t @uv)]
+  =|  wide=(set desk)
+  =|  docs=(set [desk path])
+  =/  [new-wide=(set desk) new-docs=(set [desk path])]
+    %+  roll  ~(tap in changes)
+    |=  [[car=care:clay pax=path] wide-out=(set desk) docs-out=(set [desk path])]
+    ?:  ?&  =(%docs src)
+            =(%t car)
+            =(/doc pax)
+        ==
+      [(~(uni in wide-out) ~(key by desk-map)) docs-out]
+    =/  mapped=(unit [desk path])  (source-target src pax)
+    ?~  mapped  [wide-out docs-out]
+    =/  [dsk=desk rem=path]  u.mapped
+    ?:  ?|  =(%t car)
+            =(/toc rem)
+            =(/clue rem)
+        ==
+      [(~(put in wide-out) dsk) docs-out]
+    ?~  rem  [wide-out docs-out]
+    ?~  t.rem  [wide-out docs-out]
+    =/  rev=path  (flop rem)
+    ?>  ?=(^ rev)
+    =/  pa=path  (flop t.rev)
+    ?.  (indexed dsk pa)  [wide-out docs-out]
+    [wide-out (~(put in docs-out) [dsk pa])]
+  =.  wide  new-wide
+  =.  docs  new-docs
+  =/  [wide-cards=(list card) wide-cache=(map @t @uv)]
+    =/  desks=(list desk)  ~(tap in wide)
+    =/  cards=(list card)  ~
+    =/  cache=(map @t @uv)  old
+    |-
+    ?~  desks  [cards cache]
+    =/  [next-cards=(list card) next-cache=(map @t @uv)]
+      (refresh-desk cache i.desks)
+    $(desks t.desks, cards (weld cards next-cards), cache next-cache)
+  =/  files=(list [desk path])  ~(tap in docs)
+  =/  cards=(list card)  wide-cards
+  =/  cache=(map @t @uv)  wide-cache
+  |-
+  ?~  files  [cards cache]
+  =/  [dsk=desk pa=path]  i.files
+  ?:  (~(has in wide) dsk)  $(files t.files)
+  =/  [next-cards=(list card) next-cache=(map @t @uv)]
+    (refresh-doc cache dsk pa)
+  $(files t.files, cards (weld cards next-cards), cache next-cache)
+:: map a physical source path to its logical documentation desk and path
+::
+++  source-target
+  |=  [src=desk pax=path]
+  ^-  (unit [desk path])
+  ?+  pax  ~
+    [%doc %inc @ %doc *]
+      ?.  =(%docs src)  ~
+      `[i.t.t.pax t.t.t.t.pax]
+    [%doc *]  `[src t.pax]
+  ==
+:: test whether a logical page is currently present in a desk's ToC
+::
+++  indexed
+  |=  [dsk=desk pa=path]
+  ^-  ?
+  =/  utoc=(unit [? =toc])  (read-toc dsk)
+  ?~  utoc  |
+  %+  lien  toc.u.utoc
+  |=  =ent
+  ?&  ?=(%fil -.ent)
+      ?=(^ pa.ent)
+      =(pa (flop t.pa.ent))
+  ==
+:: construct the paths watched by one Clay %mult subscription
+::
+++  watch-paths
+  |=  src=desk
+  ^-  (set (pair care:clay path))
+  =/  paths=(set (pair care:clay path))
+    =/  initial=(list (pair care:clay path))
+      ?:  .^(? %cu (scrio src /doc/toc))
+        ~[[%x /doc/toc]]
+      ?:  .^(? %cu (scrio src /doc/clue))
+        ~[[%x /doc/clue]]
+      ~[[%t /doc]]
+    (silt initial)
+  %-  ~(gas in paths)
+  %-  zing
+  %+  murn  ~(tap by desk-map)
+  |=  [target=desk *]
+  ^-  (unit (list (pair care:clay path)))
+  =/  utoc=(unit [inc=? =toc])  (read-toc target)
+  ?~  utoc  ~
+  =/  physical=desk  ?:(inc.u.utoc %docs target)
+  ?.  =(src physical)  ~
+  =/  base=path  ?.(inc.u.utoc /doc /doc/inc/[target]/doc)
+  =/  files=(list (pair care:clay path))
+    %+  murn  toc.u.utoc
+    |=  =ent
+    ?.  ?=(%fil -.ent)  ~
+    ?>  ?=(^ pa.ent)
+    `[%x (weld base (flop pa.ent))]
+  =/  result=(list (pair care:clay path))
+    ?.  inc.u.utoc  files
+    =/  index-path=path
+      ?:  .^(? %cu (scrio src (snoc base %toc)))
+        (snoc base %toc)
+      (snoc base %clue)
+    [[%x index-path] files]
+  `result
+:: subscribe to the exact set of documentation inputs on one desk
+::
+++  watch-desk
+  |=  dsk=desk
+  ^-  (list card)
+  %+  turn  ~(tap in (watch-paths dsk))
+  |=  [car=care:clay pax=path]
+  (watch-path dsk car pax)
+:: subscribe to one documentation input, encoding it in the response wire
+::
+++  watch-path
+  |=  [dsk=desk car=care:clay pax=path]
+  ^-  card
+  =/  wir=wire  (weld /clay/[dsk]/[car] pax)
+  (~(warp-our pass wir) dsk ~ %next car da+now.bowl pax)
+:: cancel current per-path watches and the former whole-desk watch wire
+::
+++  cancel-desk
+  |=  dsk=desk
+  ^-  (list card)
+  :-  (~(warp-our pass /clay/[dsk]) dsk ~)
+  :-  (~(warp-our pass /clay/[dsk]/t/doc) dsk ~)
+  %+  turn  ~(tap in (watch-paths dsk))
+  |=  [car=care:clay pax=path]
+  =/  wir=wire  (weld /clay/[dsk]/[car] pax)
+  (~(warp-our pass wir) dsk ~)
+:: whether a changed input requires rebuilding and re-watching a whole desk
+::
+++  wide-change
+  |=  [src=desk car=care:clay pax=path]
+  ^-  ?
+  ?:  =(%t car)  &
+  =/  mapped=(unit [desk path])  (source-target src pax)
+  ?~  mapped  |
+  =/  [dsk=desk rem=path]  u.mapped
+  ?|  =(/toc rem)
+      =(/clue rem)
+  ==
+:: create and cancel Clay subscriptions as the live desk set changes
+::
+++  watch-cards
+  |=  [old=(set desk) live=(set desk)]
+  ^-  (list card)
+  =/  added=(set desk)  (~(dif in live) old)
+  =/  removed=(set desk)  (~(dif in old) live)
+  =/  adds=(list card)
+    %-  zing
+    %+  turn  ~(tap in added)
+    |=  dsk=desk
+    (watch-desk dsk)
+  =/  dels=(list card)
+    %-  zing
+    %+  turn  ~(tap in removed)
+    |=  dsk=desk
+    (cancel-desk dsk)
+  (weld adds dels)
 ::
 ++  make-doc
   |=  [dsk=desk pa=path]
@@ -265,8 +695,8 @@
       ;title: Docs
       ;meta(charset "utf-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1");
-      ;link(rel "stylesheet", href "/~/scry/docs/style/var.css");
-      ;link(rel "stylesheet", href "/~/scry/docs/style/index.css");
+      ;link(rel "stylesheet", href "/docs/assets/style/var.css");
+      ;link(rel "stylesheet", href "/docs/assets/style/index.css");
     ==
     ;body
       ;div.app-shell
@@ -367,8 +797,8 @@
       ;title: {ttl}
       ;meta(charset "utf-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1");
-      ;link(rel "stylesheet", href "/~/scry/docs/style/var.css");
-      ;link(rel "stylesheet", href "/~/scry/docs/style/page.css");
+      ;link(rel "stylesheet", href "/docs/assets/style/var.css");
+      ;link(rel "stylesheet", href "/docs/assets/style/page.css");
     ==
     ;body
       ;div.app-shell
@@ -416,8 +846,8 @@
       ;title: Docs Error
       ;meta(charset "utf-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1");
-      ;link(rel "stylesheet", href "/~/scry/docs/style/var.css");
-      ;link(rel "stylesheet", href "/~/scry/docs/style/err.css");
+      ;link(rel "stylesheet", href "/docs/assets/style/var.css");
+      ;link(rel "stylesheet", href "/docs/assets/style/err.css");
     ==
     ;body
       ;div.err
