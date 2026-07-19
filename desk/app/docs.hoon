@@ -188,15 +188,6 @@
   ^-  (unit (unit cage))
   ?+    path  (on-peek:def path)
   ::
-      [%x %font %source-sans-3-upright ~]
-    ``woff2+!>(.^(octs %cx /(scot %p our.bowl)/docs/(scot %da now.bowl)/app/docs/fonts/source-sans-3-upright/woff2))
-      [%x %font %source-sans-3-italic ~]
-    ``woff2+!>(.^(octs %cx /(scot %p our.bowl)/docs/(scot %da now.bowl)/app/docs/fonts/source-sans-3-italic/woff2))
-      [%x %font %sourcecodepro-regular ~]
-    ``woff2+!>(.^(octs %cx /(scot %p our.bowl)/docs/(scot %da now.bowl)/app/docs/fonts/sourcecodepro-regular/woff2))
-      [%x %font %sourcecodepro-semibold ~]
-    ``woff2+!>(.^(octs %cx /(scot %p our.bowl)/docs/(scot %da now.bowl)/app/docs/fonts/sourcecodepro-semibold/woff2))
-  ::
       [%x kind ~]
     :^  ~  ~  %html  !>
     ^-  @t
@@ -369,6 +360,10 @@
         ['/docs/assets/style/index.css' 'text/css' (as-octs:mimes:html index:css)]
         ['/docs/assets/style/page.css' 'text/css' (as-octs:mimes:html page:css)]
         ['/docs/assets/style/err.css' 'text/css' (as-octs:mimes:html err:css)]
+        ['/docs/assets/font/source-sans-3-upright.woff2' 'font/woff2' .^(octs %cx (scrio %docs /app/docs/fonts/source-sans-3-upright/woff2))]
+        ['/docs/assets/font/source-sans-3-italic.woff2' 'font/woff2' .^(octs %cx (scrio %docs /app/docs/fonts/source-sans-3-italic/woff2))]
+        ['/docs/assets/font/sourcecodepro-regular.woff2' 'font/woff2' .^(octs %cx (scrio %docs /app/docs/fonts/sourcecodepro-regular/woff2))]
+        ['/docs/assets/font/sourcecodepro-semibold.woff2' 'font/woff2' .^(octs %cx (scrio %docs /app/docs/fonts/sourcecodepro-semibold/woff2))]
     ==
   %-  ~(gas by pages)
   %-  zing
@@ -695,6 +690,7 @@
       ;title: Docs
       ;meta(charset "utf-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1");
+      ;link(rel "preload", href "/docs/assets/font/source-sans-3-upright.woff2", as "font", type "font/woff2", crossorigin "anonymous");
       ;link(rel "stylesheet", href "/docs/assets/style/var.css");
       ;link(rel "stylesheet", href "/docs/assets/style/index.css");
     ==
@@ -797,6 +793,7 @@
       ;title: {ttl}
       ;meta(charset "utf-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1");
+      ;link(rel "preload", href "/docs/assets/font/source-sans-3-upright.woff2", as "font", type "font/woff2", crossorigin "anonymous");
       ;link(rel "stylesheet", href "/docs/assets/style/var.css");
       ;link(rel "stylesheet", href "/docs/assets/style/page.css");
     ==
@@ -846,6 +843,7 @@
       ;title: Docs Error
       ;meta(charset "utf-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1");
+      ;link(rel "preload", href "/docs/assets/font/source-sans-3-upright.woff2", as "font", type "font/woff2", crossorigin "anonymous");
       ;link(rel "stylesheet", href "/docs/assets/style/var.css");
       ;link(rel "stylesheet", href "/docs/assets/style/err.css");
     ==
