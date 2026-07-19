@@ -39,3 +39,13 @@ github base-dev:
     - mar/xhtml.hoon
   priority: 10
   revision: 0a9a312e133891937de9c4df1ebecad5cf669c7c
+
+github urbit-markdown:
+  repo: wispem-wantex/urbit-markdown
+  branch: master
+  include:
+    - lib/markdown.hoon
+    - mar/md.hoon
+    - sur/markdown.hoon
+  priority: 8
+  revision: d66a3b96d74ccc20ac99cab14a52cbb057570b27

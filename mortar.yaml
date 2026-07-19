@@ -42,3 +42,13 @@ github landscape-dev:
     - sur/docket.hoon
   priority: 9
   revision: 46c6ed8738082b6a94558710b1e3619befa83057
+
+github urbit-markdown:
+  repo: wispem-wantex/urbit-markdown
+  branch: master
+  include:
+    - lib/markdown.hoon
+    - mar/md.hoon
+    - sur/markdown.hoon
+  priority: 8
+  revision: d66a3b96d74ccc20ac99cab14a52cbb057570b27
