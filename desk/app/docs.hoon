@@ -255,23 +255,36 @@
     ;head
       ;title: Docs
       ;meta(charset "utf-8");
+      ;meta(name "viewport", content "width=device-width, initial-scale=1");
       ;link(rel "stylesheet", href "/~/scry/docs/style/var.css");
       ;link(rel "stylesheet", href "/~/scry/docs/style/index.css");
     ==
     ;body
-      ;div
-        ;header
-          ;h1: Docs
+      ;div.app-shell
+        ;header.site-header
+          ;a.brand(href "/docs")
+            ;span.brand-mark: D
+            ;span: Docs
+          ==
           ;form(method "post")
-            ;button
+            ;button.theme-toggle
               =type   "submit"
               =name   "mode"
               =value  ?:(dark "light" "dark")
-              ;+  ;/  ?:(dark "[light]" "[dark]")
+              ;+  ;/  ?:(dark "Use light theme" "Use dark theme")
             ==
           ==
         ==
-        ;*  make-index
+        ;main.index-main
+          ;div.index-intro
+            ;p.eyebrow: Library
+            ;h1: Documentation
+            ;p: Browse the guides, references, and manuals published by desks on this ship.
+          ==
+          ;div.library-grid
+            ;*  make-index
+          ==
+        ==
       ==
     ==
   ==
@@ -280,13 +293,21 @@
 ++  navbar
   |=  utoc=(unit manx)
   ^-  manx
-  ?~  utoc  ;nav;
-  ;nav
-    ;div
-      ;hr;
-      ;h2: Table of Contents
+  ?~  utoc  ;aside.page-toc;
+  ;aside.page-toc
+    ;nav.page-toc-nav.page-toc-desktop
+      ;p.toc-label: On this page
       ;+  u.utoc
-      ;hr;
+    ==
+    ;details.page-toc-details.page-toc-mobile
+      ;summary.page-toc-summary
+        ;span: On this page
+        ;span.page-toc-chevron: ↓
+      ==
+      ;nav.page-toc-nav
+        ;p.toc-label: On this page
+        ;+  u.utoc
+      ==
     ==
   ==
 :: render header element
@@ -294,9 +315,18 @@
 ++  header
   |=  [nam=tape menu=manx]
   ^-  manx
-  ;header
-    ;h1: {nam}
-    ;+  menu
+  ;header.doc-header
+    ;div.doc-topbar
+      ;a.brand(href "/docs")
+        ;span.brand-mark: D
+        ;span: Docs
+      ==
+      ;+  menu
+    ==
+    ;div.doc-heading
+      ;p.eyebrow: Document
+      ;h1: {nam}
+    ==
   ==
 :: render desk ToC menu
 ::
@@ -304,11 +334,16 @@
   |=  [dsk=desk dsk-nam=tape =toc]
   ^-  manx
   =/  menu  (ent-to-manx dsk toc)
-  ;div.dropdown
-    ;a/"/docs"
-      ;h2: {dsk-nam}
+  ;details.desk-menu
+    ;summary
+      ;span.desk-menu-label: Browse desk
+      ;span.desk-menu-name: {dsk-nam}
     ==
-    ;div.dropdown-content
+    ;nav.desk-menu-panel
+      ;div.desk-menu-heading
+        ;span: {dsk-nam}
+        ;a(href "/docs#{(trip dsk)}"): View in library
+      ==
       ;+  ?~  menu  ;/("")
           u.menu
     ==
@@ -322,15 +357,18 @@
     ;head
       ;title: {ttl}
       ;meta(charset "utf-8");
+      ;meta(name "viewport", content "width=device-width, initial-scale=1");
       ;link(rel "stylesheet", href "/~/scry/docs/style/var.css");
       ;link(rel "stylesheet", href "/~/scry/docs/style/page.css");
     ==
     ;body
-      ;div
+      ;div.app-shell
         ;+  hed
-        ;+  toc
-        ;main
-          ;+  cnt
+        ;div.content-grid
+          ;+  toc
+          ;main.document-content
+            ;+  cnt
+          ==
         ==
         ;+  fot
       ==
@@ -339,16 +377,24 @@
 :: render doc footer element
 ::
 ++  footer
-  |=  [prv=path nxt=path]
+  |=  [prv=(unit (pair path tape)) nxt=(unit (pair path tape))]
   ^-  manx
-  ;footer
-    ;div
+  ;footer.page-footer
+    ;div.pager-slot
       ;+  ?~  prv  ;/("\c2\a0")
-          ;a(href (spud prv)): ← Previous
+          ;a.pager-link(href (spud p.u.prv))
+            ;span.pager-direction: Previous
+            ;span.pager-title: {q.u.prv}
+            ;span.pager-arrow: ←
+          ==
     ==
-    ;div
+    ;div.pager-slot.next
       ;+  ?~  nxt  ;/("\c2\a0")
-          ;a(href (spud nxt)): Next →
+          ;a.pager-link(href (spud p.u.nxt))
+            ;span.pager-direction: Next
+            ;span.pager-title: {q.u.nxt}
+            ;span.pager-arrow: →
+          ==
     ==
   ==
 :: render error page
@@ -360,12 +406,14 @@
     ;head
       ;title: Docs Error
       ;meta(charset "utf-8");
+      ;meta(name "viewport", content "width=device-width, initial-scale=1");
       ;link(rel "stylesheet", href "/~/scry/docs/style/var.css");
       ;link(rel "stylesheet", href "/~/scry/docs/style/err.css");
     ==
     ;body
       ;div.err
-        ;p: The following error occurred:
+        ;p.eyebrow: Docs could not render this page
+        ;h1: Something went sideways.
         ;pre
           ;+  ;/
               ^-  tape
@@ -377,7 +425,7 @@
               (turn err (cury wash [0 40]))
         ==
         ;p
-          ;a/"/docs#{(trip dsk)}": Return to index
+          ;a/"/docs#{(trip dsk)}": ← Return to the library
         ==
       ==
     ==
@@ -386,7 +434,6 @@
 ::
 ++  make-index
   ^-  marl
-  %+  join  `manx`;hr;
   %+  turn
     %+  sort
       %+  skim
@@ -405,8 +452,11 @@
   |=  [dsk=desk nam=tape u=(unit [? =toc])]
   ^-  manx
   ?>  ?=(^ u)
-  ;section(id (trip dsk))
-    ;h2: {nam}
+  ;section.desk-card(id (trip dsk))
+    ;div.desk-card-heading
+      ;span.desk-glyph: D
+      ;h2: {nam}
+    ==
     ;+  =+  (ent-to-manx dsk toc.u.u)
         ?~  -  ;/("")  u.-
   ==
@@ -453,28 +503,32 @@
 ::
 ++  prev-next
   |=  [t=toc dsk=desk pa=path]
-  |^  ^-  [path path]
+  |^  ^-  [(unit (pair path tape)) (unit (pair path tape))]
   =.  pa  (flop pa)
-  =/  files=(list path)  (file-paths t)
-  =/  ind=(unit @)  (find ~[pa] files)
+  =/  files=(list (pair path @t))  (file-paths t)
+  =/  ind=(unit @)
+    %+  find  ~[pa]
+    (turn files |=(x=(pair path @t) p.x))
   ?~  ind  [~ ~]
-  =/  prev=path
+  =/  prev=(unit (pair path tape))
     ?:  =(0 u.ind)  ~
-    [%docs dsk (flop `path`(snag (dec u.ind) files))]
-  =/  next=path
+    =/  ent=(pair path @t)  (snag (dec u.ind) files)
+    `[[%docs dsk (flop p.ent)] (trip q.ent)]
+  =/  next=(unit (pair path tape))
     ?:  =(u.ind (dec (lent files)))  ~
-    [%docs dsk (flop `path`(snag +(u.ind) files))]
+    =/  ent=(pair path @t)  (snag +(u.ind) files)
+    `[[%docs dsk (flop p.ent)] (trip q.ent)]
   [prev next]
   ++  file-paths
     |=  =toc
-    ^-  (list path)
+    ^-  (list (pair path @t))
     %-  flop
     %+  roll  toc
-    |=  [e=ent acc=(list path)]
+    |=  [e=ent acc=(list (pair path @t))]
     ?:  ?=(%dir -.e)
       acc
     ?>  ?=(^ pa.e)
-    [t.pa.e acc]
+    [[t.pa.e nam.e] acc]
   --
 :: make map of installed desks to names
 ::
