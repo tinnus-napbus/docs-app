@@ -195,20 +195,9 @@
 ::
 ++  input-attrs-ok
   |=  attrs=mart
-  =|  saw-type=?
-  =|  saw-checked=?
-  |-
-  ?~  attrs  saw-type
-  ?+  n.i.attrs  %.n
-      %type
-    ?:  saw-type  %.n
-    ?.  =("checkbox" v.i.attrs)  %.n
-    $(attrs t.attrs, saw-type %.y)
-  ::
-      %checked
-    ?:  saw-checked  %.n
-    ?.  =("true" v.i.attrs)  %.n
-    $(attrs t.attrs, saw-checked %.y)
+  ?|  =(attrs ~[[%type "checkbox"]])
+      =(attrs ~[[%type "checkbox"] [%checked "true"]])
+      =(attrs ~[[%checked "true"] [%type "checkbox"]])
   ==
 :: strip attributes except where necessary
 ::
