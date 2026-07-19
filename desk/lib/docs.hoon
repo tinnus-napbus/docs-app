@@ -36,11 +36,19 @@
     %q
     %small
     %span
+    %strike
     %strong
     %sub
     %sup
+    %table
+    %tbody
+    %td
+    %th
+    %thead
     %time
+    %tr
     %ul
+    %input
     %var
   ==
 :: header contents whitelist
@@ -51,15 +59,19 @@
   ^-  (list mane)
   :~
     %$
+    %a
     %b
+    %br
     %code
     %del
     %em
     %i
+    %img
     %ins
     %q
     %small
     %span
+    %strike
     %strong
     %sub
     %sup
@@ -83,6 +95,10 @@
       ?.  ?=(?(%h1 %h2 %h3 %h4 %h5 %h6) n.g.x)  %.y
       (~(whitelisted mu x(n.g %$)) head-ok)
     [~ leaf+"disallowed tag in heading" ~]
+  :: check table nesting and constrain inputs to Markdown task checkboxes
+  ::
+  =/  bad-structure=(unit tang)  (check-structure x ~)
+  ?^  bad-structure  bad-structure
   :: check rest of contents are ok
   ::
   %-  ~(post-fold mu x)
@@ -105,6 +121,94 @@
     ?.  ?|(?=(@ a.g) ?=(^ t.a.g) !=(n.i.a.g %$))
       ~
     [~ leaf+"malformed content" ~]
+  ==
+:: check the structure of elements with restricted content models
+::
+++  check-structure
+  |=  [x=manx parent=(unit mane)]
+  ^-  (unit tang)
+  :: table elements may only occur in their expected parent
+  ::
+  ?.  (parent-child-ok parent n.g.x)
+    [~ leaf+"element is not allowed in its table container" ~]
+  :: table containers must themselves have the expected parent
+  ::
+  ?.  (element-parent-ok n.g.x parent)
+    [~ leaf+"table element has an invalid parent" ~]
+  :: table cells contain the same safe inline elements as headings
+  ::
+  ?.  (cell-contents-ok x)
+    [~ leaf+"disallowed tag in table cell" ~]
+  :: inputs are void elements with exactly type=checkbox and optional checked=true
+  ::
+  ?.  (input-node-ok x)
+    [~ leaf+"only empty Markdown checkbox inputs are allowed" ~]
+  :: recurse through children
+  ::
+  %+  roll  c.x
+  |=  [kid=manx err=(unit tang)]
+  ?^  err  err
+  (check-structure kid `n.g.x)
+:: restrict direct children of table containers
+::
+++  parent-child-ok
+  |=  [parent=(unit mane) child=mane]
+  ^-  ?
+  ?~  parent  %.y
+  ?+  u.parent  %.y
+    %table  ?=(?(%thead %tbody) child)
+    %thead  ?=(%tr child)
+    %tbody  ?=(%tr child)
+    %tr     ?=(?(%th %td) child)
+  ==
+:: restrict table elements to the corresponding container
+::
+++  element-parent-ok
+  |=  [child=mane parent=(unit mane)]
+  ^-  ?
+  ?.  ?=(?(%thead %tbody %tr %th %td %input) child)  %.y
+  ?~  parent  %.n
+  ?-  child
+    %thead  =(%table u.parent)
+    %tbody  =(%table u.parent)
+    %tr     ?=(?(%thead %tbody) u.parent)
+    %th     =(%tr u.parent)
+    %td     =(%tr u.parent)
+    %input  =(%li u.parent)
+  ==
+:: table cells use the safe inline-content whitelist
+::
+++  cell-contents-ok
+  |=  x=manx
+  ^-  ?
+  ?.  ?=(?(%th %td) n.g.x)  %.y
+  (~(whitelisted mu x(n.g %$)) head-ok)
+:: validate the whole input node, including its void content model
+::
+++  input-node-ok
+  |=  x=manx
+  ^-  ?
+  ?.  ?=(%input n.g.x)  %.y
+  ?^  c.x  %.n
+  (input-attrs-ok a.g.x)
+:: validate the complete attribute set of a Markdown task checkbox
+::
+++  input-attrs-ok
+  |=  attrs=mart
+  =|  saw-type=?
+  =|  saw-checked=?
+  |-
+  ?~  attrs  saw-type
+  ?+  n.i.attrs  %.n
+      %type
+    ?:  saw-type  %.n
+    ?.  =("checkbox" v.i.attrs)  %.n
+    $(attrs t.attrs, saw-type %.y)
+  ::
+      %checked
+    ?:  saw-checked  %.n
+    ?.  =("true" v.i.attrs)  %.n
+    $(attrs t.attrs, saw-checked %.y)
   ==
 :: strip attributes except where necessary
 ::
@@ -131,7 +235,22 @@
       %a
     =/  am  (~(gas by *(map mane tape)) a.g)
     ?.  (~(has by am) %href)  g(a ~)
-    g(a [%href (~(got by am) %href)]~)
+    =/  out=mart  [[%href (~(got by am) %href)] ~]
+    =.  out  ?.  (~(has by am) %title)  out
+             [[%title (~(got by am) %title)] out]
+    g(a out)
+  ::
+      %code
+    =/  am  (~(gas by *(map mane tape)) a.g)
+    ?.  (~(has by am) %class)
+      g(a ~)
+    =/  lng=(unit @t)
+      %+  rust
+        (~(got by am) %class)
+      ;~(sfix (jest 'language-') (star next))
+    ?~  lng
+      g(a ~)
+    g(a [%class (~(got by am) %class)]~)
   ::
       %pre
     =/  am  (~(gas by *(map mane tape)) a.g)
@@ -144,6 +263,36 @@
     ?~  lng
       g(a ~)
     g(a [%class (~(got by am) %class)]~)
+  ::
+      %ol
+    =/  am  (~(gas by *(map mane tape)) a.g)
+    ?.  (~(has by am) %start)  g(a ~)
+    =/  num=(unit tape)  (rust (~(got by am) %start) (plus nud))
+    ?~  num  g(a ~)
+    g(a [%start (~(got by am) %start)]~)
+  ::
+      ?(%th %td)
+    =/  am  (~(gas by *(map mane tape)) a.g)
+    ?.  (~(has by am) %align)  g(a ~)
+    =/  align=tape  (~(got by am) %align)
+    ?.  ?|(=(align "") =(align "left") =(align "center") =(align "right"))
+      g(a ~)
+    g(a [%align align]~)
+  ::
+      %ul
+    =/  am  (~(gas by *(map mane tape)) a.g)
+    ?.  ?&((~(has by am) %class) =("task-list" (~(got by am) %class)))
+      g(a ~)
+    g(a [%class "task-list"]~)
+  ::
+      %input
+    =/  am  (~(gas by *(map mane tape)) a.g)
+    =|  out=mart
+    =.  out  [[%type "checkbox"] out]
+    =.  out  ?.  (~(has by am) %checked)  out
+             [[%checked "true"] out]
+    =.  out  [[%disabled "disabled"] out]
+    g(a out)
   ==
 :: syntax highlight codeblocks
 ::
@@ -156,15 +305,33 @@
   ^-  manx
   ?.  ?=(%pre n.g.x)        x
   ?~  c.x  (hler ~ (b16-gen ""))
-  ?.  ?=(%$ n.g.i.c.x)      x
-  ?~  a.g.i.c.x             x
-  ?.  ?=(%$ n.i.a.g.i.c.x)  x
-  ?~  a.g.x  (hler ~ (b16-gen v.i.a.g.i.c.x))
-  ?:  =([%class "language-json"] i.a.g.x)
-    (hler `v.i.a.g.x (b16-json v.i.a.g.i.c.x))
-  ?:  =([%class "language-plaintext"] i.a.g.x)
-    (hler `v.i.a.g.x (b16-gen v.i.a.g.i.c.x))
-  (hler ~ (b16-gen v.i.a.g.i.c.x))
+  ?:  ?=(%$ n.g.i.c.x)
+    ?~  a.g.i.c.x  x
+    ?.  ?=(%$ n.i.a.g.i.c.x)  x
+    (highlight-block a.g.x v.i.a.g.i.c.x sch)
+  ?.  ?=(%code n.g.i.c.x)  x
+  ?^  t.c.x  x
+  ?~  c.i.c.x  (highlight-block a.g.i.c.x "" sch)
+  ?^  t.c.i.c.x  x
+  ?.  ?=(%$ n.g.i.c.i.c.x)  x
+  ?~  a.g.i.c.i.c.x  x
+  ?.  ?=(%$ n.i.a.g.i.c.i.c.x)  x
+  (highlight-block a.g.i.c.x v.i.a.g.i.c.i.c.x sch)
+:: highlight a code block using a validated language class
+::
+++  highlight-block
+  |=  [attrs=mart txt=tape =sch]
+  ^-  manx
+  =/  hler  ~(highlight b16 sch)
+  =/  am  (~(gas by *(map mane tape)) attrs)
+  ?.  (~(has by am) %class)
+    (hler ~ (b16-gen txt))
+  =/  class=tape  (~(got by am) %class)
+  ?:  =("language-json" class)
+    (hler `class (b16-json txt))
+  ?:  =("language-plaintext" class)
+    (hler `class (b16-gen txt))
+  (hler ~ (b16-gen txt))
 :: make an id for a section
 ::
 :: apply section headers and produce marl for ToC
@@ -198,7 +365,7 @@
   ++  make-id
     |=  x=manx
     ^-  tape
-    =-  ?~(- "x" -)
+    =-  ?~(- "section" -)
     ^-  tape
     %-  zing
     %+  join  "-"
@@ -267,9 +434,12 @@
     ^-  manx
     ?>  ?=(^ a.g.x)
     ?>  ?=(%id n.i.a.g.x)
+    =/  txt=tape  (zing ~(post-get-text mu x))
     ;li
       ;a(href ['#' v.i.a.g.x])
-        ;*  c.x
+        ;+  ?:  =(txt "")
+              ;span: Section
+            ;span: {txt}
       ==
     ==
   --

@@ -302,6 +302,21 @@ summary:focus-visible {
 .document-content li > p + p { margin-top: 0.75em; }
 .document-content li > ul,
 .document-content li > ol { margin: 0.5em 0 0.65em; }
+.document-content ul.task-list { padding-left: 0.15em; list-style: none; }
+.document-content ul.task-list > li {
+  display: grid;
+  grid-template-columns: 1.1em minmax(0, 1fr);
+  column-gap: 0.6em;
+  padding-left: 0;
+}
+.document-content ul.task-list > li > input[type="checkbox"] {
+  grid-column: 1;
+  width: 1em;
+  height: 1em;
+  margin: 0.38em 0 0;
+  accent-color: var(--accent-color);
+}
+.document-content ul.task-list > li > :not(input) { grid-column: 2; }
 .document-content strong,
 .document-content b { font-weight: 600; }
 .document-content small { font-size: 0.875em; }
@@ -410,6 +425,10 @@ summary:focus-visible {
 }
 
 .document-content th { background: var(--surface-subtle); font-weight: 600; }
+.document-content th[align="center"],
+.document-content td[align="center"] { text-align: center; }
+.document-content th[align="right"],
+.document-content td[align="right"] { text-align: right; }
 .document-content tr:last-child td { border-bottom: 0; }
 
 .page-footer {
