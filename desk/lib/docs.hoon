@@ -321,6 +321,32 @@
   ?:  =("language-plaintext" class)
     (hler `class (b16-gen txt))
   (hler ~ (b16-gen txt))
+:: extract readable heading text, substituting image alt text for the image
+::
+++  heading-text
+  |=  x=manx
+  ^-  tape
+  ?:  =(%img n.g.x)
+    =/  attrs  (~(gas by *(map mane tape)) a.g.x)
+    (fall (~(get by attrs) %alt) "")
+  ?:  =(%$ n.g.x)
+    ?~  a.g.x  ""
+    ?.  =(%$ n.i.a.g.x)  ""
+    v.i.a.g.x
+  %-  zing
+  (turn c.x heading-text)
+:: lowercase, collapse punctuation to one hyphen, and trim edge hyphens
+::
+++  slugify
+  |=  text=tape
+  ^-  tape
+  %+  scan  (cass text)
+  %+  ifix  [(star ;~(less aln next)) (star next)]
+  %-  star
+  ;~  pose
+    aln
+    ;~(sfix (cold '-' (plus ;~(less aln next))) ;~(simu next (easy ~)))
+  ==
 :: make an id for a section
 ::
 :: apply section headers and produce marl for ToC
@@ -336,12 +362,15 @@
     [(flop tocs) x(c (flop c))]
   ?.  ?=(?(%h1 %h2 %h3 %h4 %h5 %h6) n.g.i.c.x)
     $(c.x t.c.x, c [i.c.x c])
-  =+  nid=[txt=(make-id i.c.x) num=0]
+  =/  nid=[txt=tape num=@ud]
+    =/  txt=tape  (make-id i.c.x)
+    =/  num=@ud  0
+    |-
+    ?:  (~(has in ids) [txt num])
+      $(num +(num))
+    [txt num]
   =.  a.g.i.c.x
     :_  ~  :-  %id
-    |-
-    ?:  (~(has in ids) nid)
-      $(num.nid +(num.nid))
     ?:  =(0 num.nid)  txt.nid
     "{txt.nid}-{(a-co:co num.nid)}"
   %=  $
@@ -354,16 +383,9 @@
   ++  make-id
     |=  x=manx
     ^-  tape
-    =-  ?~(- "section" -)
-    ^-  tape
-    %-  zing
-    %+  join  "-"
-    ^-  wall
-    %+  turn
-      ~(post-get-text mu x)
-    |=  t=tape
-    ^-  tape
-    (scan (cass t) (star ;~(pose aln (cold '-' next))))
+    =/  slug=tape  (slugify (heading-text x))
+    ?~  slug  "section"
+    slug
   --
 :: turn a list of processed h1-3 headers into a ToC
 ::
@@ -423,7 +445,7 @@
     ^-  manx
     ?>  ?=(^ a.g.x)
     ?>  ?=(%id n.i.a.g.x)
-    =/  txt=tape  (zing ~(post-get-text mu x))
+    =/  txt=tape  (heading-text x)
     ;li
       ;a(href ['#' v.i.a.g.x])
         ;+  ?:  =(txt "")
