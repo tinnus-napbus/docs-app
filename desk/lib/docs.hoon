@@ -139,7 +139,7 @@
   ::
   ?.  (cell-contents-ok x)
     [~ leaf+"disallowed tag in table cell" ~]
-  :: inputs are void elements with exactly type=checkbox and optional checked=true
+  :: inputs are void elements with type=checkbox and optional checked/disabled
   ::
   ?.  (input-node-ok x)
     [~ leaf+"only empty Markdown checkbox inputs are allowed" ~]
@@ -195,10 +195,19 @@
 ::
 ++  input-attrs-ok
   |=  attrs=mart
-  ?|  =(attrs ~[[%type "checkbox"]])
-      =(attrs ~[[%type "checkbox"] [%checked "true"]])
-      =(attrs ~[[%checked "true"] [%type "checkbox"]])
-  ==
+  =/  am  (~(gas by *(map mane tape)) attrs)
+  :: reject duplicate attributes before checking the permitted set
+  ?.  =((lent attrs) ~(wyt by am))  %.n
+  ?.  (~(has by am) %type)  %.n
+  ?.  =("checkbox" (~(got by am) %type))  %.n
+  =/  checked=(unit tape)   (~(get by am) %checked)
+  =/  disabled=(unit tape)  (~(get by am) %disabled)
+  ?.  ?~(checked %.y =("true" u.checked))  %.n
+  ?.  ?~(disabled %.y =("disabled" u.disabled))  %.n
+  =/  expected=@  1
+  =.  expected  ?~(checked expected +(expected))
+  =.  expected  ?~(disabled expected +(expected))
+  =(expected ~(wyt by am))
 :: strip attributes except where necessary
 ::
 ++  strip-attrs
