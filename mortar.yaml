@@ -44,11 +44,11 @@ github landscape-dev:
   revision: 46c6ed8738082b6a94558710b1e3619befa83057
 
 github urbit-markdown:
-  repo: wispem-wantex/urbit-markdown
-  branch: master
+  repo: tinnus-napbus/urbit-markdown
+  branch: updates
   include:
     - lib/markdown.hoon
     - mar/md.hoon
     - sur/markdown.hoon
   priority: 8
-  revision: d66a3b96d74ccc20ac99cab14a52cbb057570b27
+  revision: ad19332ad65dd489a0fa63982cac5d0fb715e756
