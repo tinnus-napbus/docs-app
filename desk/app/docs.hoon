@@ -1137,43 +1137,65 @@
           ==
           ;form.settings-form(method "post", action "/docs/settings")
             ;input(type "hidden", name "section", value "appearance");
-            ;fieldset.theme-options
-              ;legend: Color theme
-              ;+  (theme-option %system "System" "Follow your browser or operating system setting.")
-              ;+  (theme-option %light "Light" "Always use the light color theme.")
-              ;+  (theme-option %dark "Dark" "Always use the dark color theme.")
+            ;div.settings-card-header
+              ;span.settings-card-glyph: A
+              ;div
+                ;h2: Appearance
+                ;p: Choose how documentation is displayed in this browser.
+              ==
             ==
-            ;button.save-settings(type "submit"): Save appearance
+            ;div.settings-card-body
+              ;fieldset.theme-options
+                ;legend: Color theme
+                ;+  (theme-option %system "System" "Follow your browser or operating system setting.")
+                ;+  (theme-option %light "Light" "Always use the light color theme.")
+                ;+  (theme-option %dark "Dark" "Always use the dark color theme.")
+              ==
+            ==
+            ;div.settings-card-footer
+              ;button.save-settings(type "submit"): Save appearance
+            ==
           ==
           ;form.settings-form.publication-form(method "post", action "/docs/settings")
             ;input(type "hidden", name "section", value "publication");
-            ;label.publication-toggle
-              ;+  ?:  public-enabled
-                    ;input(type "checkbox", name "enabled", value "true", checked "checked");
-                  ;input(type "checkbox", name "enabled", value "true");
-              ;span.theme-option-copy
-                ;span.theme-option-title: Enable public documentation
-                ;span.theme-option-description: Publish the public library index and the selected desks without requiring sign-in.
+            ;div.settings-card-header
+              ;span.settings-card-glyph: P
+              ;div
+                ;h2: Public access
+                ;p: Control which documentation can be read without signing in.
               ==
             ==
-            ;fieldset.publication-options
-              ;legend: Public documentation
-              ;p.field-help: Select the desks to publish whenever public documentation is enabled.
-              ;div.publication-list
-                ;*  publication-options
+            ;div.settings-card-body
+              ;label.publication-toggle
+                ;+  ?:  public-enabled
+                      ;input(type "checkbox", name "enabled", value "true", checked "checked");
+                    ;input(type "checkbox", name "enabled", value "true");
+                ;span.theme-option-copy
+                  ;span.theme-option-title: Enable public documentation
+                  ;span.theme-option-description: Publish the public library index and the selected desks without requiring sign-in.
+                ==
+              ==
+              ;fieldset.publication-options
+                ;legend: Published desks
+                ;p.field-help: Select the desks to include whenever public documentation is enabled.
+                ;div.publication-list
+                  ;*  publication-options
+                ==
+              ==
+              ;div.text-field
+                ;label(for "public-title"): Public index title
+                ;input(id "public-title", type "text", name "title", value ?~(public-title "" (trip u.public-title)), placeholder "Documentation");
+              ==
+              ;div.text-field
+                ;label(for "public-subtitle"): Public index subtitle
+                ;textarea(id "public-subtitle", name "subtitle", rows "3", placeholder "Browse the guides, references, and manuals published on this ship.")
+                  ;+  ;/  ?~(public-subtitle "" (trip u.public-subtitle))
+                ==
               ==
             ==
-            ;div.text-field
-              ;label(for "public-title"): Public index title
-              ;input(id "public-title", type "text", name "title", value ?~(public-title "" (trip u.public-title)), placeholder "Documentation");
+            ;div.settings-card-footer
+              ;button.save-settings(type "submit"): Save publication settings
             ==
-            ;div.text-field
-              ;label(for "public-subtitle"): Public index subtitle
-              ;textarea(id "public-subtitle", name "subtitle", rows "3", placeholder "Browse the guides, references, and manuals published on this ship.")
-                ;+  ;/  ?~(public-subtitle "" (trip u.public-subtitle))
-              ==
-            ==
-            ;button.save-settings(type "submit"): Save publication settings
           ==
         ==
       ==

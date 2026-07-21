@@ -230,7 +230,7 @@ input:focus-visible {
 .desk-card .cont { margin: 0; }
 
 .settings-main {
-  width: min(100%, 42rem);
+  width: min(100%, 46rem);
   padding: clamp(3.5rem, 8vw, 6rem) 0 5rem;
 }
 
@@ -281,14 +281,59 @@ input:focus-visible {
 }
 
 .settings-form {
-  padding: 1.5rem;
+  overflow: hidden;
   border: 1px solid var(--border-color);
-  border-radius: 1rem;
+  border-radius: 1.1rem;
   background: var(--surface-color);
-  box-shadow: 0 2px 8px var(--shadow-color);
+  box-shadow: 0 2px 8px var(--shadow-color), 0 14px 36px var(--shadow-color);
 }
 
-.publication-form { margin-top: 1rem; }
+.publication-form { margin-top: 1.25rem; }
+
+.settings-card-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.9rem;
+  align-items: center;
+  padding: 1.35rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settings-card-glyph {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.65rem;
+  background: var(--accent-soft);
+  color: var(--accent-color);
+  font: 650 0.8125rem/1 var(--mono-font);
+}
+
+.settings-card-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+.settings-card-header p {
+  margin: 0.2rem 0 0;
+  color: var(--muted-text-color);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.settings-card-body { padding: 1.5rem; }
+
+.settings-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--surface-color) 55%, var(--bg-color));
+}
 
 .publication-toggle {
   display: grid;
@@ -405,6 +450,7 @@ input:focus-visible {
 
 .theme-options {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.65rem;
   margin: 0;
   padding: 0;
@@ -420,9 +466,10 @@ input:focus-visible {
 
 .theme-option {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.9rem;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
   align-items: start;
+  min-width: 0;
   padding: 1rem;
   border: 1px solid var(--border-color);
   border-radius: 0.75rem;
@@ -459,7 +506,6 @@ input:focus-visible {
 }
 
 .save-settings {
-  margin-top: 1.25rem;
   border: 0;
   border-radius: 0.6rem;
   padding: 0.75rem 1rem;
@@ -476,7 +522,14 @@ input:focus-visible {
   .site-header { min-height: 4.5rem; }
   .index-intro { padding-top: 3.25rem; }
   .desk-card { padding: 1.15rem; border-radius: 0.8rem; }
-  .settings-form { padding: 1rem; }
+  .settings-card-header,
+  .settings-card-body { padding: 1.1rem; }
+  .settings-card-footer { padding: 0.9rem 1.1rem; }
+  .theme-options { grid-template-columns: 1fr; }
+  .theme-option {
+    grid-template-columns: auto 1fr;
+    gap: 0.9rem;
+  }
   .publication-list { grid-template-columns: 1fr; }
 }
 
