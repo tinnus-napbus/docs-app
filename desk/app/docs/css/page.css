@@ -67,6 +67,32 @@ summary:focus-visible {
   border-bottom: 1px solid var(--border-color);
 }
 
+.doc-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.settings-link {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 0.55rem 0.85rem;
+  background: var(--surface-color);
+  color: var(--muted-text-color);
+  box-shadow: 0 1px 2px var(--shadow-color);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.settings-link:hover {
+  border-color: var(--strong-border-color);
+  color: var(--plain-text-color);
+}
+
 .brand {
   display: inline-flex;
   align-items: center;

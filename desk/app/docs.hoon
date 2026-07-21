@@ -14,8 +14,10 @@
   $%  state-0
       state-1
       state-2
+      state-3
   ==
 ::
++$  theme  ?(%system %light %dark)
 +$  state-0  [%0 dark=_|]
 +$  state-1
   $:  %1
@@ -38,6 +40,15 @@
       jobs=(map @t render-job)
       waiting=(map @t (list @ta))
   ==
++$  state-3
+  $:  %3
+      =theme
+      cached=(map @t @uv)
+      watched=(set desk)
+      generations=(map @t @ud)
+      jobs=(map @t render-job)
+      waiting=(map @t (list @ta))
+  ==
 ::
 +$  card  card:agent:gall
 +$  cache-file  [mime=@t data=octs]
@@ -50,7 +61,7 @@
 ::
 --
 ::
-=|  state-2
+=|  state-3
 =*  state  -
 ::
 =<
@@ -81,9 +92,10 @@
   =/  old  !<(versioned-state old-vase)
   =.  state
     ?-  -.old
-      %0  [%2 dark.old ~ ~ ~ ~ ~]
-      %1  [%2 dark.old cached.old watched.old ~ ~ ~]
-      %2  old
+      %0  [%3 %system ~ ~ ~ ~ ~]
+      %1  [%3 %system cached.old watched.old ~ ~ ~]
+      %2  [%3 %system cached.old watched.old generations.old jobs.old waiting.old]
+      %3  old
     ==
   =/  [cards=(list card) new-cache=(map @t @uv) new-generations=(map @t @ud) new-jobs=(map @t render-job)]
     (refresh-cache:hc cached generations jobs)
@@ -141,33 +153,43 @@
     ?.  ?=([%docs *] path)  (on-poke:def [mark vase])
     ?~  t.path
       (go-to-index p.req)
+    ?:  ?=([%settings ~] t.path)
+      (go-to-settings p.req)
     ?:  =(%assets i.t.path)
       (go-to-static p.req t.t.path)
     (go-to-page p.req i.t.path t.t.path)
   ::
       %'POST'
-    ?~  body.request.q.req  [(index-response p.req) this]
+    ?~  body.request.q.req  [(settings-response p.req) this]
     =/  query=(unit (list [k=@t v=@t]))
       (rush q.u.body.request.q.req yquy:de-purl:html)
-    ?~  query  [(index-response p.req) this]
-    ?~  u.query  [(index-response p.req) this]
-    ?^  t.u.query  [(index-response p.req) this]
-    ?.  ?=(%mode k.i.u.query)  [(index-response p.req) this]
-    ?+    v.i.u.query  [(index-response p.req) this]
+    ?~  query  [(settings-response p.req) this]
+    ?~  u.query  [(settings-response p.req) this]
+    ?^  t.u.query  [(settings-response p.req) this]
+    ?.  ?=(%mode k.i.u.query)  [(settings-response p.req) this]
+    ?+    v.i.u.query  [(settings-response p.req) this]
         %dark
-      ?:  dark
+      ?:  =(%dark theme)
         =/  [cache-cards=(list card) new-cache=(map @t @uv)]
           (refresh-theme:hc cached)
-        [(weld cache-cards (index-response p.req)) this(cached new-cache)]
-      :_  this(dark %.y)
+        [(weld cache-cards (settings-response p.req)) this(cached new-cache)]
+      :_  this(theme %dark)
       ~[(~(poke-self pass:io /self) [mark vase])]
     ::
         %light
-      ?.  dark
+      ?:  =(%light theme)
         =/  [cache-cards=(list card) new-cache=(map @t @uv)]
           (refresh-theme:hc cached)
-        [(weld cache-cards (index-response p.req)) this(cached new-cache)]
-      :_  this(dark %.n)
+        [(weld cache-cards (settings-response p.req)) this(cached new-cache)]
+      :_  this(theme %light)
+      ~[(~(poke-self pass:io /self) [mark vase])]
+    ::
+        %system
+      ?:  =(%system theme)
+        =/  [cache-cards=(list card) new-cache=(map @t @uv)]
+          (refresh-theme:hc cached)
+        [(weld cache-cards (settings-response p.req)) this(cached new-cache)]
+      :_  this(theme %system)
       ~[(~(poke-self pass:io /self) [mark vase])]
     ==
   ==
@@ -191,6 +213,26 @@
     ^-  (list card)
     %^  response-cards:hc  id  'text/html'
     (as-octs:mimes:html (crip (en-xml:html index:hc)))
+  ::
+  ++  go-to-settings
+    |=  id=@ta
+    ^-  (quip card _this)
+    =/  file=cache-file  (~(got by static-pages:hc) '/docs/settings')
+    =/  hash=@uv  (mug file)
+    =/  cache-cards=(list card)
+      :~  (~(arvo pass:io /cache) %e %set-response '/docs/settings' `(cache-entry:hc file))
+          (~(arvo pass:io /cache) %e %set-response '/docs/settings/' `(cache-entry:hc file))
+      ==
+    =/  new-cache=(map @t @uv)  (~(put by cached) '/docs/settings' hash)
+    =.  new-cache  (~(put by new-cache) '/docs/settings/' hash)
+    :_  this(cached new-cache)
+    (weld cache-cards (response-cards:hc id mime.file data.file))
+  ::
+  ++  settings-response
+    |=  id=@ta
+    ^-  (list card)
+    %^  response-cards:hc  id  'text/html'
+    (as-octs:mimes:html (crip (en-xml:html settings:hc)))
   ::
   ++  go-to-static
     |=  [id=@ta pa=path]
@@ -415,6 +457,27 @@
   ++  page           .^(@t %cx (scrio %docs /app/docs/css/page/css))
   ++  err            .^(@t %cx (scrio %docs /app/docs/css/err/css))
   --
+:: select a fixed theme or let the browser choose through its color preference
+::
+++  theme-css
+  |=  [light=@t dark=@t]
+  ^-  @t
+  ?-  theme
+    %light   light
+    %dark    dark
+    %system
+      %-  crip
+      ;:  weld
+        (trip light)
+        "\0a"
+        (trip '@media (prefers-color-scheme: dark) {')
+        "\0a"
+        (trip dark)
+        "\0a"
+        (trip '}')
+        "\0a"
+      ==
+  ==
 :: construct an authenticated Eyre cache entry for a rendered page
 ::
 ++  cache-entry
@@ -447,11 +510,15 @@
   ^-  (map @t cache-file)
   =/  idx=octs
     (as-octs:mimes:html (crip (en-xml:html index)))
+  =/  set=octs
+    (as-octs:mimes:html (crip (en-xml:html settings)))
   %-  ~(gas by *(map @t cache-file))
   :~  ['/docs' 'text/html' idx]
       ['/docs/' 'text/html' idx]
-      ['/docs/assets/style/var.css' 'text/css' (as-octs:mimes:html ?:(dark dark:css light:css))]
-      ['/docs/assets/style/syntect.css' 'text/css' (as-octs:mimes:html ?:(dark dark-syntect:css light-syntect:css))]
+      ['/docs/settings' 'text/html' set]
+      ['/docs/settings/' 'text/html' set]
+      ['/docs/assets/style/var.css' 'text/css' (as-octs:mimes:html (theme-css light:css dark:css))]
+      ['/docs/assets/style/syntect.css' 'text/css' (as-octs:mimes:html (theme-css light-syntect:css dark-syntect:css))]
       ['/docs/assets/style/index.css' 'text/css' (as-octs:mimes:html index:css)]
       ['/docs/assets/style/page.css' 'text/css' (as-octs:mimes:html page:css)]
       ['/docs/assets/style/err.css' 'text/css' (as-octs:mimes:html err:css)]
@@ -496,6 +563,10 @@
     ~
   ?:  ?&  (gte (lent txt) 13)
           =("/docs/assets/" (scag 13 txt))
+      ==
+    ~
+  ?:  ?|  =("/docs/settings" txt)
+          =("/docs/settings/" txt)
       ==
     ~
   `url
@@ -638,15 +709,19 @@
   =/  result=refresh-result
     (start-docs empty-cache gens running ~(tap in targets))
   [(weld static-cards (weld delete-cards cards.result)) cache.result generations.result jobs.result]
-:: replace only the theme-dependent stylesheet after a mode change
+:: replace the theme-dependent stylesheets and settings page after a mode change
 ::
 ++  refresh-theme
   |=  old=(map @t @uv)
   ^-  [(list card) (map @t @uv)]
   =/  pages=(map @t cache-file)
+    =/  set=cache-file
+      ['text/html' (as-octs:mimes:html (crip (en-xml:html settings)))]
     %-  ~(gas by *(map @t cache-file))
-    :~  ['/docs/assets/style/var.css' 'text/css' (as-octs:mimes:html ?:(dark dark:css light:css))]
-        ['/docs/assets/style/syntect.css' 'text/css' (as-octs:mimes:html ?:(dark dark-syntect:css light-syntect:css))]
+    :~  ['/docs/settings' set]
+        ['/docs/settings/' set]
+        ['/docs/assets/style/var.css' 'text/css' (as-octs:mimes:html (theme-css light:css dark:css))]
+        ['/docs/assets/style/syntect.css' 'text/css' (as-octs:mimes:html (theme-css light-syntect:css dark-syntect:css))]
     ==
   (refresh-pages old pages ~)
 :: reconcile a partial set of rendered pages and explicitly removable URLs
@@ -944,14 +1019,7 @@
             ;span.brand-mark: D
             ;span: Docs
           ==
-          ;form(method "post")
-            ;button.theme-toggle
-              =type   "submit"
-              =name   "mode"
-              =value  ?:(dark "light" "dark")
-              ;+  ;/  ?:(dark "Use light theme" "Use dark theme")
-            ==
-          ==
+          ;a.settings-link(href "/docs/settings"): Settings
         ==
         ;main.index-main
           ;div.index-intro
@@ -964,6 +1032,61 @@
           ==
         ==
       ==
+    ==
+  ==
+:: render the appearance settings page
+::
+++  settings
+  ^-  manx
+  ;html
+    ;head
+      ;title: Docs Settings
+      ;meta(charset "utf-8");
+      ;meta(name "viewport", content "width=device-width, initial-scale=1");
+      ;link(rel "preload", href "/docs/assets/font/source-sans-3-upright.woff2", as "font", type "font/woff2", crossorigin "anonymous");
+      ;link(rel "stylesheet", href "/docs/assets/style/var.css");
+      ;link(rel "stylesheet", href "/docs/assets/style/index.css");
+    ==
+    ;body
+      ;div.app-shell
+        ;header.site-header
+          ;a.brand(href "/docs")
+            ;span.brand-mark: D
+            ;span: Docs
+          ==
+          ;a.settings-link.current(href "/docs/settings", aria-current "page"): Settings
+        ==
+        ;main.settings-main
+          ;div.settings-heading
+            ;p.eyebrow: Settings
+            ;h1: Appearance
+            ;p: Choose how documentation pages should look in this browser.
+          ==
+          ;form.settings-form(method "post", action "/docs/settings")
+            ;fieldset.theme-options
+              ;legend: Color theme
+              ;+  (theme-option %system "System" "Follow your browser or operating system setting.")
+              ;+  (theme-option %light "Light" "Always use the light color theme.")
+              ;+  (theme-option %dark "Dark" "Always use the dark color theme.")
+            ==
+            ;button.save-settings(type "submit"): Save appearance
+          ==
+        ==
+      ==
+    ==
+  ==
+:: render one selectable appearance option
+::
+++  theme-option
+  |=  [value=?(%system %light %dark) title=tape description=tape]
+  ^-  manx
+  ;label.theme-option
+    ;+  ?:  =(theme value)
+          ;input(type "radio", name "mode", value (trip value), checked "checked");
+        ;input(type "radio", name "mode", value (trip value));
+    ;span.theme-option-copy
+      ;span.theme-option-title: {title}
+      ;span.theme-option-description: {description}
     ==
   ==
 :: render doc table of contents
@@ -999,7 +1122,10 @@
         ;span.brand-mark: D
         ;span: Docs
       ==
-      ;+  menu
+      ;div.doc-actions
+        ;a.settings-link(href "/docs/settings"): Settings
+        ;+  menu
+      ==
     ==
     ;div.doc-heading
       ;p.eyebrow: Document
