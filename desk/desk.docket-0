@@ -1,12 +1,11 @@
 :~
   title+'Docs'
   info+'User and developer documentation for Urbit apps'
-  color+0xa0.dce6
-  image+'https://m.tinnus-napbus.xyz/pub/docs-tile.svg'
+  color+0x68.86dc
+  image+'https://m.tinnus-napbus.xyz/pub/docs-tile-v2.svg'
   version+[0 3 12]
   website+'https://github.com/tinnus-napbus/docs-app'
   license+'MIT'
   base+'docs'
   site+/docs
 ==
-
