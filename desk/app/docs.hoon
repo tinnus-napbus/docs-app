@@ -208,6 +208,19 @@
     (on-poke:def [mark vase])
   =/  req  !<  (pair @ta inbound-request:eyre)  vase
   =/  signed-in=?  =(our.bowl src.bowl)
+  =/  =path
+    %+  skip
+      =+  (rush url.request.q.req aurf:de-purl:html)
+      ?~  -
+        ^-  (list @t)
+        %-  tail
+        %+  rash  url.request.q.req
+        ;~  sfix
+          apat:de-purl:html
+          yquy:de-purl:html
+        ==
+      q.q.p.u.-
+    (cury test '')
   ?+    method.request.q.req
     :_  this
     %^    give-response
@@ -220,23 +233,12 @@
     (some (as-octs:mimes:html '<h1>405 Method Not Allowed</h1>'))
   ::
       %'GET'
-    =/  =path
-      %+  skip
-        =+  (rush url.request.q.req aurf:de-purl:html)
-        ?~  -
-          ^-  (list @t)
-          %-  tail
-          %+  rash  url.request.q.req
-          ;~  sfix
-            apat:de-purl:html
-            yquy:de-purl:html
-          ==
-        q.q.p.u.-
-      (cury test '')
     ?.  ?=([%docs *] path)  (on-poke:def [mark vase])
     ?~  t.path
+      (go-to-root p.req)
+    ?:  ?=([%private ~] t.path)
       ?.  signed-in  (require-sign-in p.req)
-      (go-to-index p.req)
+      (go-to-private p.req)
     ?:  ?=([%public ~] t.path)
       (go-to-public p.req)
     ?:  ?=([%settings ~] t.path)
@@ -253,6 +255,9 @@
     (go-to-page p.req dsk t.t.t.path)
   ::
       %'POST'
+    ?.  ?=([%docs %settings ~] path)
+      :_  this
+      (give-response p.req [404 ~] ~)
     ?.  signed-in  (require-sign-in p.req)
     ?~  body.request.q.req  [(settings-redirect p.req %error) this]
     =/  parsed=(unit (list [k=@t v=@t]))
@@ -315,7 +320,7 @@
     ==
   ==
   ::
-  ++  go-to-index
+  ++  go-to-root
     |=  id=@ta
     ^-  (quip card _this)
     =/  file=cache-file  (~(got by static-pages:hc) '/docs')
@@ -329,13 +334,19 @@
     :_  this(cached new-cache)
     (weld cache-cards (response-cards:hc id status.file mime.file data.file))
   ::
-  ++  index-response
+  ++  go-to-private
     |=  id=@ta
-    ^-  (list card)
-    %-  response-cards:hc
-    :*  id  200  'text/html'
-        (as-octs:mimes:html (crip (en-xml:html (index:hc |))))
-    ==
+    ^-  (quip card _this)
+    =/  file=cache-file  (~(got by static-pages:hc) '/docs/private')
+    =/  hash=@uv  (mug file)
+    =/  cache-cards=(list card)
+      :~  (~(arvo pass:io /cache) %e %set-response '/docs/private' `(cache-entry:hc file))
+          (~(arvo pass:io /cache) %e %set-response '/docs/private/' `(cache-entry:hc file))
+      ==
+    =/  new-cache=(map @t @uv)  (~(put by cached) '/docs/private' hash)
+    =.  new-cache  (~(put by new-cache) '/docs/private/' hash)
+    :_  this(cached new-cache)
+    (weld cache-cards (response-cards:hc id status.file mime.file data.file))
   ::
   ++  go-to-public
     |=  id=@ta
@@ -596,6 +607,8 @@
 ::
 ++  static-pages
   ^-  (map @t cache-file)
+  =/  root=octs
+    (as-octs:mimes:html (crip (en-xml:html index-redirect)))
   =/  idx=octs
     (as-octs:mimes:html (crip (en-xml:html (index |))))
   =/  pub=octs
@@ -607,8 +620,10 @@
   =/  settings-data=octs
     (as-octs:mimes:html (crip (en-xml:html settings)))
   %-  ~(gas by *(map @t cache-file))
-  :~  ['/docs' 200 & | 'text/html' idx]
-      ['/docs/' 200 & | 'text/html' idx]
+  :~  ['/docs' 200 | | 'text/html' root]
+      ['/docs/' 200 | | 'text/html' root]
+      ['/docs/private' 200 & | 'text/html' idx]
+      ['/docs/private/' 200 & | 'text/html' idx]
       ['/docs/public' public-status | | 'text/html' public-data]
       ['/docs/public/' public-status | | 'text/html' public-data]
       ['/docs/settings' 200 & | 'text/html' settings-data]
@@ -764,8 +779,8 @@
     [200 & | 'text/html' (as-octs:mimes:html (crip (en-xml:html settings)))]
   =/  pages=(map @t cache-file)
     %-  ~(gas by *(map @t cache-file))
-    :~  ['/docs' idx]
-        ['/docs/' idx]
+    :~  ['/docs/private' idx]
+        ['/docs/private/' idx]
         ['/docs/public' pub]
         ['/docs/public/' pub]
         ['/docs/settings' settings-file]
@@ -843,8 +858,8 @@
     [200 & | 'text/html' (as-octs:mimes:html (crip (en-xml:html settings)))]
   =/  pages=(map @t cache-file)
     %-  ~(gas by *(map @t cache-file))
-    :~  ['/docs' idx]
-        ['/docs/' idx]
+    :~  ['/docs/private' idx]
+        ['/docs/private/' idx]
         ['/docs/public' pub]
         ['/docs/public/' pub]
         ['/docs/settings' settings-file]
@@ -1054,6 +1069,38 @@
     content.p.scrl
     (footer (prev-next toc.u.utoc dsk pa))
   ==
+:: redirect the shared index route using the authenticated cache probe
+::
+++  index-redirect
+  ^-  manx
+  ;html
+    ;head
+      ;title: Docs
+      ;meta(charset "utf-8");
+      ;meta(name "viewport", content "width=device-width, initial-scale=1");
+      ;link(rel "preload", href "/docs/assets/font/source-sans-3-upright.woff2", as "font", type "font/woff2", crossorigin "anonymous");
+      ;link(rel "stylesheet", href "/docs/assets/style/var.css");
+      ;link(rel "stylesheet", href "/docs/assets/style/index.css");
+      ;script(src "/docs/assets/navigation.js");
+    ==
+    ;body.redirect-page
+      ;main.redirect-main
+        ;div.redirect-status(role "status", aria-live "polite")
+          ;span.redirect-spinner(aria-hidden "true");
+          ;div
+            ;p.eyebrow: Docs
+            ;h1: Opening library
+            ;p: Checking which documentation is available to you…
+          ==
+        ==
+        ;noscript
+          ;p.redirect-fallback
+            ;a(href "/docs/public"): Continue to the public library
+          ==
+        ==
+      ==
+    ==
+  ==
 :: render whole index page
 ::
 ++  index
@@ -1081,7 +1128,7 @@
     ;body
       ;div.app-shell
         ;header.site-header
-          ;a.brand(href ?:(public-only "/docs/public" "/docs"))
+          ;a.brand(href ?:(public-only "/docs/public" "/docs/private"))
             ;span.brand-mark: D
             ;span: Docs
           ==
@@ -1118,7 +1165,7 @@
     ;body
       ;div.app-shell
         ;header.site-header
-          ;a.brand(href "/docs")
+          ;a.brand(href "/docs/private")
             ;span.brand-mark: D
             ;span: Docs
           ==

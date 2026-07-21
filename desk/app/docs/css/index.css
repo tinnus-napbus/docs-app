@@ -229,6 +229,68 @@ input:focus-visible {
 
 .desk-card .cont { margin: 0; }
 
+.redirect-page { overflow: hidden; }
+
+.redirect-main {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.redirect-status {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.1rem;
+  align-items: center;
+  width: min(100%, 25rem);
+  padding: 1.35rem;
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  background: var(--surface-color);
+  box-shadow: 0 2px 8px var(--shadow-color), 0 14px 36px var(--shadow-color);
+}
+
+.redirect-spinner {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: redirect-spin 0.8s linear infinite;
+}
+
+.redirect-status .eyebrow { margin-bottom: 0.4rem; }
+
+.redirect-status h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+.redirect-status div > p:last-child {
+  margin: 0.25rem 0 0;
+  color: var(--muted-text-color);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.redirect-fallback {
+  position: fixed;
+  inset: auto 1rem 1rem;
+  margin: 0;
+  color: var(--muted-text-color);
+  text-align: center;
+}
+
+@keyframes redirect-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .redirect-spinner { animation: none; }
+}
+
 .settings-main {
   width: min(100%, 46rem);
   padding: clamp(3.5rem, 8vw, 6rem) 0 5rem;
