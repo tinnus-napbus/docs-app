@@ -45,10 +45,10 @@ github landscape-dev:
 
 github urbit-markdown:
   repo: tinnus-napbus/urbit-markdown
-  branch: updates
+  branch: master
   include:
     - lib/markdown.hoon
     - mar/md.hoon
     - sur/markdown.hoon
   priority: 8
-  revision: ad19332ad65dd489a0fa63982cac5d0fb715e756
+  revision: 4b4218201a90f1d02dfebf490c7707d7266d0db6
