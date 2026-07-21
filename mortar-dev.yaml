@@ -4,11 +4,8 @@ local docs-desk:
   path: ./desk
   priority: 100
   include:
-    - sur/base16.hoon
     - sur/docs.hoon
     - sur/gemtext.hoon
-    - lib/base16
-    - lib/base16.hoon
     - lib/docs.hoon
     - lib/docu.hoon
     - lib/gemtext.hoon

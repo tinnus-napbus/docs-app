@@ -1,6 +1,4 @@
-/-  *base16
-/+  mu=manx-utils, b16=base16, styles=base16-styles,
-    b16-json=base16-language-json, b16-gen=base16-language-generic
+/+  mu=manx-utils
 |%
 :: global tag whitelist
 ::
@@ -253,14 +251,14 @@
       %pre
     =/  am  (~(gas by *(map mane tape)) a.g)
     ?.  (~(has by am) %class)
-      g(a ~)
+      g(a [%class "docs-code-block"]~)
     =/  lng=(unit @t)
       %+  rust
         (~(got by am) %class)
       ;~(sfix (jest 'language-') (star next))
     ?~  lng
-      g(a ~)
-    g(a [%class (~(got by am) %class)]~)
+      g(a [%class "docs-code-block"]~)
+    g(a [%class "docs-code-block {(~(got by am) %class)}"]~)
   ::
       %ol
     =/  am  (~(gas by *(map mane tape)) a.g)
@@ -292,44 +290,6 @@
     =.  out  [[%disabled "disabled"] out]
     g(a out)
   ==
-:: syntax highlight codeblocks
-::
-++  highlight
-  |=  [x=manx =sch]
-  ^-  manx
-  =/  hler  ~(highlight b16 sch)
-  %-  ~(post-apply-nodes mu x)
-  |=  x=manx
-  ^-  manx
-  ?.  ?=(%pre n.g.x)        x
-  ?~  c.x  (hler ~ (b16-gen ""))
-  ?:  ?=(%$ n.g.i.c.x)
-    ?~  a.g.i.c.x  x
-    ?.  ?=(%$ n.i.a.g.i.c.x)  x
-    (highlight-block a.g.x v.i.a.g.i.c.x sch)
-  ?.  ?=(%code n.g.i.c.x)  x
-  ?^  t.c.x  x
-  ?~  c.i.c.x  (highlight-block a.g.i.c.x "" sch)
-  ?^  t.c.i.c.x  x
-  ?.  ?=(%$ n.g.i.c.i.c.x)  x
-  ?~  a.g.i.c.i.c.x  x
-  ?.  ?=(%$ n.i.a.g.i.c.i.c.x)  x
-  (highlight-block a.g.i.c.x v.i.a.g.i.c.i.c.x sch)
-:: highlight a code block using a validated language class
-::
-++  highlight-block
-  |=  [attrs=mart txt=tape =sch]
-  ^-  manx
-  =/  hler  ~(highlight b16 sch)
-  =/  am  (~(gas by *(map mane tape)) attrs)
-  ?.  (~(has by am) %class)
-    (hler ~ (b16-gen txt))
-  =/  class=tape  (~(got by am) %class)
-  ?:  =("language-json" class)
-    (hler `class (b16-json txt))
-  ?:  =("language-plaintext" class)
-    (hler `class (b16-gen txt))
-  (hler ~ (b16-gen txt))
 :: extract readable heading text, substituting image alt text for the image
 ::
 ++  heading-text

@@ -14,4 +14,16 @@
 +$  usr  (list doc)
 +$  dev  (list [agent=@tas docs=(list doc)])
 +$  clue  [=usr =dev]
+:: asynchronous document rendering
+::
++$  render-request
+  $:  url=@t
+      generation=@ud
+      page=manx
+  ==
++$  render-result
+  $:  url=@t
+      generation=@ud
+      html=octs
+  ==
 --
