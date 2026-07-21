@@ -1,7 +1,9 @@
 /overview/md          Overview
+/settings/md          Settings and Public Access
 /changelog/md         Changelog
 /dev                  Developer
-  /overview/md        Overview
-  /file-format/md     File Format
-  /index-file/md      Index File
+  /overview/md        Publishing Documentation
+  /index-file/md      Index Files
+  /file-format/md     File Formats
+  /operation/md       URLs and Caching
   /structure/md       Suggested Structure

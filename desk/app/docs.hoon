@@ -1116,7 +1116,7 @@
               ;span.settings-card-glyph: A
               ;div
                 ;h2: Appearance
-                ;p: Choose how documentation is displayed in this browser.
+                ;p: Choose how documentation is displayed on this ship.
               ==
             ==
             ;div.settings-card-body

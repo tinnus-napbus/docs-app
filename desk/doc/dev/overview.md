@@ -1,62 +1,61 @@
-The `%docs` app allows you to include documentation with the desks you
-distribute, making them available for easy browsing by users and developers.
+Docs discovers documentation from every live desk on the ship. Publishers only
+need to place supported files under `/doc`; no Docs-specific library or mark
+files need to be copied into a desk when using a built-in format.
 
-The `%docs` app will automatically detect and publish any docs included with any
-installed desks. As long as they're in the correct place, of a filetype with
-appropriate `mark` conversion methods, and include a
-[`doc.toc`](/docs/d/docs/dev/index-file) index file, they'll be
-picked up.
+# Add documentation to a desk
 
-A `doc.toc` file may be included in the root of the desk, specifying the files
-to be included, their `mark`s, and their titles. See the [Index File](/docs/d/docs/dev/index-file) section for details.
+The smallest useful layout is:
 
-The files themselves will be in a `/doc` directory in the root of the desk. In
-`/doc`, there'll be two subdirectories - `/usr` and `/dev`. The former will contain
-docs for users, and the latter will contain docs for developers. The `/dev`
-directory may have one further level: directories named for agents on the desk,
-and containing docs specifically for those agents.
-
-The directory hierarchy may therefore look something like this:
-
-```
-doc
-├── dev
-│   ├── overview.md
-│   └── foo-store
-│       ├── api-ref.md
-│       └── data-types.md
-└── usr
-    ├── changelog.md
-    └── overview.md
+```text
+doc.toc
+doc/
+  overview.md
 ```
 
-The docs themselves may be of any filetype, as long as it has conversion methods
-to the `%docu` mark used by the `%docs` app. The `%docs` app includes parsers and
-conversion methods for the following marks by default:
+With this index:
 
-- `%txt` - Ordinary `.txt` text files.
-- `%md` - Markdown, including common GitHub-flavored extensions.
-- `%udon` - A markdown-like format that supports embedded hoon.
-- `%gmi` - An ultra-minimalist markup format called "gemtext".
-- `%html` - An ordinary `.html` file.
-
-For more details of these file formats, as well as details of the `%docu` mark
-and other format requirements of the `%docs` app, see the [File
-Format](/docs/d/docs/dev/file-format) section.
-
-Apart from the `mark` and location requirements described above, there are no
-particular restrictions on how you organise your docs, or what docs you include.
-There are, however, some general recommendations detailed in the [Suggested
-Structure](/docs/d/docs/dev/structure) section.
-
-## Dev desk
-
-To include docs in your own desk, there are a few files you'll need (mark files,
-etc). These are included in the `docs-dev` dev desk in the [github
-repo](https://github.com/tinnus-napbus/docs-app). These files are all symlinked,
-so you'll need to clone the whole repo, then copy them across with something
-like:
-
+```text
+/overview/md  Overview
 ```
-cp -rL git/docs-app/docs-dev/* /path/to/your/development/desk
-```
+
+The final path element in an index entry is the file's mark, so this entry reads
+`/doc/overview.md`. Nested directory entries can organize any hierarchy you
+need; `/usr` and `/dev` are conventions rather than requirements.
+
+A `doc.toc` is optional. If it is absent and `/doc` contains files, Docs infers
+an index from the directory tree. An explicit index is preferable when titles,
+ordering, or a curated subset matter.
+
+See [Index Files](/docs/d/docs/dev/index-file) for the complete format.
+
+# Built-in formats
+
+Docs reads these marks directly:
+
+- `%md` for Markdown and common GitHub-flavored extensions.
+- `%udon` for Hoon's Udon format.
+- `%gmi` for Gemtext.
+- `%html` for HTML.
+- `%txt` for plain text rendered as a wrapping preformatted block.
+
+Every result is converted to `%docu`, validated as a safe `+$manx`, normalized,
+and then rendered. See [File Formats](/docs/d/docs/dev/file-format) for syntax,
+validation, heading, and highlighting details.
+
+# Custom formats
+
+Other marks are supported when the publishing desk provides a Clay conversion
+tube from that mark to `%docu`. The conversion must produce a `+$manx` accepted
+by Docs' validator. A failed conversion or invalid node tree produces an error
+page rather than serving unchecked HTML.
+
+# Updates
+
+Docs follows Clay's live-desk state and the Docket charge list. It watches each
+indexed documentation input and invalidates only the affected page or desk when
+possible. Newly requested pages are rebuilt from the latest source, so no manual
+publish step is needed after committing documentation.
+
+Whether a desk is available publicly is controlled by the ship owner, not by
+the publishing desk. Publishers should therefore avoid assuming that their docs
+will be reachable without authentication.

@@ -1,155 +1,92 @@
-# `%docu` mark
+Docs converts each source file to a `%docu` `+$manx`, validates and normalizes
+the node tree, generates heading fragments and an on-page table of contents,
+and applies syntax highlighting before producing HTML.
 
-> Note: this section is mostly useful if you're writing a mark conversion
-  method. For marks that are already supported and you can use directly, see
-  further down this page.
-
-The `%docs` app supports any mark, as long as it has a conversion method to its
-`%docu` mark. The `%docu` mark is not expected to be used directly to write
-documentation, its purpose is to be a mark conversion target.
-
-The `%docu` mark expects a `+$manx`.
-
-A `+$manx` is how an XML node structure is represented in hoon. See [Section
-5e](https://urbit.org/docs/hoon/reference/stdlib/5e#manx) of the urbit.org
-standard library reference for details. A `+$manx` is what `++de-xml:html` and
-`++en-xml:html` decode/encode raw XML strings from/to.
-
-The `%docu` mark will technically accept any `+$manx`, but the `%docs` agent itself
-makes some changes and imposes some additional rules:
-
-+ The root element must be a `<div>`.
-+ `<h1>`, `<h2>`, and `<h3>` elements that are direct children of the root
-  `<div>` will be used to make the table of contents. Other header levels will
-  not be included in the table of contents, but they can still be used. `<h1>`,
-  through `<h3>` can also be used at deeper levels, but they also won't be
-  included in the table of contents.
-+ Only these tags are allowed: `<a>`, `<address>`, `<b>`, `<br>`,
-  `<blockquote>`, `<code>`, `<del>`, `<div>`, `<em>`, `<h1>`, `<h2>`, `<h3>`,
-  `<h4>`, `<h5>`, `<h6>`, `<hr>`, `<i>`, `<img>`, `<ins>`, `<li>`, `<ol>`,
-  `<p>`, `<pre>`, `<q>`, `<small>`, `<span>`, `<strike>`, `<strong>`, `<sub>`,
-  `<sup>`, `<table>`, `<tbody>`, `<td>`, `<th>`, `<thead>`, `<time>`, `<tr>`,
-  `<ul>`, `<var>`, and the restricted `<input>` form described below.
-+ Inside headings that are direct children of the root `<div>`, only safe inline
-  elements are allowed. Section IDs and table-of-contents entries are generated
-  from their plain text; images and formatting are not copied into navigation.
-+ All attributes will be stripped from all elements (you can still include them
-  but they'll be removed), with the following exceptions:
-  - The `src` and `alt` attributes in an `<img>` tag.
-  - The `href` and `title` attributes in an `<a>` tag.
-  - A `class` attribute beginning with `language-` on `<pre>` or `<code>`.
-  - The `start` attribute on `<ol>` and `align` on `<th>` and `<td>`.
-  - `class="task-list"` on `<ul>`.
-+ `<input>` is accepted only as an empty direct child of `<li>`, with exactly
-  `type="checkbox"` and an optional `checked="true"`. It is always rendered
-  disabled. Table elements are likewise checked for valid table nesting.
-
----
-
-# Included marks
-
-The following marks are supported by the `%docs` app and you can use them to write docs right away.
+# Built-in marks
 
 ## `%md`
 
-Markdown files use the `.md` extension. The included parser supports ordinary
-Markdown as well as tables, task lists, strikethrough, fenced code-block language
-tags, autolinks, and other common GitHub-flavored extensions. Raw HTML still has
-to satisfy the `%docu` tag, attribute, and structural restrictions described
-above.
+Markdown files use the `.md` extension. The parser supports ordinary Markdown
+plus common GitHub-flavored features, including:
+
+- Tables and column alignment.
+- Task lists with checked and unchecked boxes.
+- Strikethrough.
+- Autolinked URIs and email addresses.
+- Fenced code blocks with language identifiers.
+- Raw HTML that satisfies the `%docu` restrictions below.
+
+Use the language name after an opening fence to request syntax highlighting:
+
+````markdown
+```hoon
+++  add
+  |=  [a=@ b=@]
+  (add a b)
+```
+````
+
+Unknown languages fall back to an unhighlighted preformatted block.
 
 ## `%udon`
 
-Udon is a markdown-like language native to hoon, with a parser built into the
-hoon compiler. Here is its syntax in brief:
-
-- The first line of the `.udon` document *must* be a single rune: `;>`.
-  This tells the compiler to interpret everything following as udon.
-- *Paragraphs*: Content on a single line will be made into a paragraph. Paragraphs
-  may be hard-wrapped, so consecutive lines of text will become a single
-  paragraph. The paragraph will be ended by an empty line or other block
-  element.
-- *Headers*: lines beginning with 1-6 `#`s followed by a single space and then
-  some content (e.g. `## foo`) will be made into headers. The number of `#`s
-  dictates the header level.
-- *Italics*: content wrapped in single `_`s (e.g. `_foo_`) will be made italic.
-- *Bold*: content wrapped in single `*`s (e.g. `*foo*`) will be made bold.
-- *Unordered lists*: lines beginning with `-` followed by a space will be made
-  into items in a list. List lines can be hard-wrapped, with two spaces
-  beginning each subsequent line to be included in the list. Lists can be nested
-  by indenting the `-`s a further two spaces for each level of nesting.
-- *Ordered lists*: lines beginning with `+` followed by a space will be made into
-  ordered lists, and numbered in the order they appear. These have the same
-  wrapping and nesting logic as unordered lists.
-- *Links*: this is standard markdown syntax: square bracks containing the display
-  content and then parentheses containing the URL, e.g.
-  `[foo](http://example.com)`. The URL may also be a relative link or an anchor
-  link.
-- *Images*: this is also standard markdown; a link with an exclamation mark at the
-  beginning, e.g. `![foo](http://example.com/image.png)`. The square brackets
-  contain the alt-text and the the parentheses contain the image URL.
-- *Inline code*: text wrapped in single backticks will be rendered verbatim in a
-  monospace font.
-- *Fenced codeblocks*: Triple-backticks on their own line begin and end a
-  codeblock. All lines in between will be rendered verbatim in a monospace font.
-  Note that udon does not support a language specification after the opening
-  backticks like markdown does.
-- *Horizontal rules*: Three or more hyphens (`---`) will create a horizontal rule.
-- *Block quotes*: a line beginning with `>` creates a block quote. This may be
-  hard-wrapped, as long as the next line is indented two spaces. Block quotes
-  may contain anything, including other blockquotes.
-- *Line breaks*: A line ending in a single backslash will have a line break
-  inserted at the end, so it will not flow together with the subsequent line as
-  is usually the case.
-- *Escape characters*: You may prefix Udon syntax with a backslash to have it
-  treated as the literal text.
-- *Hoon constants*: Udon will automatically render any values with atom aura
-  syntax as inline code. It'll also render arms like `++foo:bar`, `+$baz`, and
-  `+*foo:bar:baz`, as inline code.
-- *Sail*: this is hoon's native XML syntax. Udon will parse it, execute it, and
-  include the `+$manx`es produced in the resulting document. This means you can
-  embed arbitrary hoon in the document. There is little formal sail
-  documentation, but you can refer to the [`;` (mic) rune
-  reference](https://urbit.org/docs/hoon/reference/rune/mic) on urbit.org for
-  most of its runes and some rudimentary examples.
-
-> Note that Udon is quite strict on its syntax, and may fail to parse if it's
-  incorrect.
-
-## `%txt`
-
-The `%docs` app supports plain `.txt` files. The file will be rendered as a
-preformatted codeblock with wrapping.
-
-## `%html`
-
-Ordinary HTML files may be used, but note the tag and structural restrictions
-described in the `%docu` mark description above.
+Udon files use `.udon` and begin with `;>`. Udon supports Markdown-like
+paragraphs, headings, emphasis, lists, links, images, quotes, code, horizontal
+rules, hard breaks, Hoon constants, and embedded Sail. Udon does not attach a
+language identifier to fenced code blocks, so they use plain highlighting.
 
 ## `%gmi`
 
+Gemtext files use `.gmi`. Gemtext is line-oriented and supports paragraphs,
+links, headings up to level three, lists, quotes, and fenced preformatted
+blocks. Text following an opening fence is used as its language identifier.
 
-Gemtext is an ultra-minimal markup format developed for the [Gemini
-project](https://gemini.circumlunar.space/), an internet protocol for serving
-light-weight hypertext, inspired by Gopher. Its file extension is `.gmi`.
+## `%html`
 
-Gemtext interprets things on a line-by-line basis, and does not support
-different types on a single line. Every line is a separate element, with the
-exception of fenced codeblocks which may span multiple lines. In brief, here is
-the syntax:
+HTML files use `.html`. The parser accepts a practical, well-formed subset of
+HTML nodes. Content that cannot be parsed into a valid `%docu` tree is rejected;
+Docs does not attempt browser-level error recovery.
 
-- *Paragraphs*: Plain text on a single line constitutes a paragraph. Note
-  hard-wrapping is not supported.
-- *Links*: lines beginning with `=>` followed by a space create a link. After the
-  space, the target URL is given. After the URL, there may optionally be a space
-  and then some display text for the link. If no displace text is given, the URL
-  itself will be displayed.
-- *Codeblocks*: triple-backticks at the beginning of a line begin and end a
-  codeblock. All text in between will be rendered verbatim in a monospace font.
-  The opening backticks may optionally be followed by some text, which will be
-  used as the language tag.
-- *Headings*: 1-3 `#`s followed by text create a heading. The number of `#`s
-  determine the heading level.
-- *Lists*: lines beginning with `*` followed by a space and then text will create
-  a list item.
-- *Quotes*: lines beginning with `>` followed by a space creates a blockquote.
+## `%txt`
+
+Plain `.txt` files are rendered as a wrapping preformatted block.
+
+# `%docu` validation
+
+Custom mark conversions and built-in parsers ultimately produce the same
+`%docu` representation. Its root must be a `<div>`, and only these nodes are
+accepted:
+
+`<a>`, `<address>`, `<b>`, `<br>`, `<blockquote>`, `<code>`, `<del>`,
+`<div>`, `<em>`, `<h1>` through `<h6>`, `<hr>`, `<i>`, `<img>`, `<input>`,
+`<ins>`, `<li>`, `<ol>`, `<p>`, `<pre>`, `<q>`, `<small>`, `<span>`,
+`<strike>`, `<strong>`, `<sub>`, `<sup>`, `<table>`, `<tbody>`, `<td>`,
+`<th>`, `<thead>`, `<time>`, `<tr>`, `<ul>`, `<var>`, and text nodes.
+
+Docs removes attributes except for the following validated cases:
+
+- `href` and optional `title` on `<a>`.
+- Required `src` and optional `alt` on `<img>`.
+- A `language-*` class on `<pre>` or `<code>`.
+- A numeric `start` on `<ol>`.
+- `left`, `center`, `right`, or empty `align` on `<th>` and `<td>`.
+- `class="task-list"` on `<ul>`.
+- Markdown checkbox attributes on the restricted `<input>` form.
+
+Tables must follow `table > thead|tbody > tr > th|td`. Table cells accept safe
+inline content. An `<input>` is accepted only as an empty direct child of
+`<li>`, with `type="checkbox"`, an optional `checked="true"`, and an optional
+`disabled="disabled"`. Docs always emits accepted checkboxes as disabled.
+
+# Headings and fragments
+
+Direct `<h1>` through `<h6>` children of the root receive generated IDs. Levels
+one through three also appear in the on-page table of contents.
+
+IDs are derived from readable heading text by lowercasing letters, replacing
+runs of punctuation with a single hyphen, and trimming edge hyphens. Repeated
+IDs receive `-1`, `-2`, and so on; an empty heading becomes `section`.
+
+Formatting and links contribute their visible text. An image contributes its
+`alt` text when present. Images and markup are never copied into navigation,
+which keeps fragments and table-of-contents labels safe and readable.

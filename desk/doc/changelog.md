@@ -1,3 +1,20 @@
+## 1.0.0
+
+Date: `~2026.07.21`
+
+- Redesign the library and document pages with responsive navigation, improved
+  typography, locally served fonts, and light, dark, and system themes.
+- Add Markdown and GitHub-flavored extensions, including tables, task lists,
+  strikethrough, safe raw HTML, and stable heading fragments.
+- Replace the limited native highlighter with multi-language Syntect syntax
+  highlighting through UrWasm.
+- Serve pages and assets through Eyre's response cache, render documents lazily,
+  and selectively invalidate them when desks or documentation change.
+- Add configurable public documentation, separate public and private indexes,
+  authentication-aware navigation, and collision-free `/docs/d/<desk>` routes.
+- Add settings feedback, cache-cleaning tooling, a Mortar build, updated
+  dependencies and Kelvin compatibility, and a new Landscape tile.
+
 ## 0.3.12
 
 Date `~2026.07.16`

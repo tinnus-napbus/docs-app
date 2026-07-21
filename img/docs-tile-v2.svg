@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">Docs open book</title>
+  <g
+    fill="none"
+    stroke="#17243b"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    transform="translate(23 10) scale(.82)"
+  >
+    <path
+      d="M128 83c-22-20-50-29-86-24v122c36-5 64 4 86 24 22-20 50-29 86-24V59c-36-5-64 4-86 24Z"
+      fill="#f8f5ed"
+      stroke-width="12"
+    />
+    <path d="M128 83v122" stroke-width="10" />
+    <path d="M62 91c18 0 33 4 46 12M62 119c18 0 33 4 46 12M62 147c18 0 33 4 46 12" stroke-width="9" />
+    <path d="M148 103c13-8 28-12 46-12M148 131c13-8 28-12 46-12M148 159c13-8 28-12 46-12" stroke-width="9" />
+  </g>
+</svg>
