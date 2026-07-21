@@ -254,29 +254,30 @@
   ::
       %'POST'
     ?.  signed-in  (require-sign-in p.req)
-    ?~  body.request.q.req  [(settings-response p.req) this]
+    ?~  body.request.q.req  [(settings-redirect p.req %error) this]
     =/  parsed=(unit (list [k=@t v=@t]))
       (rush q.u.body.request.q.req yquy:de-purl:html)
-    ?~  parsed  [(settings-response p.req) this]
+    ?~  parsed  [(settings-redirect p.req %error) this]
     =/  query=(list [k=@t v=@t])  u.parsed
     =/  section=(unit @t)  (query-value %section query)
-    ?~  section  [(settings-response p.req) this]
-    ?+    u.section  [(settings-response p.req) this]
+    ?~  section  [(settings-redirect p.req %error) this]
+    ?+    u.section  [(settings-redirect p.req %error) this]
         %appearance
       =/  value=(unit @t)  (query-value %mode query)
-      ?~  value  [(settings-response p.req) this]
+      ?~  value  [(settings-redirect p.req %error) this]
       =/  new-theme=(unit ?(%system %light %dark))
         ?+  u.value  ~
           %system  `%system
           %light   `%light
           %dark    `%dark
         ==
-      ?~  new-theme  [(settings-response p.req) this]
-      ?:  =(theme u.new-theme)  [(settings-response p.req) this]
+      ?~  new-theme  [(settings-redirect p.req %error) this]
+      ?:  =(theme u.new-theme)
+        [(settings-redirect p.req %appearance) this]
       =.  theme  u.new-theme
       =/  [cache-cards=(list card) new-cache=(map @t @uv)]
         (refresh-theme:hc cached)
-      [(weld cache-cards (settings-response p.req)) this(cached new-cache)]
+      [(weld cache-cards (settings-redirect p.req %appearance)) this(cached new-cache)]
     ::
         %publication
       =/  new-enabled=?  ?=(^ (query-value %enabled query))
@@ -296,7 +297,7 @@
               =(public-title new-title)
               =(public-subtitle new-subtitle)
           ==
-        [(settings-response p.req) this]
+        [(settings-redirect p.req %publication) this]
       =/  changed=(set desk)
         (~(uni in (~(dif in public) new-public)) (~(dif in new-public) public))
       =.  changed
@@ -310,7 +311,7 @@
       =.  public-subtitle  new-subtitle
       =/  result=refresh-result
         (refresh-publication:hc cached changed)
-      [(weld cards.result (settings-response p.req)) this(cached cache.result)]
+      [(weld cards.result (settings-redirect p.req %publication)) this(cached cache.result)]
     ==
   ==
   ::
@@ -364,13 +365,15 @@
     :_  this(cached new-cache)
     (weld cache-cards (response-cards:hc id status.file mime.file data.file))
   ::
-  ++  settings-response
-    |=  id=@ta
+  ++  settings-redirect
+    |=  [id=@ta result=?(%appearance %error %publication)]
     ^-  (list card)
-    %-  response-cards:hc
-    :*  id  200  'text/html'
-        (as-octs:mimes:html (crip (en-xml:html settings:hc)))
-    ==
+    =/  location=@t
+      ?+  result  '/docs/settings#settings-error'
+        %appearance   '/docs/settings#appearance-saved'
+        %publication  '/docs/settings#publication-saved'
+      ==
+    (give-response id [303 ['Location' location] ~] ~)
   ::
   ++  go-to-static
     |=  [id=@ta pa=path]
@@ -1126,6 +1129,11 @@
             ;p.eyebrow: Docs
             ;h1: Settings
             ;p: Choose the appearance and configure which documentation is available publicly.
+          ==
+          ;div.settings-notices(aria-live "polite")
+            ;p#appearance-saved.settings-notice.success(role "status"): Appearance saved.
+            ;p#publication-saved.settings-notice.success(role "status"): Publication settings saved.
+            ;p#settings-error.settings-notice.error(role "alert"): Those settings could not be saved.
           ==
           ;form.settings-form(method "post", action "/docs/settings")
             ;input(type "hidden", name "section", value "appearance");

@@ -253,6 +253,33 @@ input:focus-visible {
   line-height: 1.6;
 }
 
+.settings-notices { margin-bottom: 1rem; }
+
+.settings-notice {
+  display: none;
+  margin: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  padding: 0.8rem 1rem;
+  font-size: 0.9375rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.settings-notice:target { display: block; }
+
+.settings-notice.success {
+  border-color: var(--accent-color);
+  background: var(--accent-soft);
+  color: var(--plain-text-color);
+}
+
+.settings-notice.error {
+  border-color: var(--error-color, #c2413b);
+  background: color-mix(in srgb, var(--error-color, #c2413b) 10%, transparent);
+  color: var(--plain-text-color);
+}
+
 .settings-form {
   padding: 1.5rem;
   border: 1px solid var(--border-color);
