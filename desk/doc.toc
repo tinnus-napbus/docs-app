@@ -1,7 +1,9 @@
-/overview/udon        Overview
-/changelog/udon       Changelog
+/overview/md          Overview
+/settings/md          Settings and Public Access
+/changelog/md         Changelog
 /dev                  Developer
-  /overview/udon      Overview
-  /file-format/udon   File Format
-  /index-file/udon    Index File
-  /structure/udon     Suggested Structure
+  /overview/md        Publishing Documentation
+  /index-file/md      Index Files
+  /file-format/md     File Formats
+  /operation/md       URLs and Caching
+  /structure/md       Suggested Structure

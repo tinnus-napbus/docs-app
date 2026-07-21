@@ -15,12 +15,14 @@ github base-dev:
     - mar/htm.hoon
     - mar/html.hoon
     - mar/hymn.hoon
+    - mar/js.hoon
     - mar/kelvin.hoon
     - mar/mime.hoon
     - mar/noun.hoon
     - mar/txt-diff.hoon
     - mar/txt.hoon
     - mar/udon.hoon
+    - mar/woff2.hoon
     - mar/xhtml.hoon
     - lib/agentio.hoon
     - lib/cram.hoon
@@ -41,3 +43,29 @@ github landscape-dev:
     - sur/docket.hoon
   priority: 9
   revision: 46c6ed8738082b6a94558710b1e3619befa83057
+
+github urbit-markdown:
+  repo: tinnus-napbus/urbit-markdown
+  branch: master
+  include:
+    - lib/markdown.hoon
+    - mar/md.hoon
+    - sur/markdown.hoon
+  priority: 8
+  revision: 4b4218201a90f1d02dfebf490c7707d7266d0db6
+
+github syntect-urwasm:
+  repo: tinnus-napbus/syntect-urwasm
+  branch: master
+  recursive: true
+  include:
+    - lib/syntect.hoon
+    - lib/syntect/syntect.wasm
+    - lib/syntect/syntect-light.css
+    - lib/syntect/syntect-dark.css
+    - sur/syntect.hoon
+    - lib/wasm
+    - sur/wasm
+    - mar/wasm.hoon
+  priority: 7
+  revision: 7a228a3ebdbf32d5fc46a4310805250f174f7fb1
