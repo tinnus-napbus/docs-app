@@ -21,107 +21,12 @@
 +$  versioned-state
   $%  state-0
       state-1
-      state-2
-      state-3
-      state-4
-      state-5
-      state-6
-      state-7
-      state-8
-      state-9
-      state-10
   ==
 ::
 +$  theme  ?(%system %light %dark)
 +$  state-0  [%0 dark=_|]
 +$  state-1
   $:  %1
-      dark=_|
-      cached=(map @t @uv)
-      watched=(set desk)
-  ==
-+$  legacy-render-job
-  $:  url=@t
-      generation=@ud
-      dsk=desk
-      pa=path
-  ==
-+$  state-2
-  $:  %2
-      dark=_|
-      cached=(map @t @uv)
-      watched=(set desk)
-      generations=(map @t @ud)
-      jobs=(map @t legacy-render-job)
-      waiting=(map @t (list @ta))
-  ==
-+$  state-3
-  $:  %3
-      =theme
-      cached=(map @t @uv)
-      watched=(set desk)
-      generations=(map @t @ud)
-      jobs=(map @t legacy-render-job)
-      waiting=(map @t (list @ta))
-  ==
-+$  state-4
-  $:  %4
-      =theme
-      cached=(map @t @uv)
-      watched=(set desk)
-  ==
-+$  state-5
-  $:  %5
-      =theme
-      cached=(map @t @uv)
-      watched=(set desk)
-      public=(set desk)
-      public-title=(unit @t)
-      public-subtitle=(unit @t)
-  ==
-+$  state-6
-  $:  %6
-      =theme
-      cached=(map @t @uv)
-      watched=(set desk)
-      public-enabled=?
-      public=(set desk)
-      public-title=(unit @t)
-      public-subtitle=(unit @t)
-  ==
-+$  state-7
-  $:  %7
-      =theme
-      cached=(map @t cache-file)
-      watched=(set desk)
-      public-enabled=?
-      public=(set desk)
-      public-title=(unit @t)
-      public-subtitle=(unit @t)
-  ==
-+$  state-8
-  $:  %8
-      =theme
-      cached=(map @t @uv)
-      watched=(set desk)
-      public-enabled=?
-      public=(set desk)
-      public-title=(unit @t)
-      public-subtitle=(unit @t)
-  ==
-+$  state-9
-  $:  %9
-      =theme
-      cached=(map @t @uv)
-      watched=(set desk)
-      public-enabled=?
-      public=(set desk)
-      public-title=(unit @t)
-      public-subtitle=(unit @t)
-      pending=(set @t)
-  ==
-+$  state-10
-  $:  %10
       =theme
       cached=(map @t @uv)
       watched=(set desk)
@@ -137,7 +42,7 @@
 ::
 --
 ::
-=|  state-10
+=|  state-1
 =*  state  -
 ::
 =<
@@ -151,6 +56,7 @@
 ::
 ++  on-init
   ^-  (quip card _this)
+  =.  state  [%1 %system ~ ~ | ~ ~ ~]
   =/  [cache-cards=(list card) new-cache=(map @t @uv)]
     (refresh-cache:hc cached)
   :_  this(cached new-cache)
@@ -168,22 +74,8 @@
   =/  old  !<(versioned-state old-vase)
   =.  state
     ?-  -.old
-      %0  [%10 %system ~ ~ | ~ ~ ~]
-      %1  [%10 %system cached.old watched.old | ~ ~ ~]
-      %2  [%10 %system cached.old watched.old | ~ ~ ~]
-      %3  [%10 theme.old cached.old watched.old | ~ ~ ~]
-      %4  [%10 theme.old cached.old watched.old | ~ ~ ~]
-      %5  [%10 theme.old cached.old watched.old & public.old public-title.old public-subtitle.old]
-      %6  [%10 theme.old cached.old watched.old public-enabled.old public.old public-title.old public-subtitle.old]
-      %7
-        =/  hashes=(map @t @uv)
-          %+  roll  ~(tap by cached.old)
-          |=  [[url=@t file=cache-file] out=(map @t @uv)]
-          (~(put by out) url (mug file))
-        [%10 theme.old hashes watched.old public-enabled.old public.old public-title.old public-subtitle.old]
-      %8  [%10 theme.old cached.old watched.old public-enabled.old public.old public-title.old public-subtitle.old]
-      %9  [%10 theme.old cached.old watched.old public-enabled.old public.old public-title.old public-subtitle.old]
-      %10  old
+      %0  [%1 %system ~ ~ | ~ ~ ~]
+      %1  old
     ==
   =/  [cards=(list card) new-cache=(map @t @uv)]
     (refresh-cache:hc cached)
@@ -633,7 +525,7 @@
       [%give %fact ~[/http-response/[id]] %http-response-data !>(`data)]
       [%give %kick ~[/http-response/[id]] ~]
   ==
-:: render the index and static assets that do not require a thread
+:: render built-in pages and static assets
 ::
 ++  static-pages
   ^-  (map @t cache-file)
@@ -775,18 +667,13 @@
   ^-  refresh-result
   =/  all-targets=(list [desk path])  doc-targets
   =/  pages=(map @t cache-file)  static-pages
-  =/  legacy=(set @t)
-    %-  silt
-    %+  turn  all-targets
-    |=  [dsk=desk pa=path]
-    (crip (spud [%docs dsk pa]))
   =/  documents=(set @t)
     %-  silt
     %+  turn  all-targets
     |=  [dsk=desk pa=path]
     (crip (spud [%docs %d dsk pa]))
   =/  remove=(set @t)
-    (~(uni in ~(key by old)) (~(uni in legacy) documents))
+    (~(uni in ~(key by old)) documents)
   (refresh-pages old pages remove)
 :: replace the theme-dependent stylesheets and settings page after a mode change
 ::
