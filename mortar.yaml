@@ -19,6 +19,7 @@ github base-dev:
     - mar/kelvin.hoon
     - mar/mime.hoon
     - mar/noun.hoon
+    - mar/svg.hoon
     - mar/txt-diff.hoon
     - mar/txt.hoon
     - mar/udon.hoon

@@ -1,3 +1,9 @@
+## 1.0.1
+
+Date: `~2026.07.21`
+
+- Add an app favicon based on the new Docs tile and use it on every page.
+
 ## 1.0.0
 
 Date: `~2026.07.21`

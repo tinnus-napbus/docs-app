@@ -551,6 +551,7 @@
       ['/docs/settings' 200 & | 'text/html' settings-data]
       ['/docs/settings/' 200 & | 'text/html' settings-data]
       ['/docs/auth-check' 200 & & 'text/plain' *octs]
+      ['/docs/assets/favicon.svg' 200 | | 'image/svg+xml' (as-octs:mimes:html .^(@t %cx (scrio %docs /app/docs/favicon/svg)))]
       ['/docs/assets/navigation.js' 200 | | 'text/javascript' (as-octs:mimes:html .^(@t %cx (scrio %docs /app/docs/navigation/js)))]
       ['/docs/assets/style/var.css' 200 | | 'text/css' (as-octs:mimes:html (theme-css light:css dark:css))]
       ['/docs/assets/style/syntect.css' 200 | | 'text/css' (as-octs:mimes:html (theme-css light-syntect:css dark-syntect:css))]
@@ -1006,6 +1007,7 @@
       ;title: Docs
       ;meta(charset "utf-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1");
+      ;link(rel "icon", href "/docs/assets/favicon.svg", type "image/svg+xml");
       ;link(rel "preload", href "/docs/assets/font/source-sans-3-upright.woff2", as "font", type "font/woff2", crossorigin "anonymous");
       ;link(rel "stylesheet", href "/docs/assets/style/var.css");
       ;link(rel "stylesheet", href "/docs/assets/style/index.css");
@@ -1049,6 +1051,7 @@
       ;title: {title}
       ;meta(charset "utf-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1");
+      ;link(rel "icon", href "/docs/assets/favicon.svg", type "image/svg+xml");
       ;link(rel "preload", href "/docs/assets/font/source-sans-3-upright.woff2", as "font", type "font/woff2", crossorigin "anonymous");
       ;link(rel "stylesheet", href "/docs/assets/style/var.css");
       ;link(rel "stylesheet", href "/docs/assets/style/index.css");
@@ -1086,6 +1089,7 @@
       ;title: Docs Settings
       ;meta(charset "utf-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1");
+      ;link(rel "icon", href "/docs/assets/favicon.svg", type "image/svg+xml");
       ;link(rel "preload", href "/docs/assets/font/source-sans-3-upright.woff2", as "font", type "font/woff2", crossorigin "anonymous");
       ;link(rel "stylesheet", href "/docs/assets/style/var.css");
       ;link(rel "stylesheet", href "/docs/assets/style/index.css");
@@ -1286,6 +1290,7 @@
       ;title: {ttl}
       ;meta(charset "utf-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1");
+      ;link(rel "icon", href "/docs/assets/favicon.svg", type "image/svg+xml");
       ;link(rel "preload", href "/docs/assets/font/source-sans-3-upright.woff2", as "font", type "font/woff2", crossorigin "anonymous");
       ;link(rel "stylesheet", href "/docs/assets/style/var.css");
       ;link(rel "stylesheet", href "/docs/assets/style/page.css");
@@ -1338,6 +1343,7 @@
       ;title: Docs Error
       ;meta(charset "utf-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1");
+      ;link(rel "icon", href "/docs/assets/favicon.svg", type "image/svg+xml");
       ;link(rel "preload", href "/docs/assets/font/source-sans-3-upright.woff2", as "font", type "font/woff2", crossorigin "anonymous");
       ;link(rel "stylesheet", href "/docs/assets/style/var.css");
       ;link(rel "stylesheet", href "/docs/assets/style/err.css");
