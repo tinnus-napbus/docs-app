@@ -1,8 +1,7 @@
-;>
-The %docs app allows you to include documentation with the desks you
+The `%docs` app allows you to include documentation with the desks you
 distribute, making them available for easy browsing by users and developers.
 
-The %docs app will automatically detect and publish any docs included with any
+The `%docs` app will automatically detect and publish any docs included with any
 installed desks. As long as they're in the correct place, of a filetype with
 appropriate `mark` conversion methods, and include a
 [`doc.toc`](/docs/d/docs/dev/index-file) index file, they'll be
@@ -22,17 +21,17 @@ The directory hierarchy may therefore look something like this:
 ```
 doc
 ├── dev
-│   ├── overview.udon
+│   ├── overview.md
 │   └── foo-store
-│       ├── api-ref.udon
-│       └── data-types.udon
+│       ├── api-ref.md
+│       └── data-types.md
 └── usr
-    ├── changelog.udon
-    └── overview.udon
+    ├── changelog.md
+    └── overview.md
 ```
 
 The docs themselves may be of any filetype, as long as it has conversion methods
-to the `%docu` mark used by the %docs app. The %docs app includes parsers and
+to the `%docu` mark used by the `%docs` app. The `%docs` app includes parsers and
 conversion methods for the following marks by default:
 
 - `%txt` - Ordinary `.txt` text files.
@@ -42,7 +41,7 @@ conversion methods for the following marks by default:
 - `%html` - An ordinary `.html` file.
 
 For more details of these file formats, as well as details of the `%docu` mark
-and other format requirements of the %docs app, see the [File
+and other format requirements of the `%docs` app, see the [File
 Format](/docs/d/docs/dev/file-format) section.
 
 Apart from the `mark` and location requirements described above, there are no

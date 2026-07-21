@@ -1,7 +1,7 @@
-/overview/udon        Overview
-/changelog/udon       Changelog
+/overview/md          Overview
+/changelog/md         Changelog
 /dev                  Developer
-  /overview/udon      Overview
-  /file-format/udon   File Format
-  /index-file/udon    Index File
-  /structure/udon     Suggested Structure
+  /overview/md        Overview
+  /file-format/md     File Format
+  /index-file/md      Index File
+  /structure/md       Suggested Structure

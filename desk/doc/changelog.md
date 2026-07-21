@@ -1,84 +1,82 @@
-;>
-
 ## 0.3.12
 
-Date ~2026.07.16
+Date `~2026.07.16`
 
 - Bump to Zuse 408k
 
 ## 0.3.11
 
-Date ~2025.12.23
+Date `~2025.12.23`
 
 - Bump to Zuse 409k
 
 ## 0.3.10
 
-Date ~2025.04.24
+Date `~2025.04.24`
 
 - Bump to Zuse 410K
 
 ## 0.3.9
 
-Date ~2024.03.08
+Date `~2024.03.08`
 
 - Bump to Zuse 411K
 
 ## 0.3.8
 
-Date ~2023.10.24
+Date `~2023.10.24`
 
 - Update tile
 
 ## 0.3.7
 
-Date ~2023.8.30
+Date `~2023.8.30`
 
 - Bump to Zuse 412K
 
 ## 0.3.6
 
-Date ~2023.8.17
+Date `~2023.8.17`
 
 - Make .toc file optional
 - Change .txt file rendering to wrapped, preformatted codeblock.
 
 ## 0.3.5
 
-Date ~2022.12.2
+Date `~2022.12.2`
 
 - Switch live desk source from Kiln to Clay
 - Bump to Zuse 417K
 
 ## 0.3.4
 
-Date ~2022.6.1
+Date `~2022.6.1`
 
 - Add Graph-store docs
 
 ## 0.3.3
 
-Date: ~2022.6.1
+Date: `~2022.6.1`
 
 - Bump to Zuse 418K
 
 ## 0.3.2
 
-Date: ~2022.5.11
+Date: `~2022.5.11`
 
 - Fix desk ordering in index
 - Fix long dropdown getting cut off
 
 ## 0.3.1
 
-Date: ~2022.5.11
+Date: `~2022.5.11`
 
 - Handle query parameters after URL path.
 - Tweak drop-down CSS.
 
 ## 0.3.0
 
-Date: ~2022.5.11
+Date: `~2022.5.11`
 
 - Add dark mode styles and toggles.
 - Add syntax highlighting system for codeblocks and add JSON syntax highlighter (though the Udon compiler doesn't currently add the required language specification - a PR to fix this will be done separately).
@@ -94,42 +92,42 @@ Date: ~2022.5.11
 
 ## 0.2.3
 
-Date: ~2022.4.2
+Date: `~2022.4.2`
 
 - Add tile icon
-- Move virtualisation inside agent so %docu mark doesn't need to be an `++each`
+- Move virtualisation inside agent so `%docu` mark doesn't need to be an `++each`
 - Update docs docs to reflect this
 
 ## 0.2.2
 
-Date: ~2021.2.12
+Date: `~2021.2.12`
 
-- Add %hark-store docs.
+- Add `%hark-store` docs.
 
 ## 0.2.1
 
-Date: ~2021.2.11
+Date: `~2021.2.11`
 
 - Fix CSS scroll bug
 
 ## 0.2.0
 
-Date: ~2021.2.10
+Date: `~2021.2.10`
 
 - Switch from `%gmi` format to any `mark` with appropriate conversion methods.
-- Change index file format from %index to `%clue`.
-- Add %txt parser.
+- Change index file format from `%index` to `%clue`.
+- Add `%txt` parser.
 - Fix empty codeblock parsing bug in `%gmi` parser.
 - Add new `%docu` `mark` as conversion target.
 - Add conversion methods for `%html`, `%txt`, `%udon` and `%gmi`.
 - Various tweaks and fixes to rendering.
 - Expand the types of elements that can be rendered.
 - Change tile colour.
-- Add %settings-store docs.
-- Update %docs app docs.
+- Add `%settings-store` docs.
+- Update `%docs` app docs.
 
 ## 0.1.0
 
-Date: ~2021.12.28
+Date: `~2021.12.28`
 
 - Initial release

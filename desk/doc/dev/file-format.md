@@ -1,30 +1,28 @@
-;>
-
 # `%docu` mark
 
 > Note: this section is mostly useful if you're writing a mark conversion
   method. For marks that are already supported and you can use directly, see
   further down this page.
 
-The %docs app supports any mark, as long as it has a conversion method to its
-%docu mark. The %docu mark is not expected to be used directly to write
+The `%docs` app supports any mark, as long as it has a conversion method to its
+`%docu` mark. The `%docu` mark is not expected to be used directly to write
 documentation, its purpose is to be a mark conversion target.
 
-The %docu mark expects a +$manx.
+The `%docu` mark expects a `+$manx`.
 
-A +$manx is how an XML node structure is represented in hoon. See [Section
+A `+$manx` is how an XML node structure is represented in hoon. See [Section
 5e](https://urbit.org/docs/hoon/reference/stdlib/5e#manx) of the urbit.org
-standard library reference for details. A +$manx is what ++de-xml:html and
-++en-xml:html decode/encode raw XML strings from/to.
+standard library reference for details. A `+$manx` is what `++de-xml:html` and
+`++en-xml:html` decode/encode raw XML strings from/to.
 
-The %docu mark will technically accept any `+$manx`, but the %docs agent itself
+The `%docu` mark will technically accept any `+$manx`, but the `%docs` agent itself
 makes some changes and imposes some additional rules:
 
 + The root element must be a `<div>`.
 + `<h1>`, `<h2>`, and `<h3>` elements that are direct children of the root
   `<div>` will be used to make the table of contents. Other header levels will
   not be included in the table of contents, but they can still be used. `<h1>`,
-  through <h3>` can also be used at deeper levels, but they also won't be
+  through `<h3>` can also be used at deeper levels, but they also won't be
   included in the table of contents.
 + Only these tags are allowed: `<a>`, `<address>`, `<b>`, `<br>`,
   `<blockquote>`, `<code>`, `<del>`, `<div>`, `<em>`, `<h1>`, `<h2>`, `<h3>`,
@@ -50,7 +48,7 @@ makes some changes and imposes some additional rules:
 
 # Included marks
 
-The following marks are supported by the %docs app and you can use them to write docs right away.
+The following marks are supported by the `%docs` app and you can use them to write docs right away.
 
 ## `%md`
 
@@ -107,7 +105,7 @@ hoon compiler. Here is its syntax in brief:
   treated as the literal text.
 - *Hoon constants*: Udon will automatically render any values with atom aura
   syntax as inline code. It'll also render arms like `++foo:bar`, `+$baz`, and
-  `+*foo:bar:baz, as inline code.
+  `+*foo:bar:baz`, as inline code.
 - *Sail*: this is hoon's native XML syntax. Udon will parse it, execute it, and
   include the `+$manx`es produced in the resulting document. This means you can
   embed arbitrary hoon in the document. There is little formal sail
@@ -120,7 +118,7 @@ hoon compiler. Here is its syntax in brief:
 
 ## `%txt`
 
-The %docs app supports plain `.txt` files. The file will be rendered as a
+The `%docs` app supports plain `.txt` files. The file will be rendered as a
 preformatted codeblock with wrapping.
 
 ## `%html`

@@ -1,27 +1,25 @@
-;>
-
 Each desk with docs may include a `doc.toc` file in its root. A `doc.toc` file
 looks something like this:
 
 ```
 /dev                  Developer
   /hark-store         Hark-store
-    /overview/udon    Overview
-    /types/udon       Data Types
-    /pokes/udon       Pokes
-    /paths/udon       Subscription Paths
-    /scry/udon        Scry Endpoints
+    /overview/md      Overview
+    /types/md         Data Types
+    /pokes/md         Pokes
+    /paths/md         Subscription Paths
+    /scry/md          Scry Endpoints
   /settings-store     Settings-store
-    /overview/udon    Overview
-    /types/udon       Data Types
-    /pokes/udon       Pokes
-    /paths/udon       Subscription Paths
-    /scry/udon        Scry Endpoints
+    /overview/md      Overview
+    /types/md         Data Types
+    /pokes/md         Pokes
+    /paths/md         Subscription Paths
+    /scry/md          Scry Endpoints
 ```
 
 Each line contains a pair of path and title with at least one space in between.
 A path with a single element (such as `/dev` and `/hark-store`) denotes a
-directory. A path with two elements (such as `/overview/udon`) denotes a file,
+directory. A path with two elements (such as `/overview/md`) denotes a file,
 where the first element is the name and the second is the mark.
 
 Any directory structure and depth is allowed. The hierarchy is determined by

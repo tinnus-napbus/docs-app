@@ -1,7 +1,5 @@
-;>
-
 Here we'll discuss recommendations and best practices for your docs. The
-%docs app doesn't impose any restrictions on the structure of your docs, so
+`%docs` app doesn't impose any restrictions on the structure of your docs, so
 you're free to do things differently if you feel it's appropriate.
 
 # User docs
@@ -15,12 +13,12 @@ advisable to include:
 You should include some of the following information (as appropriate) in either
 a distinct informational document or at the top of the first document:
 
-- *Publisher/developer/contributors*: Your `@p`, the `@p` you distribute the app
+- **Publisher/developer/contributors**: Your `@p`, the `@p` you distribute the app
   from, people who have helped build the app, etc.
-- *License*: MIT, GPL, etc.
-- *Source*: Github link (or similar) for the repo containing the source code.
-- *Issues*: Where to file issues (typically also the Github repo).
-- *Group*: If you have a group associated with your app (for support, discussion,
+- **License**: MIT, GPL, etc.
+- **Source**: Github link (or similar) for the repo containing the source code.
+- **Issues**: Where to file issues (typically also the Github repo).
+- **Group**: If you have a group associated with your app (for support, discussion,
   or what have you), you can include the `~host/group-name` and
   `web+urbitgraph://group/[...]` link so people can open it directly in Urbit.
 - Any other metadata, links, info, etc, you feel are appropriate to include.

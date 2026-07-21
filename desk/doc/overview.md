@@ -1,7 +1,6 @@
-;>
-- Developer: ~tinnus-napbus
+- Developer: `~tinnus-napbus`
 - License: MIT
-- App link: [~pocwet/docs](web+urbitgraph://~pocwet/docs)
+- App link: [`~pocwet/docs`](web+urbitgraph://~pocwet/docs)
 - Source repo: [https://github.com/tinnus-napbus/docs-app](https://github.com/tinnus-napbus/docs-app)
 - Bug reports: [https://github.com/tinnus-napbus/docs-app/issues](https://github.com/tinnus-napbus/docs-app/issues)
 
@@ -11,5 +10,5 @@ have docs.
 
 App publishers may include documentation for ordinary users and/or developers.
 
-You can toggle between dark-mode and light-mode with the button at the top-right
-of the main page.
+Appearance can be set to light, dark, or the browser's system preference from
+the Settings page.
