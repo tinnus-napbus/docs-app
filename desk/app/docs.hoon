@@ -10,12 +10,26 @@
 /$  md-docu    %md    %docu
 ::
 |%
++$  cache-file
+  $:  status=@ud
+      auth=?
+      no-store=?
+      mime=@t
+      data=octs
+  ==
+::
 +$  versioned-state
   $%  state-0
       state-1
       state-2
       state-3
       state-4
+      state-5
+      state-6
+      state-7
+      state-8
+      state-9
+      state-10
   ==
 ::
 +$  theme  ?(%system %light %dark)
@@ -56,14 +70,74 @@
       cached=(map @t @uv)
       watched=(set desk)
   ==
++$  state-5
+  $:  %5
+      =theme
+      cached=(map @t @uv)
+      watched=(set desk)
+      public=(set desk)
+      public-title=(unit @t)
+      public-subtitle=(unit @t)
+  ==
++$  state-6
+  $:  %6
+      =theme
+      cached=(map @t @uv)
+      watched=(set desk)
+      public-enabled=?
+      public=(set desk)
+      public-title=(unit @t)
+      public-subtitle=(unit @t)
+  ==
++$  state-7
+  $:  %7
+      =theme
+      cached=(map @t cache-file)
+      watched=(set desk)
+      public-enabled=?
+      public=(set desk)
+      public-title=(unit @t)
+      public-subtitle=(unit @t)
+  ==
++$  state-8
+  $:  %8
+      =theme
+      cached=(map @t @uv)
+      watched=(set desk)
+      public-enabled=?
+      public=(set desk)
+      public-title=(unit @t)
+      public-subtitle=(unit @t)
+  ==
++$  state-9
+  $:  %9
+      =theme
+      cached=(map @t @uv)
+      watched=(set desk)
+      public-enabled=?
+      public=(set desk)
+      public-title=(unit @t)
+      public-subtitle=(unit @t)
+      pending=(set @t)
+  ==
++$  state-10
+  $:  %10
+      =theme
+      cached=(map @t @uv)
+      watched=(set desk)
+      public-enabled=?
+      public=(set desk)
+      public-title=(unit @t)
+      public-subtitle=(unit @t)
+  ==
 ::
 +$  card  card:agent:gall
-+$  cache-file  [mime=@t data=octs]
 +$  refresh-result  [cards=(list card) cache=(map @t @uv)]
++$  eyre-cache  (map @t [aeon=@ud val=(unit cache-entry:eyre)])
 ::
 --
 ::
-=|  state-4
+=|  state-10
 =*  state  -
 ::
 =<
@@ -94,11 +168,22 @@
   =/  old  !<(versioned-state old-vase)
   =.  state
     ?-  -.old
-      %0  [%4 %system ~ ~]
-      %1  [%4 %system cached.old watched.old]
-      %2  [%4 %system cached.old watched.old]
-      %3  [%4 theme.old cached.old watched.old]
-      %4  old
+      %0  [%10 %system ~ ~ | ~ ~ ~]
+      %1  [%10 %system cached.old watched.old | ~ ~ ~]
+      %2  [%10 %system cached.old watched.old | ~ ~ ~]
+      %3  [%10 theme.old cached.old watched.old | ~ ~ ~]
+      %4  [%10 theme.old cached.old watched.old | ~ ~ ~]
+      %5  [%10 theme.old cached.old watched.old & public.old public-title.old public-subtitle.old]
+      %6  [%10 theme.old cached.old watched.old public-enabled.old public.old public-title.old public-subtitle.old]
+      %7
+        =/  hashes=(map @t @uv)
+          %+  roll  ~(tap by cached.old)
+          |=  [[url=@t file=cache-file] out=(map @t @uv)]
+          (~(put by out) url (mug file))
+        [%10 theme.old hashes watched.old public-enabled.old public.old public-title.old public-subtitle.old]
+      %8  [%10 theme.old cached.old watched.old public-enabled.old public.old public-title.old public-subtitle.old]
+      %9  [%10 theme.old cached.old watched.old public-enabled.old public.old public-title.old public-subtitle.old]
+      %10  old
     ==
   =/  [cards=(list card) new-cache=(map @t @uv)]
     (refresh-cache:hc cached)
@@ -119,13 +204,10 @@
 ++  on-poke
   |=  [=mark =vase]
   |^  ^-  (quip card _this)
-  ?>  (team:title our.bowl src.bowl)
   ?.  ?=(%handle-http-request mark)
     (on-poke:def [mark vase])
   =/  req  !<  (pair @ta inbound-request:eyre)  vase
-  ?.  authenticated.q.req
-    :_  this
-    (give-response p.req [307 ['Location' '/~/login?redirect='] ~] ~)
+  =/  signed-in=?  =(our.bowl src.bowl)
   ?+    method.request.q.req
     :_  this
     %^    give-response
@@ -153,45 +235,82 @@
       (cury test '')
     ?.  ?=([%docs *] path)  (on-poke:def [mark vase])
     ?~  t.path
+      ?.  signed-in  (require-sign-in p.req)
       (go-to-index p.req)
+    ?:  ?=([%public ~] t.path)
+      (go-to-public p.req)
     ?:  ?=([%settings ~] t.path)
+      ?.  signed-in  (require-sign-in p.req)
       (go-to-settings p.req)
     ?:  =(%assets i.t.path)
       (go-to-static p.req t.t.path)
-    (go-to-page p.req i.t.path t.t.path)
+    ?.  ?=([%d @ *] t.path)  (on-poke:def [mark vase])
+    =/  dsk=desk  i.t.t.path
+    ?.  ?|  signed-in
+            ?&(public-enabled (~(has in public) dsk))
+        ==
+      (require-sign-in p.req)
+    (go-to-page p.req dsk t.t.t.path)
   ::
       %'POST'
+    ?.  signed-in  (require-sign-in p.req)
     ?~  body.request.q.req  [(settings-response p.req) this]
-    =/  query=(unit (list [k=@t v=@t]))
+    =/  parsed=(unit (list [k=@t v=@t]))
       (rush q.u.body.request.q.req yquy:de-purl:html)
-    ?~  query  [(settings-response p.req) this]
-    ?~  u.query  [(settings-response p.req) this]
-    ?^  t.u.query  [(settings-response p.req) this]
-    ?.  ?=(%mode k.i.u.query)  [(settings-response p.req) this]
-    ?+    v.i.u.query  [(settings-response p.req) this]
-        %dark
-      ?:  =(%dark theme)
-        =/  [cache-cards=(list card) new-cache=(map @t @uv)]
-          (refresh-theme:hc cached)
-        [(weld cache-cards (settings-response p.req)) this(cached new-cache)]
-      :_  this(theme %dark)
-      ~[(~(poke-self pass:io /self) [mark vase])]
+    ?~  parsed  [(settings-response p.req) this]
+    =/  query=(list [k=@t v=@t])  u.parsed
+    =/  section=(unit @t)  (query-value %section query)
+    ?~  section  [(settings-response p.req) this]
+    ?+    u.section  [(settings-response p.req) this]
+        %appearance
+      =/  value=(unit @t)  (query-value %mode query)
+      ?~  value  [(settings-response p.req) this]
+      =/  new-theme=(unit ?(%system %light %dark))
+        ?+  u.value  ~
+          %system  `%system
+          %light   `%light
+          %dark    `%dark
+        ==
+      ?~  new-theme  [(settings-response p.req) this]
+      ?:  =(theme u.new-theme)  [(settings-response p.req) this]
+      =.  theme  u.new-theme
+      =/  [cache-cards=(list card) new-cache=(map @t @uv)]
+        (refresh-theme:hc cached)
+      [(weld cache-cards (settings-response p.req)) this(cached new-cache)]
     ::
-        %light
-      ?:  =(%light theme)
-        =/  [cache-cards=(list card) new-cache=(map @t @uv)]
-          (refresh-theme:hc cached)
-        [(weld cache-cards (settings-response p.req)) this(cached new-cache)]
-      :_  this(theme %light)
-      ~[(~(poke-self pass:io /self) [mark vase])]
-    ::
-        %system
-      ?:  =(%system theme)
-        =/  [cache-cards=(list card) new-cache=(map @t @uv)]
-          (refresh-theme:hc cached)
-        [(weld cache-cards (settings-response p.req)) this(cached new-cache)]
-      :_  this(theme %system)
-      ~[(~(poke-self pass:io /self) [mark vase])]
+        %publication
+      =/  new-enabled=?  ?=(^ (query-value %enabled query))
+      =/  new-public=(set desk)
+        %-  silt
+        %+  murn  query
+        |=  [key=@t value=@t]
+        ?.  =(%public key)  ~
+        (slaw %tas value)
+      =.  new-public  (~(int in new-public) ~(key by desk-map:hc))
+      =/  new-title=(unit @t)
+        (nonempty (query-value %title query))
+      =/  new-subtitle=(unit @t)
+        (nonempty (query-value %subtitle query))
+      ?:  ?&  =(public-enabled new-enabled)
+              =(public new-public)
+              =(public-title new-title)
+              =(public-subtitle new-subtitle)
+          ==
+        [(settings-response p.req) this]
+      =/  changed=(set desk)
+        (~(uni in (~(dif in public) new-public)) (~(dif in new-public) public))
+      =.  changed
+        ?:  !=(public-enabled new-enabled)
+          (~(uni in changed) (~(uni in public) new-public))
+        ?:  new-enabled  changed
+        ~
+      =.  public-enabled   new-enabled
+      =.  public           new-public
+      =.  public-title     new-title
+      =.  public-subtitle  new-subtitle
+      =/  result=refresh-result
+        (refresh-publication:hc cached changed)
+      [(weld cards.result (settings-response p.req)) this(cached cache.result)]
     ==
   ==
   ::
@@ -207,13 +326,29 @@
     =/  new-cache=(map @t @uv)  (~(put by cached) '/docs' hash)
     =.  new-cache  (~(put by new-cache) '/docs/' hash)
     :_  this(cached new-cache)
-    (weld cache-cards (response-cards:hc id mime.file data.file))
+    (weld cache-cards (response-cards:hc id status.file mime.file data.file))
   ::
   ++  index-response
     |=  id=@ta
     ^-  (list card)
-    %^  response-cards:hc  id  'text/html'
-    (as-octs:mimes:html (crip (en-xml:html index:hc)))
+    %-  response-cards:hc
+    :*  id  200  'text/html'
+        (as-octs:mimes:html (crip (en-xml:html (index:hc |))))
+    ==
+  ::
+  ++  go-to-public
+    |=  id=@ta
+    ^-  (quip card _this)
+    =/  file=cache-file  (~(got by static-pages:hc) '/docs/public')
+    =/  hash=@uv  (mug file)
+    =/  cache-cards=(list card)
+      :~  (~(arvo pass:io /cache) %e %set-response '/docs/public' `(cache-entry:hc file))
+          (~(arvo pass:io /cache) %e %set-response '/docs/public/' `(cache-entry:hc file))
+      ==
+    =/  new-cache=(map @t @uv)  (~(put by cached) '/docs/public' hash)
+    =.  new-cache  (~(put by new-cache) '/docs/public/' hash)
+    :_  this(cached new-cache)
+    (weld cache-cards (response-cards:hc id status.file mime.file data.file))
   ::
   ++  go-to-settings
     |=  id=@ta
@@ -227,13 +362,15 @@
     =/  new-cache=(map @t @uv)  (~(put by cached) '/docs/settings' hash)
     =.  new-cache  (~(put by new-cache) '/docs/settings/' hash)
     :_  this(cached new-cache)
-    (weld cache-cards (response-cards:hc id mime.file data.file))
+    (weld cache-cards (response-cards:hc id status.file mime.file data.file))
   ::
   ++  settings-response
     |=  id=@ta
     ^-  (list card)
-    %^  response-cards:hc  id  'text/html'
-    (as-octs:mimes:html (crip (en-xml:html settings:hc)))
+    %-  response-cards:hc
+    :*  id  200  'text/html'
+        (as-octs:mimes:html (crip (en-xml:html settings:hc)))
+    ==
   ::
   ++  go-to-static
     |=  [id=@ta pa=path]
@@ -244,17 +381,17 @@
     =/  cache-card=card
       (~(arvo pass:io /cache) %e %set-response url `(cache-entry:hc u.file))
     :_  this(cached (~(put by cached) url (mug u.file)))
-    [cache-card (response-cards:hc id mime.u.file data.u.file)]
+    [cache-card (response-cards:hc id status.u.file mime.u.file data.u.file)]
   ::
   ++  go-to-page
     |=  [id=@ta dsk=desk pa=path]
     ^-  (quip card _this)
-    =/  url=@t  (crip (spud [%docs dsk pa]))
+    =/  url=@t  (crip (spud [%docs %d dsk pa]))
     =/  file=cache-file  (render-doc:hc dsk pa)
     =/  cache-card=card
       (~(arvo pass:io /cache) %e %set-response url `(cache-entry:hc file))
     :_  this(cached (~(put by cached) url (mug file)))
-    [cache-card (response-cards:hc id mime.file data.file)]
+    [cache-card (response-cards:hc id status.file mime.file data.file)]
   ::
   ++  give-response
     |=  [id=@ta hed=response-header:http dat=(unit octs)]
@@ -263,11 +400,30 @@
         [%give %fact ~[/http-response/[id]] %http-response-data !>(dat)]
         [%give %kick ~[/http-response/[id]] ~]
     ==
+  ::
+  ++  require-sign-in
+    |=  id=@ta
+    ^-  (quip card _this)
+    :_  this
+    (give-response id [307 ['Location' '/~/login?redirect='] ~] ~)
+  ::
+  ++  query-value
+    |=  [key=@t query=(list [k=@t v=@t])]
+    ^-  (unit @t)
+    ?~  query  ~
+    ?:  =(key k.i.query)  `v.i.query
+    $(query t.query)
+  ::
+  ++  nonempty
+    |=  value=(unit @t)
+    ^-  (unit @t)
+    ?~  value  ~
+    ?:  =(u.value '')  ~
+    value
   --
 ++  on-watch
   |=  =path
   ^-  (quip card _this)
-  ?>  (team:title our.bowl src.bowl)
   ?>  ?=([%http-response *] path)
   `this
 ::
@@ -403,25 +559,29 @@
         "\0a"
       ==
   ==
-:: construct an authenticated Eyre cache entry for a rendered page
+:: construct an Eyre cache entry with the file's publication policy
 ::
 ++  cache-entry
   |=  file=cache-file
   ^-  cache-entry:eyre
   =/  hed=response-header:http
-    :-  200
-    :~  ['Content-Type' mime.file]
-        ['Content-Length' (crip ((d-co:co 1) p.data.file))]
-    ==
+    :-  status.file
+    =/  headers=(list [@t @t])
+      :~  ['Content-Type' mime.file]
+          ['Content-Length' (crip ((d-co:co 1) p.data.file))]
+      ==
+    ?:  no-store.file
+      [['Cache-Control' 'no-store'] headers]
+    headers
   =/  payload=simple-payload:http  [hed `data.file]
-  [& %payload payload]
+  [auth.file %payload payload]
 :: send a complete direct HTTP response to one pending Eyre request
 ::
 ++  response-cards
-  |=  [id=@ta mime=@t data=octs]
+  |=  [id=@ta status=@ud mime=@t data=octs]
   ^-  (list card)
   =/  hed=response-header:http
-    :-  200
+    :-  status
     :~  ['Content-Type' mime]
         ['Content-Length' (crip ((d-co:co 1) p.data))]
     ==
@@ -434,23 +594,33 @@
 ++  static-pages
   ^-  (map @t cache-file)
   =/  idx=octs
-    (as-octs:mimes:html (crip (en-xml:html index)))
-  =/  set=octs
+    (as-octs:mimes:html (crip (en-xml:html (index |))))
+  =/  pub=octs
+    (as-octs:mimes:html (crip (en-xml:html (index &))))
+  =/  public-status=@ud  ?:(public-enabled 200 404)
+  =/  public-data=octs
+    ?:  public-enabled  pub
+    (as-octs:mimes:html '<h1>404 Not Found</h1>')
+  =/  settings-data=octs
     (as-octs:mimes:html (crip (en-xml:html settings)))
   %-  ~(gas by *(map @t cache-file))
-  :~  ['/docs' 'text/html' idx]
-      ['/docs/' 'text/html' idx]
-      ['/docs/settings' 'text/html' set]
-      ['/docs/settings/' 'text/html' set]
-      ['/docs/assets/style/var.css' 'text/css' (as-octs:mimes:html (theme-css light:css dark:css))]
-      ['/docs/assets/style/syntect.css' 'text/css' (as-octs:mimes:html (theme-css light-syntect:css dark-syntect:css))]
-      ['/docs/assets/style/index.css' 'text/css' (as-octs:mimes:html index:css)]
-      ['/docs/assets/style/page.css' 'text/css' (as-octs:mimes:html page:css)]
-      ['/docs/assets/style/err.css' 'text/css' (as-octs:mimes:html err:css)]
-      ['/docs/assets/font/source-sans-3-upright.woff2' 'font/woff2' .^(octs %cx (scrio %docs /app/docs/fonts/source-sans-3-upright/woff2))]
-      ['/docs/assets/font/source-sans-3-italic.woff2' 'font/woff2' .^(octs %cx (scrio %docs /app/docs/fonts/source-sans-3-italic/woff2))]
-      ['/docs/assets/font/sourcecodepro-regular.woff2' 'font/woff2' .^(octs %cx (scrio %docs /app/docs/fonts/sourcecodepro-regular/woff2))]
-      ['/docs/assets/font/sourcecodepro-semibold.woff2' 'font/woff2' .^(octs %cx (scrio %docs /app/docs/fonts/sourcecodepro-semibold/woff2))]
+  :~  ['/docs' 200 & | 'text/html' idx]
+      ['/docs/' 200 & | 'text/html' idx]
+      ['/docs/public' public-status | | 'text/html' public-data]
+      ['/docs/public/' public-status | | 'text/html' public-data]
+      ['/docs/settings' 200 & | 'text/html' settings-data]
+      ['/docs/settings/' 200 & | 'text/html' settings-data]
+      ['/docs/auth-check' 200 & & 'text/plain' *octs]
+      ['/docs/assets/navigation.js' 200 | | 'text/javascript' (as-octs:mimes:html .^(@t %cx (scrio %docs /app/docs/navigation/js)))]
+      ['/docs/assets/style/var.css' 200 | | 'text/css' (as-octs:mimes:html (theme-css light:css dark:css))]
+      ['/docs/assets/style/syntect.css' 200 | | 'text/css' (as-octs:mimes:html (theme-css light-syntect:css dark-syntect:css))]
+      ['/docs/assets/style/index.css' 200 | | 'text/css' (as-octs:mimes:html index:css)]
+      ['/docs/assets/style/page.css' 200 | | 'text/css' (as-octs:mimes:html page:css)]
+      ['/docs/assets/style/err.css' 200 | | 'text/css' (as-octs:mimes:html err:css)]
+      ['/docs/assets/font/source-sans-3-upright.woff2' 200 | | 'font/woff2' .^(octs %cx (scrio %docs /app/docs/fonts/source-sans-3-upright/woff2))]
+      ['/docs/assets/font/source-sans-3-italic.woff2' 200 | | 'font/woff2' .^(octs %cx (scrio %docs /app/docs/fonts/source-sans-3-italic/woff2))]
+      ['/docs/assets/font/sourcecodepro-regular.woff2' 200 | | 'font/woff2' .^(octs %cx (scrio %docs /app/docs/fonts/sourcecodepro-regular/woff2))]
+      ['/docs/assets/font/sourcecodepro-semibold.woff2' 200 | | 'font/woff2' .^(octs %cx (scrio %docs /app/docs/fonts/sourcecodepro-semibold/woff2))]
   ==
 :: enumerate the indexed pages belonging to one live desk
 ::
@@ -478,41 +648,140 @@
 ++  render-doc
   |=  [dsk=desk pa=path]
   ^-  cache-file
-  =/  page=manx  (highlight:renderer (make-doc dsk pa))
-  ['text/html' (as-octs:mimes:html (crip (en-xml:html page)))]
-:: synchronously render a set of indexed documents
+  (render-page dsk (make-doc dsk pa))
+:: render a previously constructed document page into a cache response
 ::
-++  render-docs
-  |=  targets=(list [desk path])
+++  render-page
+  |=  [dsk=desk page=manx]
+  ^-  cache-file
+  =.  page  (highlight:renderer page)
+  =/  auth=?
+    ?:  public-enabled  !(~(has in public) dsk)
+    &
+  :*  200
+      auth
+      |
+      'text/html'
+      (as-octs:mimes:html (crip (en-xml:html page)))
+  ==
+:: read Eyre's private response cache so publication changes can reuse payloads
+::
+++  current-eyre-cache
+  ^-  eyre-cache
+  .^(eyre-cache %e /(scot %p our.bowl)/cache/(scot %da now.bowl))
+:: reuse a rendered document while replacing only its authentication policy
+::
+++  reuse-doc
+  |=  [existing=eyre-cache dsk=desk url=@t]
+  ^-  (unit cache-file)
+  =/  found=(unit [aeon=@ud val=(unit cache-entry:eyre)])
+    (~(get by existing) url)
+  ?~  found  ~
+  ?~  val.u.found  ~
+  =/  entry=cache-entry:eyre  u.val.u.found
+  =/  data=(unit octs)  data.simple-payload.body.entry
+  ?~  data  ~
+  =/  auth=?
+    ?:  public-enabled  !(~(has in public) dsk)
+    &
+  =/  file=cache-file
+    :*  200
+        auth
+        |
+        'text/html'
+        u.data
+    ==
+  `file
+:: reuse the rendered responses for a set of documents
+::
+++  reuse-docs
+  |=  [existing=eyre-cache dsk=desk urls=(list @t)]
   ^-  (map @t cache-file)
-  %+  roll  targets
-  |=  [[dsk=desk pa=path] pages=(map @t cache-file)]
-  =/  url=@t  (crip (spud [%docs dsk pa]))
-  (~(put by pages) url (render-doc dsk pa))
-:: rebuild all responses synchronously and reconcile them with Eyre
+  %+  roll  urls
+  |=  [url=@t pages=(map @t cache-file)]
+  =/  file=(unit cache-file)  (reuse-doc existing dsk url)
+  ?~  file  pages
+  (~(put by pages) url u.file)
+:: choose the safe default library destination embedded in a document page
+::
+++  library-url
+  |=  dsk=desk
+  ^-  tape
+  %+  weld  "/docs/public#"
+  (trip dsk)
+:: eagerly cache indexes and assets; all documents populate on demand
 ::
 ++  refresh-cache
   |=  old=(map @t @uv)
   ^-  refresh-result
+  =/  all-targets=(list [desk path])  doc-targets
   =/  pages=(map @t cache-file)  static-pages
-  =/  documents=(map @t cache-file)  (render-docs doc-targets)
-  =.  pages  (~(uni by documents) pages)
-  (refresh-pages old pages ~(key by old))
+  =/  legacy=(set @t)
+    %-  silt
+    %+  turn  all-targets
+    |=  [dsk=desk pa=path]
+    (crip (spud [%docs dsk pa]))
+  =/  documents=(set @t)
+    %-  silt
+    %+  turn  all-targets
+    |=  [dsk=desk pa=path]
+    (crip (spud [%docs %d dsk pa]))
+  =/  remove=(set @t)
+    (~(uni in ~(key by old)) (~(uni in legacy) documents))
+  (refresh-pages old pages remove)
 :: replace the theme-dependent stylesheets and settings page after a mode change
 ::
 ++  refresh-theme
   |=  old=(map @t @uv)
   ^-  [(list card) (map @t @uv)]
   =/  pages=(map @t cache-file)
-    =/  set=cache-file
-      ['text/html' (as-octs:mimes:html (crip (en-xml:html settings)))]
+    =/  settings-file=cache-file
+      [200 & | 'text/html' (as-octs:mimes:html (crip (en-xml:html settings)))]
     %-  ~(gas by *(map @t cache-file))
-    :~  ['/docs/settings' set]
-        ['/docs/settings/' set]
-        ['/docs/assets/style/var.css' 'text/css' (as-octs:mimes:html (theme-css light:css dark:css))]
-        ['/docs/assets/style/syntect.css' 'text/css' (as-octs:mimes:html (theme-css light-syntect:css dark-syntect:css))]
+    :~  ['/docs/settings' settings-file]
+        ['/docs/settings/' settings-file]
+        ['/docs/assets/style/var.css' 200 | | 'text/css' (as-octs:mimes:html (theme-css light:css dark:css))]
+        ['/docs/assets/style/syntect.css' 200 | | 'text/css' (as-octs:mimes:html (theme-css light-syntect:css dark-syntect:css))]
     ==
   (refresh-pages old pages ~)
+:: update indexes, settings, and the auth flags of cached documents
+::
+++  refresh-publication
+  |=  [old=(map @t @uv) changed=(set desk)]
+  ^-  refresh-result
+  =/  idx=cache-file
+    [200 & | 'text/html' (as-octs:mimes:html (crip (en-xml:html (index |))))]
+  =/  pub-data=octs
+    ?:  public-enabled
+      (as-octs:mimes:html (crip (en-xml:html (index &))))
+    (as-octs:mimes:html '<h1>404 Not Found</h1>')
+  =/  pub=cache-file
+    [?:(public-enabled 200 404) | | 'text/html' pub-data]
+  =/  settings-file=cache-file
+    [200 & | 'text/html' (as-octs:mimes:html (crip (en-xml:html settings)))]
+  =/  pages=(map @t cache-file)
+    %-  ~(gas by *(map @t cache-file))
+    :~  ['/docs' idx]
+        ['/docs/' idx]
+        ['/docs/public' pub]
+        ['/docs/public/' pub]
+        ['/docs/settings' settings-file]
+        ['/docs/settings/' settings-file]
+    ==
+  =/  existing=eyre-cache  current-eyre-cache
+  =/  desks=(list desk)  ~(tap in changed)
+  =/  remove=(set @t)  ~
+  |-
+  ?~  desks  (refresh-pages old pages remove)
+  =/  dsk=desk  i.desks
+  =/  urls=(set @t)  (desk-urls old dsk)
+  =/  reused=(map @t cache-file)
+    (reuse-docs existing dsk ~(tap in urls))
+  %=  $
+    desks   t.desks
+    pages   (~(uni by reused) pages)
+    remove  (~(uni in urls) remove)
+  ==
 :: reconcile a partial set of rendered pages and explicitly removable URLs
 ::
 ++  refresh-pages
@@ -539,40 +808,54 @@
     |=  [url=@t out=(map @t @uv)]
     (~(del by out) url)
   [(weld updates deletes) fresh]
-:: rebuild the index and every page belonging to one desk
+:: find every cached document URL belonging to one desk
+::
+++  desk-urls
+  |=  [old=(map @t @uv) dsk=desk]
+  ^-  (set @t)
+  =/  prefix=tape  (weld "/docs/d/" (weld (trip dsk) "/"))
+  %-  silt
+  %+  murn  ~(tap in ~(key by old))
+  |=  url=@t
+  =/  txt=tape  (trip url)
+  ?.  ?&  (lte (lent prefix) (lent txt))
+          =(prefix (scag (lent prefix) txt))
+      ==
+    ~
+  `url
+:: rebuild indexes and invalidate every cached page belonging to one desk
 ::
 ++  refresh-desk
   |=  [old=(map @t @uv) dsk=desk]
   ^-  refresh-result
   =/  idx=cache-file
-    ['text/html' (as-octs:mimes:html (crip (en-xml:html index)))]
+    [200 & | 'text/html' (as-octs:mimes:html (crip (en-xml:html (index |))))]
+  =/  pub-data=octs
+    ?:  public-enabled
+      (as-octs:mimes:html (crip (en-xml:html (index &))))
+    (as-octs:mimes:html '<h1>404 Not Found</h1>')
+  =/  pub=cache-file
+    [?:(public-enabled 200 404) | | 'text/html' pub-data]
+  =/  settings-file=cache-file
+    [200 & | 'text/html' (as-octs:mimes:html (crip (en-xml:html settings)))]
   =/  pages=(map @t cache-file)
-    (~(put by *(map @t cache-file)) '/docs/' idx)
-  =.  pages  (~(put by pages) '/docs' idx)
-  =/  targets=(list [desk path])
-    (turn (desk-targets dsk) |=(pa=path [dsk pa]))
-  =.  pages  (~(uni by (render-docs targets)) pages)
-  =/  prefix=tape  (weld "/docs/" (weld (trip dsk) "/"))
-  =/  remove=(set @t)
-    %-  silt
-    %+  murn  ~(tap in ~(key by old))
-    |=  url=@t
-    =/  txt=tape  (trip url)
-    ?:  ?&  (lte (lent prefix) (lent txt))
-            =(prefix (scag (lent prefix) txt))
-        ==
-      `url
-    ~
-  (refresh-pages old pages remove)
-:: rebuild or remove one indexed document page
+    %-  ~(gas by *(map @t cache-file))
+    :~  ['/docs' idx]
+        ['/docs/' idx]
+        ['/docs/public' pub]
+        ['/docs/public/' pub]
+        ['/docs/settings' settings-file]
+        ['/docs/settings/' settings-file]
+    ==
+  (refresh-pages old pages (desk-urls old dsk))
+:: invalidate one indexed document page
 ::
 ++  refresh-doc
   |=  [old=(map @t @uv) dsk=desk pa=path]
   ^-  refresh-result
-  =/  url=@t  (crip (spud [%docs dsk pa]))
-  =/  pages=(map @t cache-file)
-    (~(put by *(map @t cache-file)) url (render-doc dsk pa))
-  (refresh-pages old pages ~)
+  =/  url=@t  (crip (spud [%docs %d dsk pa]))
+  =/  remove=(set @t)  (~(put in *(set @t)) url)
+  (refresh-pages old *(map @t cache-file) remove)
 :: classify exact %mult changes and apply only the necessary rebuilds
 ::
 ++  refresh-changes
@@ -763,7 +1046,7 @@
   :-  %.y
   %:  whole-doc
     ttl-bar
-    (header ttl-doc (dropdown dsk ttl-dsk toc.u.utoc))
+    (header dsk ttl-doc (dropdown dsk ttl-dsk toc.u.utoc))
     (navbar toc.p.scrl)
     content.p.scrl
     (footer (prev-next toc.u.utoc dsk pa))
@@ -771,10 +1054,21 @@
 :: render whole index page
 ::
 ++  index
+  |=  public-only=?
   ^-  manx
+  =/  title=tape
+    ?:  public-only
+      ?~(public-title "Documentation" (trip u.public-title))
+    "Documentation"
+  =/  subtitle=tape
+    ?:  public-only
+      ?~  public-subtitle
+        "Browse the guides, references, and manuals published on this ship."
+      (trip u.public-subtitle)
+    "Browse the guides, references, and manuals published by desks on this ship."
   ;html
     ;head
-      ;title: Docs
+      ;title: {title}
       ;meta(charset "utf-8");
       ;meta(name "viewport", content "width=device-width, initial-scale=1");
       ;link(rel "preload", href "/docs/assets/font/source-sans-3-upright.woff2", as "font", type "font/woff2", crossorigin "anonymous");
@@ -784,20 +1078,22 @@
     ;body
       ;div.app-shell
         ;header.site-header
-          ;a.brand(href "/docs")
+          ;a.brand(href ?:(public-only "/docs/public" "/docs"))
             ;span.brand-mark: D
             ;span: Docs
           ==
-          ;a.settings-link(href "/docs/settings"): Settings
+          ;+  ?:  public-only
+                ;/("")
+              ;a.settings-link(href "/docs/settings"): Settings
         ==
         ;main.index-main
           ;div.index-intro
             ;p.eyebrow: Library
-            ;h1: Documentation
-            ;p: Browse the guides, references, and manuals published by desks on this ship.
+            ;h1: {title}
+            ;p: {subtitle}
           ==
           ;div.library-grid
-            ;*  make-index
+            ;*  (make-index public-only)
           ==
         ==
       ==
@@ -827,11 +1123,12 @@
         ==
         ;main.settings-main
           ;div.settings-heading
-            ;p.eyebrow: Settings
-            ;h1: Appearance
-            ;p: Choose how documentation pages should look in this browser.
+            ;p.eyebrow: Docs
+            ;h1: Settings
+            ;p: Choose the appearance and configure which documentation is available publicly.
           ==
           ;form.settings-form(method "post", action "/docs/settings")
+            ;input(type "hidden", name "section", value "appearance");
             ;fieldset.theme-options
               ;legend: Color theme
               ;+  (theme-option %system "System" "Follow your browser or operating system setting.")
@@ -839,6 +1136,36 @@
               ;+  (theme-option %dark "Dark" "Always use the dark color theme.")
             ==
             ;button.save-settings(type "submit"): Save appearance
+          ==
+          ;form.settings-form.publication-form(method "post", action "/docs/settings")
+            ;input(type "hidden", name "section", value "publication");
+            ;label.publication-toggle
+              ;+  ?:  public-enabled
+                    ;input(type "checkbox", name "enabled", value "true", checked "checked");
+                  ;input(type "checkbox", name "enabled", value "true");
+              ;span.theme-option-copy
+                ;span.theme-option-title: Enable public documentation
+                ;span.theme-option-description: Publish the public library index and the selected desks without requiring sign-in.
+              ==
+            ==
+            ;fieldset.publication-options
+              ;legend: Public documentation
+              ;p.field-help: Select the desks to publish whenever public documentation is enabled.
+              ;div.publication-list
+                ;*  publication-options
+              ==
+            ==
+            ;div.text-field
+              ;label(for "public-title"): Public index title
+              ;input(id "public-title", type "text", name "title", value ?~(public-title "" (trip u.public-title)), placeholder "Documentation");
+            ==
+            ;div.text-field
+              ;label(for "public-subtitle"): Public index subtitle
+              ;textarea(id "public-subtitle", name "subtitle", rows "3", placeholder "Browse the guides, references, and manuals published on this ship.")
+                ;+  ;/  ?~(public-subtitle "" (trip u.public-subtitle))
+              ==
+            ==
+            ;button.save-settings(type "submit"): Save publication settings
           ==
         ==
       ==
@@ -857,6 +1184,30 @@
       ;span.theme-option-title: {title}
       ;span.theme-option-description: {description}
     ==
+  ==
+:: render the live desks with documentation as publication choices
+::
+++  publication-options
+  ^-  marl
+  %+  turn
+    %+  sort
+      %+  skim  ~(tap by desk-map)
+      |=  [dsk=desk *]
+      ?=(^ (read-toc dsk))
+    |=  [[a=desk *] [b=desk *]]
+    (aor a b)
+  |=  [dsk=desk name=(unit @t)]
+  (publication-option dsk ?~(name (trip dsk) (trip u.name)))
+:: render one public-desk checkbox
+::
+++  publication-option
+  |=  [dsk=desk name=tape]
+  ^-  manx
+  ;label.publication-option
+    ;+  ?:  (~(has in public) dsk)
+          ;input(type "checkbox", name "public", value (trip dsk), checked "checked");
+        ;input(type "checkbox", name "public", value (trip dsk));
+    ;span: {name}
   ==
 :: render doc table of contents
 ::
@@ -883,16 +1234,15 @@
 :: render header element
 ::
 ++  header
-  |=  [nam=tape menu=manx]
+  |=  [dsk=desk nam=tape menu=manx]
   ^-  manx
   ;header.doc-header
     ;div.doc-topbar
-      ;a.brand(href "/docs")
+      ;a.brand.library-link(href (library-url dsk))
         ;span.brand-mark: D
         ;span: Docs
       ==
       ;div.doc-actions
-        ;a.settings-link(href "/docs/settings"): Settings
         ;+  menu
       ==
     ==
@@ -915,7 +1265,7 @@
     ;nav.desk-menu-panel
       ;div.desk-menu-heading
         ;span: {dsk-nam}
-        ;a(href "/docs#{(trip dsk)}"): View in library
+        ;a.library-link(href (library-url dsk)): View in library
       ==
       ;+  ?~  menu  ;/("")
           u.menu
@@ -935,6 +1285,7 @@
       ;link(rel "stylesheet", href "/docs/assets/style/var.css");
       ;link(rel "stylesheet", href "/docs/assets/style/page.css");
       ;link(rel "stylesheet", href "/docs/assets/style/syntect.css");
+      ;script(src "/docs/assets/navigation.js", defer "defer");
     ==
     ;body
       ;div.app-shell
@@ -985,6 +1336,7 @@
       ;link(rel "preload", href "/docs/assets/font/source-sans-3-upright.woff2", as "font", type "font/woff2", crossorigin "anonymous");
       ;link(rel "stylesheet", href "/docs/assets/style/var.css");
       ;link(rel "stylesheet", href "/docs/assets/style/err.css");
+      ;script(src "/docs/assets/navigation.js", defer "defer");
     ==
     ;body
       ;div.err
@@ -1001,7 +1353,7 @@
               (turn err (cury wash [0 40]))
         ==
         ;p
-          ;a/"/docs#{(trip dsk)}": ← Return to the library
+          ;a.library-link(href (library-url dsk)): ← Return to the library
         ==
       ==
     ==
@@ -1009,11 +1361,15 @@
 :: make the list of entries for the index page
 ::
 ++  make-index
+  |=  public-only=?
   ^-  marl
   %+  turn
     %+  sort
       %+  skim
-        %+  turn  ~(tap by desk-map)
+        %+  turn
+          %+  skim  ~(tap by desk-map)
+          |=  [dsk=desk *]
+          ?:(public-only (~(has in public) dsk) &)
         |=  [dsk=desk nam=(unit @t)]
         :+  dsk
           ?~(nam <dsk> (trip u.nam))
@@ -1089,11 +1445,11 @@
   =/  prev=(unit (pair path tape))
     ?:  =(0 u.ind)  ~
     =/  ent=(pair path @t)  (snag (dec u.ind) files)
-    `[[%docs dsk (flop p.ent)] (trip q.ent)]
+    `[[%docs %d dsk (flop p.ent)] (trip q.ent)]
   =/  next=(unit (pair path tape))
     ?:  =(u.ind (dec (lent files)))  ~
     =/  ent=(pair path @t)  (snag +(u.ind) files)
-    `[[%docs dsk (flop p.ent)] (trip q.ent)]
+    `[[%docs %d dsk (flop p.ent)] (trip q.ent)]
   [prev next]
   ++  file-paths
     |=  =toc

@@ -93,7 +93,7 @@
             ==
       %fil  ?>  ?=(^ pa.ent)
             ;li
-              ;a(href (spud [%docs d (flop t.pa.ent)]))
+              ;a(href (spud [%docs %d d (flop t.pa.ent)]))
                 ;+  ;/  (trip nam.ent)
               ==
             ==

@@ -15,6 +15,7 @@ github base-dev:
     - mar/htm.hoon
     - mar/html.hoon
     - mar/hymn.hoon
+    - mar/js.hoon
     - mar/kelvin.hoon
     - mar/mime.hoon
     - mar/noun.hoon

@@ -261,6 +261,121 @@ input:focus-visible {
   box-shadow: 0 2px 8px var(--shadow-color);
 }
 
+.publication-form { margin-top: 1rem; }
+
+.publication-toggle {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.9rem;
+  align-items: start;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  cursor: pointer;
+}
+
+.publication-toggle:hover { border-color: var(--strong-border-color); }
+
+.publication-toggle:has(input:checked) {
+  border-color: var(--accent-color);
+  background: var(--accent-soft);
+}
+
+.publication-toggle input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0.2rem 0 0;
+  accent-color: var(--accent-color);
+}
+
+.publication-options {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.publication-options legend {
+  color: var(--plain-text-color);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.field-help {
+  margin: 0.45rem 0 1rem;
+  color: var(--muted-text-color);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.publication-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.publication-option {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.7rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.6rem;
+  color: var(--plain-text-color);
+  cursor: pointer;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.publication-option:hover { border-color: var(--strong-border-color); }
+
+.publication-option:has(input:checked) {
+  border-color: var(--accent-color);
+  background: var(--accent-soft);
+}
+
+.publication-option input {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: var(--accent-color);
+}
+
+.publication-option span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.text-field {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+}
+
+.text-field label {
+  color: var(--plain-text-color);
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.text-field input,
+.text-field textarea {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 0.6rem;
+  padding: 0.7rem 0.75rem;
+  background: var(--bg-color);
+  color: var(--plain-text-color);
+  font: 400 1rem/1.45 var(--normal-font);
+}
+
+.text-field textarea { resize: vertical; }
+
+.text-field input::placeholder,
+.text-field textarea::placeholder { color: var(--faint-text-color); }
+
 .theme-options {
   display: grid;
   gap: 0.65rem;
@@ -335,6 +450,7 @@ input:focus-visible {
   .index-intro { padding-top: 3.25rem; }
   .desk-card { padding: 1.15rem; border-radius: 0.8rem; }
   .settings-form { padding: 1rem; }
+  .publication-list { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 46rem) {
