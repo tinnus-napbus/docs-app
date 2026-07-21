@@ -204,6 +204,36 @@
 ++  on-poke
   |=  [=mark =vase]
   |^  ^-  (quip card _this)
+  ?:  =(%docs-clean mark)
+    ?>  =(our.bowl src.bowl)
+    ?>  ?=(~ q.vase)
+    =/  built-ins=(set @t)  ~(key by static-pages:hc)
+    =/  actual=(set @t)
+      %-  silt
+      %+  murn  ~(tap by current-eyre-cache:hc)
+      |=  [url=@t entry=[aeon=@ud val=(unit cache-entry:eyre)]]
+      ?~  val.entry  ~
+      `url
+    =/  known=(set @t)  (~(uni in actual) ~(key by cached))
+    =/  remove=(set @t)
+      %-  silt
+      %+  murn  ~(tap in known)
+      |=  url=@t
+      ?.  ?&  (docs-url:hc url)
+              !(~(has in built-ins) url)
+          ==
+        ~
+      `url
+    =/  cards=(list card)
+      %+  turn  ~(tap in remove)
+      |=(url=@t (~(arvo pass:io /cache) %e %set-response url ~))
+    =/  new-cache=(map @t @uv)
+      %-  ~(gas by *(map @t @uv))
+      %+  skim  ~(tap by cached)
+      |=  [url=@t *]
+      !(~(has in remove) url)
+    ~&  "docs: removed {<`@ud`(lent cards)>} cached responses"
+    [cards this(cached new-cache)]
   ?.  ?=(%handle-http-request mark)
     (on-poke:def [mark vase])
   =/  req  !<  (pair @ta inbound-request:eyre)  vase
@@ -687,6 +717,17 @@
 ++  current-eyre-cache
   ^-  eyre-cache
   .^(eyre-cache %e /(scot %p our.bowl)/cache/(scot %da now.bowl))
+:: identify the root Docs URL and anything beneath it
+::
+++  docs-url
+  |=  url=@t
+  ^-  ?
+  ?:  =('/docs' url)  &
+  =/  prefix=tape  "/docs/"
+  =/  text=tape  (trip url)
+  ?&  (lte (lent prefix) (lent text))
+      =(prefix (scag (lent prefix) text))
+  ==
 :: reuse a rendered document while replacing only its authentication policy
 ::
 ++  reuse-doc
