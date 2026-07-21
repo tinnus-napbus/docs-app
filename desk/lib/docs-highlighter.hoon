@@ -6,17 +6,11 @@
 ++  highlight
   |=  page=manx
   ^-  manx
-  (transform page &)
-:: replace code blocks with theme-default plain markup without invoking WASM
-::
-++  plain
-  |=  page=manx
-  ^-  manx
-  (transform page |)
-:: transform marked code blocks, optionally invoking Syntect
+  (transform page)
+:: transform marked code blocks with Syntect
 ::
 ++  transform
-  |=  [page=manx use-syntect=?]
+  |=  page=manx
   ^-  manx
   %-  ~(post-apply-nodes mu page)
   |=  node=manx
@@ -24,28 +18,20 @@
   ?.  ?=(%pre n.g.node)  node
   ?.  (code-block a.g.node)  node
   ?~  c.node
-    ?:  use-syntect
-      (highlight-block a.g.node ~ "")
-    (plain-block a.g.node ~ "")
+    (highlight-block a.g.node ~ "")
   ?:  ?=(%$ n.g.i.c.node)
     ?~  a.g.i.c.node  node
     ?.  ?=(%$ n.i.a.g.i.c.node)  node
-    ?:  use-syntect
-      (highlight-block a.g.node ~ v.i.a.g.i.c.node)
-    (plain-block a.g.node ~ v.i.a.g.i.c.node)
+    (highlight-block a.g.node ~ v.i.a.g.i.c.node)
   ?.  ?=(%code n.g.i.c.node)  node
   ?^  t.c.node  node
   ?~  c.i.c.node
-    ?:  use-syntect
-      (highlight-block a.g.node `a.g.i.c.node "")
-    (plain-block a.g.node `a.g.i.c.node "")
+    (highlight-block a.g.node `a.g.i.c.node "")
   ?^  t.c.i.c.node  node
   ?.  ?=(%$ n.g.i.c.i.c.node)  node
   ?~  a.g.i.c.i.c.node  node
   ?.  ?=(%$ n.i.a.g.i.c.i.c.node)  node
-  ?:  use-syntect
-    (highlight-block a.g.node `a.g.i.c.node v.i.a.g.i.c.i.c.node)
-  (plain-block a.g.node `a.g.i.c.node v.i.a.g.i.c.i.c.node)
+  (highlight-block a.g.node `a.g.i.c.node v.i.a.g.i.c.i.c.node)
 :: highlight one code block, falling back to theme-default plain code
 ::
 ++  highlight-block
@@ -70,18 +56,6 @@
   ?.  ?=(%& -.applied)
     (add-language-class (plain-manx:highlighter text) class)
   (add-language-class p.applied class)
-:: render one code block using only the selected theme's default colors
-::
-++  plain-block
-  |=  [pre-attrs=mart code-attrs=(unit mart) source=tape]
-  ^-  manx
-  =/  class=(unit tape)
-    =/  code-class=(unit tape)
-      ?~  code-attrs  ~
-      (language-class u.code-attrs)
-    ?^  code-class  code-class
-    (language-class pre-attrs)
-  (add-language-class (plain-manx:highlighter (crip source)) class)
 :: retain a validated language-* class on the generated pre element
 ::
 ++  add-language-class

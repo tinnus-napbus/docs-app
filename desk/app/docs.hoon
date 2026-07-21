@@ -1,4 +1,4 @@
-/-  *docs, *gemtext, docket, m=markdown, spider
+/-  *docs, *gemtext, docket, m=markdown
 /+  *docs, *toc, renderer=docs-highlighter, default-agent, dbug, agentio
 /%  toc-mark-core  %toc
 /%  clue-mark-core  %clue
@@ -15,6 +15,7 @@
       state-1
       state-2
       state-3
+      state-4
   ==
 ::
 +$  theme  ?(%system %light %dark)
@@ -25,7 +26,7 @@
       cached=(map @t @uv)
       watched=(set desk)
   ==
-+$  render-job
++$  legacy-render-job
   $:  url=@t
       generation=@ud
       dsk=desk
@@ -37,7 +38,7 @@
       cached=(map @t @uv)
       watched=(set desk)
       generations=(map @t @ud)
-      jobs=(map @t render-job)
+      jobs=(map @t legacy-render-job)
       waiting=(map @t (list @ta))
   ==
 +$  state-3
@@ -46,22 +47,23 @@
       cached=(map @t @uv)
       watched=(set desk)
       generations=(map @t @ud)
-      jobs=(map @t render-job)
+      jobs=(map @t legacy-render-job)
       waiting=(map @t (list @ta))
+  ==
++$  state-4
+  $:  %4
+      =theme
+      cached=(map @t @uv)
+      watched=(set desk)
   ==
 ::
 +$  card  card:agent:gall
 +$  cache-file  [mime=@t data=octs]
-+$  refresh-result
-  $:  cards=(list card)
-      cache=(map @t @uv)
-      generations=(map @t @ud)
-      jobs=(map @t render-job)
-  ==
++$  refresh-result  [cards=(list card) cache=(map @t @uv)]
 ::
 --
 ::
-=|  state-3
+=|  state-4
 =*  state  -
 ::
 =<
@@ -75,9 +77,9 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  =/  [cache-cards=(list card) new-cache=(map @t @uv) new-generations=(map @t @ud) new-jobs=(map @t render-job)]
-    (refresh-cache:hc cached generations jobs)
-  :_  this(cached new-cache, generations new-generations, jobs new-jobs)
+  =/  [cache-cards=(list card) new-cache=(map @t @uv)]
+    (refresh-cache:hc cached)
+  :_  this(cached new-cache)
   %+  weld
     ^-  (list card)
     :~  [%pass /bind %arvo %e %connect `/'docs' %docs]
@@ -92,16 +94,15 @@
   =/  old  !<(versioned-state old-vase)
   =.  state
     ?-  -.old
-      %0  [%3 %system ~ ~ ~ ~ ~]
-      %1  [%3 %system cached.old watched.old ~ ~ ~]
-      %2  [%3 %system cached.old watched.old generations.old jobs.old waiting.old]
-      %3  old
+      %0  [%4 %system ~ ~]
+      %1  [%4 %system cached.old watched.old]
+      %2  [%4 %system cached.old watched.old]
+      %3  [%4 theme.old cached.old watched.old]
+      %4  old
     ==
-  =/  [cards=(list card) new-cache=(map @t @uv) new-generations=(map @t @ud) new-jobs=(map @t render-job)]
-    (refresh-cache:hc cached generations jobs)
-  =.  cached       new-cache
-  =.  generations  new-generations
-  =.  jobs         new-jobs
+  =/  [cards=(list card) new-cache=(map @t @uv)]
+    (refresh-cache:hc cached)
+  =.  cached  new-cache
   =?  cards  ?=(%0 -.old)
     %+  weld
       ^-  (list card)
@@ -249,12 +250,11 @@
     |=  [id=@ta dsk=desk pa=path]
     ^-  (quip card _this)
     =/  url=@t  (crip (spud [%docs dsk pa]))
-    =/  ids=(list @ta)  [id (fall (~(get by waiting) url) ~)]
-    =/  next-waiting=(map @t (list @ta))  (~(put by waiting) url ids)
-    =/  result=refresh-result
-      (start-doc:hc cached generations jobs dsk pa)
-    :_  this(cached cache.result, generations generations.result, jobs jobs.result, waiting next-waiting)
-    cards.result
+    =/  file=cache-file  (render-doc:hc dsk pa)
+    =/  cache-card=card
+      (~(arvo pass:io /cache) %e %set-response url `(cache-entry:hc file))
+    :_  this(cached (~(put by cached) url (mug file)))
+    [cache-card (response-cards:hc id mime.file data.file)]
   ::
   ++  give-response
     |=  [id=@ta hed=response-header:http dat=(unit octs)]
@@ -310,9 +310,8 @@
           (~(del in watched) desk.wave)
         =/  watch-cards=(list card)  (watch-cards:hc watched live)
         =.  watched  live
-        =/  result=refresh-result
-          (refresh-desk:hc cached generations jobs desk.wave)
-        :_  this(cached cache.result, generations generations.result, jobs jobs.result)
+        =/  result=refresh-result  (refresh-desk:hc cached desk.wave)
+        :_  this(cached cache.result)
         (weld watch-cards cards.result)
       ::
           ?(%wait %warp)
@@ -330,8 +329,6 @@
     =/  result=refresh-result
       %-  refresh-changes:hc
       :*  cached
-          generations
-          jobs
           dsk
           (~(put in *(set (pair care:clay path))) [car pax])
       ==
@@ -340,39 +337,15 @@
         (watch-desk:hc dsk)
       ?.  (~(has in (watch-paths:hc dsk)) [car pax])  ~
       [(watch-path:hc dsk car pax) ~]
-    :_  this(cached cache.result, generations generations.result, jobs jobs.result)
+    :_  this(cached cache.result)
     (weld watch-cards cards.result)
   ==
 ::
 ++  on-agent
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
-  |^
-  ?+    wire  (on-agent:def wire sign)
-      [%docket ~]     on-docket
-      [%render @ ~]
-    =/  tid=@t  i.t.wire
-    ?-    -.sign
-        %kick  (fallback tid)
-        %watch-ack
-      ?~  p.sign  [~ this]
-      (fallback tid)
-    ::
-        %poke-ack
-      ?~  p.sign  [~ this]
-      (fallback tid)
-    ::
-        %fact
-      ?:  =(%thread-fail p.cage.sign)
-        (fallback tid)
-      ?.  =(%thread-done p.cage.sign)  [~ this]
-      =/  result=render-result  !<(render-result q.cage.sign)
-      (finish tid result)
-    ==
-  ==
-  ::
-  ++  on-docket
-    ?+    -.sign  (on-agent:def wire sign)
+  ?.  =(/docket wire)  (on-agent:def wire sign)
+  ?+    -.sign  (on-agent:def wire sign)
         %watch-ack  [~ this]
         %fact
       ?>  =(%charge-update p.cage.sign)
@@ -380,63 +353,16 @@
         !<(charge-update:docket q.cage.sign)
       =/  result=refresh-result
         ?-  -.update
-          %initial     [~ cached generations jobs]
-          %add-charge  (refresh-desk:hc cached generations jobs desk.update)
-          %del-charge  (refresh-desk:hc cached generations jobs desk.update)
+          %initial     [~ cached]
+          %add-charge  (refresh-desk:hc cached desk.update)
+          %del-charge  (refresh-desk:hc cached desk.update)
         ==
-      :-  cards.result
-      %=  this
-        cached       cache.result
-        generations  generations.result
-        jobs         jobs.result
-      ==
+      [cards.result this(cached cache.result)]
     ::
         %kick
       :_  this
       [%pass /docket %agent [our.bowl %docket] %watch /charges]~
     ==
-  ::
-  ++  fallback
-    |=  tid=@t
-    ^-  (quip card _this)
-    =/  job=(unit render-job)  (~(get by jobs) tid)
-    ?~  job  [~ this]
-    =/  page=manx  (plain:renderer (make-doc:hc dsk.u.job pa.u.job))
-    =/  result=render-result
-      :*  url.u.job
-          generation.u.job
-          (as-octs:mimes:html (crip (en-xml:html page)))
-      ==
-    (finish tid result)
-  ::
-  ++  finish
-    |=  [tid=@t result=render-result]
-    ^-  (quip card _this)
-    =/  job=(unit render-job)  (~(get by jobs) tid)
-    ?~  job  [~ this]
-    =/  new-jobs=(map @t render-job)  (~(del by jobs) tid)
-    =/  generation=(unit @ud)  (~(get by generations) url.u.job)
-    ?.  ?&  ?=(^ generation)
-            =(u.generation generation.u.job)
-            =(url.result url.u.job)
-            =(generation.result generation.u.job)
-        ==
-      [~ this(jobs new-jobs)]
-    =/  file=cache-file  ['text/html' html.result]
-    =/  cache-cards=(list card)
-      [(~(arvo pass:io /cache) %e %set-response url.result `(cache-entry:hc file)) ~]
-    =/  ids=(list @ta)  (fall (~(get by waiting) url.result) ~)
-    =/  responses=(list card)
-      %-  zing
-      %+  turn  ids
-      |=(id=@ta (response-cards:hc id 'text/html' html.result))
-    =/  new-cache=(map @t @uv)
-      (~(put by cached) url.result (mug file))
-    =/  new-waiting=(map @t (list @ta))
-      (~(del by waiting) url.result)
-    :_  this(jobs new-jobs, cached new-cache, waiting new-waiting)
-    (weld cache-cards responses)
-  --
 ++  on-fail   on-fail:def
 ++  on-leave  on-leave:def
 --
@@ -444,7 +370,6 @@
 |_  =bowl:gall
 +*  io    ~(. agentio bowl)
     pass  pass:io
-    bec   byk.bowl(r da+now.bowl)
 ++  scrio  ~(scry agentio bowl)
 ::
 ++  css
@@ -548,167 +473,31 @@
   %+  turn  ~(tap by desk-map)
   |=  [dsk=desk *]
   (turn (desk-targets dsk) |=(pa=path [dsk pa]))
-:: identify the cached URLs occupied by rendered document pages
+:: synchronously render one document into an Eyre cache file
 ::
-++  doc-urls
-  |=  cache=(map @t @uv)
-  ^-  (set @t)
-  %-  silt
-  %+  murn  ~(tap in ~(key by cache))
-  |=  url=@t
-  =/  txt=tape  (trip url)
-  ?.  ?&  (gte (lent txt) 6)
-          =("/docs/" (scag 6 txt))
-      ==
-    ~
-  ?:  ?&  (gte (lent txt) 13)
-          =("/docs/assets/" (scag 13 txt))
-      ==
-    ~
-  ?:  ?|  =("/docs/settings" txt)
-          =("/docs/settings/" txt)
-      ==
-    ~
-  `url
-:: collect the URLs belonging to all running render jobs
+++  render-doc
+  |=  [dsk=desk pa=path]
+  ^-  cache-file
+  =/  page=manx  (highlight:renderer (make-doc dsk pa))
+  ['text/html' (as-octs:mimes:html (crip (en-xml:html page)))]
+:: synchronously render a set of indexed documents
 ::
-++  job-urls
-  |=  running=(map @t render-job)
-  ^-  (set @t)
-  %-  silt
-  (turn ~(val by running) |=(job=render-job url.job))
-:: collect the running render URLs belonging to one desk
-::
-++  desk-job-urls
-  |=  [running=(map @t render-job) dsk=desk]
-  ^-  (set @t)
-  %-  silt
-  %+  murn  ~(val by running)
-  |=(job=render-job ?.(=(dsk dsk.job) ~ `url.job))
-:: collect the logical targets belonging to running jobs
-::
-++  job-targets
-  |=  running=(map @t render-job)
-  ^-  (set [desk path])
-  %-  silt
-  %+  murn  ~(val by running)
-  |=  job=render-job
-  ?.  (~(has by waiting) url.job)  ~
-  `[dsk.job pa.job]
-:: collect the running logical targets belonging to one desk
-::
-++  desk-job-targets
-  |=  [running=(map @t render-job) dsk=desk]
-  ^-  (set [desk path])
-  %-  silt
-  %+  murn  ~(val by running)
-  |=  job=render-job
-  ?.  ?&  =(dsk dsk.job)
-          (~(has by waiting) url.job)
-      ==
-    ~
-  `[dsk.job pa.job]
-:: evict URLs immediately from Eyre and the local cache map
-::
-++  evict-pages
-  |=  [old=(map @t @uv) remove=(set @t)]
-  ^-  [(list card) (map @t @uv)]
-  =/  cards=(list card)
-    %+  turn  ~(tap in remove)
-    |=(url=@t (~(arvo pass /cache) %e %set-response url ~))
-  =/  fresh=(map @t @uv)
-    %+  roll  ~(tap in remove)
-    |=  [url=@t out=(map @t @uv)]
-    (~(del by out) url)
-  [cards fresh]
-:: invalidate any running generations associated with a set of URLs
-::
-++  bump-pages
-  |=  [gens=(map @t @ud) urls=(set @t)]
-  ^-  (map @t @ud)
-  %+  roll  ~(tap in urls)
-  |=  [url=@t out=(map @t @ud)]
-  =/  old=(unit @ud)  (~(get by out) url)
-  (~(put by out) url ?~(old 1 +(u.old)))
-:: cancel obsolete render jobs for one URL so they do not clog Spider's queue
-::
-++  cancel-url
-  |=  [running=(map @t render-job) url=@t]
-  ^-  (list card)
-  %+  murn  ~(tap by running)
-  |=  [tid=@t job=render-job]
-  ?.  =(url url.job)  ~
-  `[%pass /render/[tid] %agent [our.bowl %spider] %poke %spider-stop !>([tid |])]
-:: start one asynchronous document render after evicting its former response
-::
-++  start-doc
-  |=  $:  old=(map @t @uv)
-          gens=(map @t @ud)
-          running=(map @t render-job)
-          dsk=desk
-          pa=path
-      ==
-  ^-  refresh-result
+++  render-docs
+  |=  targets=(list [desk path])
+  ^-  (map @t cache-file)
+  %+  roll  targets
+  |=  [[dsk=desk pa=path] pages=(map @t cache-file)]
   =/  url=@t  (crip (spud [%docs dsk pa]))
-  =/  [delete-cards=(list card) fresh=(map @t @uv)]
-    (evict-pages old (~(put in *(set @t)) url))
-  =/  old-generation=(unit @ud)  (~(get by gens) url)
-  =/  generation=@ud  ?~(old-generation 1 +(u.old-generation))
-  =/  new-gens=(map @t @ud)  (~(put by gens) url generation)
-  =/  tid=@t  (scot %uv (sham [url generation eny.bowl]))
-  =/  job=render-job  [url generation dsk pa]
-  =/  request=render-request  [url generation (make-doc dsk pa)]
-  =/  args=start-args:spider
-    [~ `tid bec %docs-render !>([~ request])]
-  =/  thread-cards=(list card)
-    :~  [%pass /render/[tid] %agent [our.bowl %spider] %watch /thread-result/[tid]]
-        [%pass /render/[tid] %agent [our.bowl %spider] %poke %spider-start !>(args)]
-    ==
-  :*  (weld delete-cards (weld (cancel-url running url) thread-cards))
-      fresh
-      new-gens
-      (~(put by running) tid job)
-  ==
-:: launch a set of document renders without waiting for earlier jobs
-::
-++  start-docs
-  |=  $:  old=(map @t @uv)
-          gens=(map @t @ud)
-          running=(map @t render-job)
-          targets=(list [desk path])
-      ==
-  ^-  refresh-result
-  =/  cards=(list card)  ~
-  |-
-  ?~  targets  [cards old gens running]
-  =/  [dsk=desk pa=path]  i.targets
-  =/  next=refresh-result  (start-doc old gens running dsk pa)
-  $(targets t.targets, cards (weld cards cards.next), old cache.next, gens generations.next, running jobs.next)
-:: rebuild all static responses, evict all documents, and launch fresh jobs
+  (~(put by pages) url (render-doc dsk pa))
+:: rebuild all responses synchronously and reconcile them with Eyre
 ::
 ++  refresh-cache
-  |=  $:  old=(map @t @uv)
-          gens=(map @t @ud)
-          running=(map @t render-job)
-      ==
+  |=  old=(map @t @uv)
   ^-  refresh-result
-  =/  static=(map @t cache-file)  static-pages
-  =/  old-static=(set @t)
-    (~(dif in ~(key by old)) (doc-urls old))
-  =/  stale-static=(set @t)
-    (~(dif in old-static) ~(key by static))
-  =/  [static-cards=(list card) static-cache=(map @t @uv)]
-    (refresh-pages old static stale-static)
-  =/  stale-docs=(set @t)
-    (~(uni in (doc-urls static-cache)) (job-urls running))
-  =/  [delete-cards=(list card) empty-cache=(map @t @uv)]
-    (evict-pages static-cache stale-docs)
-  =.  gens  (bump-pages gens stale-docs)
-  =/  targets=(set [desk path])
-    (~(uni in (silt doc-targets)) (job-targets running))
-  =/  result=refresh-result
-    (start-docs empty-cache gens running ~(tap in targets))
-  [(weld static-cards (weld delete-cards cards.result)) cache.result generations.result jobs.result]
+  =/  pages=(map @t cache-file)  static-pages
+  =/  documents=(map @t cache-file)  (render-docs doc-targets)
+  =.  pages  (~(uni by documents) pages)
+  (refresh-pages old pages ~(key by old))
 :: replace the theme-dependent stylesheets and settings page after a mode change
 ::
 ++  refresh-theme
@@ -750,20 +539,19 @@
     |=  [url=@t out=(map @t @uv)]
     (~(del by out) url)
   [(weld updates deletes) fresh]
-:: rebuild the index, evict one desk, and launch its current pages
+:: rebuild the index and every page belonging to one desk
 ::
 ++  refresh-desk
-  |=  $:  old=(map @t @uv)
-          gens=(map @t @ud)
-          running=(map @t render-job)
-          dsk=desk
-      ==
+  |=  [old=(map @t @uv) dsk=desk]
   ^-  refresh-result
   =/  idx=cache-file
     ['text/html' (as-octs:mimes:html (crip (en-xml:html index)))]
   =/  pages=(map @t cache-file)
     (~(put by *(map @t cache-file)) '/docs/' idx)
   =.  pages  (~(put by pages) '/docs' idx)
+  =/  targets=(list [desk path])
+    (turn (desk-targets dsk) |=(pa=path [dsk pa]))
+  =.  pages  (~(uni by (render-docs targets)) pages)
   =/  prefix=tape  (weld "/docs/" (weld (trip dsk) "/"))
   =/  remove=(set @t)
     %-  silt
@@ -775,35 +563,20 @@
         ==
       `url
     ~
-  =.  remove  (~(uni in remove) (desk-job-urls running dsk))
-  =/  [index-cards=(list card) indexed-cache=(map @t @uv)]
-    (refresh-pages old pages ~)
-  =/  [delete-cards=(list card) fresh=(map @t @uv)]
-    (evict-pages indexed-cache remove)
-  =.  gens  (bump-pages gens remove)
-  =/  targets=(set [desk path])
-    %-  ~(gas in (desk-job-targets running dsk))
-    (turn (desk-targets dsk) |=(pa=path [dsk pa]))
-  =/  result=refresh-result
-    (start-docs fresh gens running ~(tap in targets))
-  [(weld index-cards (weld delete-cards cards.result)) cache.result generations.result jobs.result]
+  (refresh-pages old pages remove)
 :: rebuild or remove one indexed document page
 ::
 ++  refresh-doc
-  |=  $:  old=(map @t @uv)
-          gens=(map @t @ud)
-          running=(map @t render-job)
-          dsk=desk
-          pa=path
-      ==
+  |=  [old=(map @t @uv) dsk=desk pa=path]
   ^-  refresh-result
-  (start-doc old gens running dsk pa)
+  =/  url=@t  (crip (spud [%docs dsk pa]))
+  =/  pages=(map @t cache-file)
+    (~(put by *(map @t cache-file)) url (render-doc dsk pa))
+  (refresh-pages old pages ~)
 :: classify exact %mult changes and apply only the necessary rebuilds
 ::
 ++  refresh-changes
   |=  $:  old=(map @t @uv)
-          gens=(map @t @ud)
-          running=(map @t render-job)
           src=desk
           changes=(set (pair care:clay path))
       ==
@@ -839,25 +612,21 @@
     =/  desks=(list desk)  ~(tap in wide)
     =/  cards=(list card)  ~
     =/  cache=(map @t @uv)  old
-    =/  next-gens=(map @t @ud)  gens
-    =/  next-jobs=(map @t render-job)  running
     |-
-    ?~  desks  [cards cache next-gens next-jobs]
+    ?~  desks  [cards cache]
     =/  result=refresh-result
-      (refresh-desk cache next-gens next-jobs i.desks)
-    $(desks t.desks, cards (weld cards cards.result), cache cache.result, next-gens generations.result, next-jobs jobs.result)
+      (refresh-desk cache i.desks)
+    $(desks t.desks, cards (weld cards cards.result), cache cache.result)
   =/  files=(list [desk path])  ~(tap in docs)
   =/  cards=(list card)  cards.wide-result
   =/  cache=(map @t @uv)  cache.wide-result
-  =/  next-gens=(map @t @ud)  generations.wide-result
-  =/  next-jobs=(map @t render-job)  jobs.wide-result
   |-
-  ?~  files  [cards cache next-gens next-jobs]
+  ?~  files  [cards cache]
   =/  [dsk=desk pa=path]  i.files
   ?:  (~(has in wide) dsk)  $(files t.files)
   =/  result=refresh-result
-    (refresh-doc cache next-gens next-jobs dsk pa)
-  $(files t.files, cards (weld cards cards.result), cache cache.result, next-gens generations.result, next-jobs jobs.result)
+    (refresh-doc cache dsk pa)
+  $(files t.files, cards (weld cards cards.result), cache cache.result)
 :: map a physical source path to its logical documentation desk and path
 ::
 ++  source-target

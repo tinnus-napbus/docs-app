@@ -66,8 +66,5 @@ github syntect-urwasm:
     - lib/wasm
     - sur/wasm
     - mar/wasm.hoon
-    - lib/strand.hoon
-    - lib/strandio.hoon
-    - sur/spider.hoon
   priority: 7
   revision: a32f7f4746781ac6da12f2db21fa1a1106714cbb
