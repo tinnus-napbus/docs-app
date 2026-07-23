@@ -57,5 +57,5 @@ possible. Newly requested pages are rebuilt from the latest source, so no manual
 publish step is needed after committing documentation.
 
 Whether a desk is available publicly is controlled by the ship owner, not by
-the publishing desk. Publishers should therefore avoid assuming that their docs
+the publishing desk. Publishers therefore should not assume that their docs
 will be reachable without authentication.

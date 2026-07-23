@@ -1,4 +1,4 @@
-/-  *docs, *gemtext, docket, m=markdown
+/-  *docs, *gemtext, docket
 /+  *docs, *toc, renderer=docs-highlighter, default-agent, dbug, agentio
 /%  toc-mark-core  %toc
 /%  clue-mark-core  %clue
@@ -1610,7 +1610,7 @@
       ?-  mar
         %udon  |.((udon-docu .^(@t %cx (scrio rt pt))))
         %html  |.((html-docu .^(@t %cx (scrio rt pt))))
-        %md    |.((md-docu .^(markdown:m %cx (scrio rt pt))))
+        %md    |.((md-docu .^(@t %cx (scrio rt pt))))
         %txt   |.((txt-docu .^(wain %cx (scrio rt pt))))
         %gmi   |.((gmi-docu .^((list gmni) %cx (scrio rt pt))))
       ==

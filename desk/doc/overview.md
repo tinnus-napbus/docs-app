@@ -37,5 +37,5 @@ The ship owner can optionally publish selected desks without requiring visitors
 to sign in. Public visitors see only the selected desk names, titles, paths, and
 documents; private library metadata is not included in public pages.
 
-See [Settings and Public Access](/docs/d/docs/settings) for the available
+See [Settings and Public Access](/docs/d/docs/settings) for available
 controls and their defaults.

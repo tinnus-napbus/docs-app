@@ -54,4 +54,4 @@ entries from the agent's tracked cache state. Document pages are rebuilt lazily
 when next requested.
 
 The clean poke is restricted to the local ship and is intended for recovery or
-development, not routine content publishing.
+development rather than routine content publishing.

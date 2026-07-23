@@ -51,4 +51,4 @@ choose human-written titles, or control ordering.
 # Legacy indexes
 
 Existing `doc.clue` indexes remain supported and are converted to the current
-table-of-contents representation. New desks should use `doc.toc`.
+table-of-contents representation. New desks should prefer `doc.toc`.
