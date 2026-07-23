@@ -54,5 +54,5 @@ pokes, subscriptions, and scries that use them.
 # Index design
 
 Keep the desk's most useful overview first. Prefer a shallow hierarchy until the
-number of pages genuinely requires another level. Write explicit `doc.toc`
+number of pages genuinely requires another level. Use explicit `doc.toc`
 titles when filenames do not produce clear navigation labels.

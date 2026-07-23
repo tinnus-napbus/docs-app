@@ -16,6 +16,10 @@ plus common GitHub-flavored features, including:
 - Fenced code blocks with language identifiers.
 - Raw HTML that satisfies the `%docu` restrictions below.
 
+The `%md` mark stores the original source as `@t`. Docs parses that text into a
+Markdown syntax tree while rendering, so publishing desks do not need a
+Docs-specific AST mark.
+
 Use the language name after an opening fence to request syntax highlighting:
 
 ````markdown
@@ -88,5 +92,5 @@ runs of punctuation with a single hyphen, and trimming edge hyphens. Repeated
 IDs receive `-1`, `-2`, and so on; an empty heading becomes `section`.
 
 Formatting and links contribute their visible text. An image contributes its
-`alt` text when present. Images and markup are never copied into navigation,
+`alt` text if present. Images and markup are never copied into navigation,
 which keeps fragments and table-of-contents labels safe and readable.

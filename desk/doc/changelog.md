@@ -1,3 +1,10 @@
+## 1.0.2
+
+Date: `~2026.07.23`
+
+- Read `%md` files as raw Markdown text and parse them within Docs, restoring
+  compatibility with desks that use the conventional `@t` Markdown mark.
+
 ## 1.0.1
 
 Date: `~2026.07.21`
@@ -153,4 +160,4 @@ Date: `~2021.2.10`
 
 Date: `~2021.12.28`
 
-- Initial release
+- Initial release.

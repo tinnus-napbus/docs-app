@@ -45,7 +45,7 @@ embedded in the public page to make this work.
 
 # Saving changes
 
-Successful saves redirect back to the settings page and display a confirmation.
+Successful saves return to the settings page and display a confirmation.
 This prevents a refresh from submitting the form again. Publication changes
 reuse already rendered document bodies where possible and only change the
 affected cache entries and indexes.
