@@ -21,6 +21,7 @@
 +$  versioned-state
   $%  state-0
       state-1
+      state-2
   ==
 ::
 +$  theme  ?(%system %light %dark)
@@ -35,6 +36,17 @@
       public-title=(unit @t)
       public-subtitle=(unit @t)
   ==
++$  state-2
+  $:  %2
+      =theme
+      cached=(map @t @uv)
+      watched=(set desk)
+      titles=(map desk @t)
+      public-enabled=?
+      public=(set desk)
+      public-title=(unit @t)
+      public-subtitle=(unit @t)
+  ==
 ::
 +$  card  card:agent:gall
 +$  refresh-result  [cards=(list card) cache=(map @t @uv)]
@@ -42,7 +54,7 @@
 ::
 --
 ::
-=|  state-1
+=|  state-2
 =*  state  -
 ::
 =<
@@ -56,17 +68,13 @@
 ::
 ++  on-init
   ^-  (quip card _this)
-  =.  state  [%1 %system ~ ~ | ~ ~ ~]
-  =/  [cache-cards=(list card) new-cache=(map @t @uv)]
-    (refresh-cache:hc cached)
-  :_  this(cached new-cache)
-  %+  weld
-    ^-  (list card)
-    :~  [%pass /bind %arvo %e %connect `/'docs' %docs]
-        ~(tire pass:io /tire)
-        [%pass /docket %agent [our.bowl %docket] %watch /charges]
-    ==
-  cache-cards
+  =.  state  [%2 %system ~ ~ ~ | ~ ~ ~]
+  :_  this
+  :~  [%pass /bind %arvo %e %connect `/'docs' %docs]
+      ~(tire pass:io /tire)
+      [%pass /docket %agent [our.bowl %docket] %watch /charges]
+      [%pass [%refresh-retry (scot %ud 0) ~] %arvo %b %wait now.bowl]
+  ==
 ::
 ++  on-load
   |=  old-vase=vase
@@ -74,19 +82,31 @@
   =/  old  !<(versioned-state old-vase)
   =.  state
     ?-  -.old
-      %0  [%1 %system ~ ~ | ~ ~ ~]
-      %1  old
+      %0  [%2 %system ~ ~ ~ | ~ ~ ~]
+      %1  :*  %2
+              theme.old
+              cached.old
+              watched.old
+              ~
+              public-enabled.old
+              public.old
+              public-title.old
+              public-subtitle.old
+          ==
+      %2  old
     ==
-  =/  [cards=(list card) new-cache=(map @t @uv)]
-    (refresh-cache:hc cached)
-  =.  cached  new-cache
+  ::  Absence of this built-in's hash marks reconciliation as pending.
+  ::  Unlike the ordinary pages, an inbound request cannot restore it.
+  =.  cached  (~(del by cached) '/docs/auth-check')
+  =/  cards=(list card)
+    [%pass [%refresh-retry (scot %ud 0) ~] %arvo %b %wait now.bowl]~
   =?  cards  ?=(%0 -.old)
     %+  weld
-      ^-  (list card)
       :~  ~(tire pass:io /tire)
-          [%pass /docket %agent [our.bowl %docket] %watch /charges]
       ==
     cards
+  =?  cards  ?=(?(%0 %1) -.old)
+    [[%pass /docket %agent [our.bowl %docket] %watch /charges] cards]
   [cards this]
 ::
 ++  on-save
@@ -372,6 +392,45 @@
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
   ?+  wire  (on-arvo:def [wire sign-arvo])
+      [%refresh-retry @ ~]
+    ?>  ?=([%behn %wake *] sign-arvo)
+    =/  attempt=(unit @ud)  (slaw %ud i.t.wire)
+    ?~  attempt  (on-arvo:def [wire sign-arvo])
+    ?:  (~(has by cached) '/docs/auth-check')  [~ this]
+    :_  this
+    :~  [%pass /refresh-cache %arvo %b %wait now.bowl]
+        :*  %pass
+            [%refresh-retry (scot %ud +(u.attempt)) ~]
+            %arvo
+            %b
+            %wait
+            (add now.bowl (retry-delay:hc u.attempt))
+        ==
+        ~(tire pass:io /tire)
+    ==
+  ::
+      [%refresh-cache ~]
+    ?>  ?=([%behn %wake *] sign-arvo)
+    =/  live=(set desk)
+      %-  ~(gas in *(set desk))
+      %+  murn
+        %~  tap  by
+        .^(rock:tire:clay %cx (scrio:hc %$ /tire))
+      |=  [dsk=desk =zest:clay *]
+      ?.(=(%live zest) ~ `dsk)
+    =/  watch-cards=(list card)
+      %-  zing
+      %+  turn  ~(tap in live)
+      |=(dsk=desk (watch-desk:hc dsk))
+    =/  removed=(set desk)  (~(dif in watched) live)
+    =/  cancel-cards=(list card)
+      %-  zing
+      %+  turn  ~(tap in removed)
+      |=(dsk=desk (cancel-desk:hc dsk))
+    =/  result=refresh-result  (refresh-cache:hc cached)
+    :_  this(cached cache.result, watched live)
+    (weld watch-cards (weld cancel-cards cards.result))
+  ::
       [%bind ~]
     ?.  ?=([%eyre %bound *] sign-arvo)
       (on-arvo:def [wire sign-arvo])
@@ -443,18 +502,33 @@
       ?>  =(%charge-update p.cage.sign)
       =/  update=charge-update:docket
         !<(charge-update:docket q.cage.sign)
+      =.  titles
+        ?-    -.update
+            %initial
+          %-  ~(run by initial.update)
+          |=(=charge:docket title.docket.charge)
+        ::
+            %add-charge
+          (~(put by titles) desk.update title.docket.charge.update)
+        ::
+            %del-charge
+          (~(del by titles) desk.update)
+        ==
       =/  result=refresh-result
-        ?-  -.update
-          %initial     [~ cached]
-          %add-charge  (refresh-desk:hc cached desk.update)
-          %del-charge  (refresh-desk:hc cached desk.update)
+        ?-    -.update
+            %add-charge  (refresh-desk:hc cached desk.update)
+            %del-charge  (refresh-desk:hc cached desk.update)
+            %initial
+          ?:  (~(has by cached) '/docs/auth-check')
+            (refresh-cache:hc cached)
+          [~ cached]
         ==
       [cards.result this(cached cache.result)]
-    ::
-        %kick
-      :_  this
-      [%pass /docket %agent [our.bowl %docket] %watch /charges]~
-    ==
+  ::
+      %kick
+    :_  this
+    [%pass /docket %agent [our.bowl %docket] %watch /charges]~
+  ==
 ++  on-fail   on-fail:def
 ++  on-leave  on-leave:def
 --
@@ -661,6 +735,12 @@
   ^-  tape
   %+  weld  "/docs/public#"
   (trip dsk)
+:: exponentially back off failed reconciliation attempts, capped at five minutes
+::
+++  retry-delay
+  |=  attempt=@ud
+  ^-  @dr
+  (min ~m5 (mul ~s10 (bex (min 5 attempt))))
 :: eagerly cache indexes and assets; all documents populate on demand
 ::
 ++  refresh-cache
@@ -1477,22 +1557,13 @@
 ::
 ++  desk-map
   ^-  (map desk (unit @t))
-  =/  meta-map=(map desk @t)
-    =/  charges
-      .^  charge-update:docket
-          %gx
-          (scrio %docket /charges/noun)
-      ==
-    ?>  ?=(%initial -.charges)
-    %-  ~(run by initial.charges)
-    |=(=charge:docket title.docket.charge)
   =/  desks=(list desk)
     %+  murn
       %~  tap  by
       .^(rock:tire:clay %cx (scrio %$ /tire))
     |=([=desk =zest:clay *] ?.(=(%live zest) ~ (some desk)))
   %-  ~(gas by *(map desk (unit @t)))
-  (turn desks |=(d=desk [d (~(get by meta-map) d)]))
+  (turn desks |=(d=desk [d (~(get by titles) d)]))
 :: read a toc for a desk from clay
 ::
 ::   if it's a clue, convert to toc. If it's included,
