@@ -1,3 +1,12 @@
+## 1.0.3
+
+Date: `~2026.09.02`
+
+- Make app upgrades safe while other agents are unavailable by tracking Docket
+  titles from its subscription and deferring cache and watch reconciliation.
+- Retry failed reconciliation with exponential backoff, restoring Eyre cache
+  entries and Clay watches once their dependencies become available.
+
 ## 1.0.2
 
 Date: `~2026.07.23`
